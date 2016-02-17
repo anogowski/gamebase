@@ -1,7 +1,23 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+	"github.com/julienschmidt/httprouter"
+)
+
+var PORT int
+func init(){
+	if PORT==0{
+		PORT = 80
+	}
+}
 
 func main() {
-	fmt.Println("hello world")
+	router := httprouter.New()
+	router.Handle("GET", "/login", HandleLoginPage)
+	router.Handle("POST", "/login", HandleLoginAction)
+	
+	fmt.Println("Server Running...")
+	http.ListenAndServe(":"+string(PORT), router)
 }

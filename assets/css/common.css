@@ -1,0 +1,22 @@
+body { background-color:#000000; color:#aaaaff; }
+.nav { background-color:#0a0a2a; height:2em; line-height:2em; }
+.sitetitle { font-size:1.5em; float:left; text-decoration:none; vertical-align:middle; color:inherit; }
+.navitem { float:right; text-decoration:none; vertical-align:middle; margin-left:2em; display:inline-block; color:inherit; }
+.search { background-color:inherit; color:inherit; width:10em; }
+.content { border-style:solid; border-width:1px; border-color:#0a0a2a; position:relative; width:100%; }
+.menu { position:relative; display:inline-block; vertical-align:top; margin:0px; width:20%; }
+.page { position:relative; display:inline-block; vertical-align:top; margin:0px; width:50%; }
+.chat { position:relative; display:inline-block; vertical-align:top; margin:0px; }
+.description { border-style:solid; border-width:2px; border-color:#0a0a2a; border-radius:0.25em; }
+.copyright { font-size:0.75em; }
+.gold { color:#ffaf00; }
+.white { color:#aaaaff; }
+.average p { display:inline-block; margin-left:4em; }
+.review { border-color:#0a0a2a; border-width:2px; border-style:solid; border-radius:0.25em; margin-top:2em; }
+.upped { margin-left:2em; color:#008800; }
+.downed { margin-left:1em; color:#880000; }
+.shortened { max-height:10em; overflow:hidden; }
+.uservids iframe { display:block; }
+.uservid { display:inline-block; border-color:#0a0a2a; border-width:2px; border-style:solid; border-radius:0.25em; margin:2em; }
+.uservid iframe { margin-left:0.5em; margin-right:0.5em; margin-bottom:0.5em; }
+.small { font-size:0.75em; }

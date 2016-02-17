@@ -1,0 +1,45 @@
+{{define "users/login"}}
+<div class="mid error">
+	{{if .Error}}
+	{{.Error}}
+	{{end}}
+</div>
+<div class="left">
+	<form action="/users/login?signup=false" method="POST">
+		<h1>Login</h1>
+		<div class="formgrp">
+			<label for="loginUser">Username</label>
+			<input type="text" id="loginUser" name="loginUser" />
+		</div>
+		<div class="formgrp">
+			<label for="loginPass">Password</label>
+			<input type="password" id="loginPass" name="loginPass" />
+		</div>
+		<div class="formgrp">
+			<input type="hidden" value="{{.Next}}" name="next"/>
+			<input type="submit" value="Login" />
+		</div>
+	</form>
+</div>
+<div class="right">
+	<form action="/users/login?signup=true" method="POST">
+		<h1>Login</h1>
+		<div class="formgrp">
+			<label for="signUser">Username</label>
+			<input type="text" id="signUser" name="signUser" />
+		</div>
+		<div class="formgrp">
+			<label for="signPass">Password</label>
+			<input type="password" id="signPass" name="signPass" />
+		</div>
+		<div class="formgrp">
+			<label for="repeatPass">Password</label>
+			<input type="password" id="repeatPass" name="repeatPass" />
+		</div>
+		<div class="formgrp">
+			<input type="hidden" value="{{.Next}}" name="next"/>
+			<input type="submit" value="Sign Up" />
+		</div>
+	</form>
+</div>
+{{end}}

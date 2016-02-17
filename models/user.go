@@ -1,35 +1,33 @@
 package main
 
 import (
-	"game"
+	
 )
 
 type User struct {
-	var userName string
-	var password string
-	var userId int
-	var games []Game
-	var messages []string
-	var friends []User
-	 
+	userName string
+	password string
+	userId string
+	games []Game
+	messages []string
+	friends []User
+}
 
-	func InitUser(user_name string, pass string) {
-		userName = user_name
-		password = pass
-		//TODO: Figure out a static id
-		userId = 1
-	}
+func (this *User) InitUser(user_name string, pass string) {
+	this.userName = user_name
+	this.password = pass
+	//TODO: Figure out a static id, maybe GenerateID("user_", 20)
+	this.userId = string(1)
+}
 
-	func AddGame(game Game)	{
-		games = append(games,game)
-	}
+func (this *User) AddGame(game Game)	{
+	this.games = append(this.games,game)
+}
 
-	func AddFriend(friend User){
-		friends = append(friends, friend)
-	}
+func (this *User) AddFriend(friend User){
+	this.friends = append(this.friends, friend)
+}
 
-	func AddMessage(message String){
-		messages = append(messages, message)
-	}
-
+func (this *User) AddMessage(message string){
+	this.messages = append(this.messages, message)
 }
