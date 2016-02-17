@@ -1,0 +1,8 @@
+{
+	"ImportPath": "gamebase",
+	"GoVersion": "go1.5",
+	"Packages": [
+		"./..."
+	],
+	"Deps": []
+}
