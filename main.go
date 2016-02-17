@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"fmt"
 	"net/http"
 	"github.com/julienschmidt/httprouter"
@@ -20,5 +21,5 @@ func main() {
 	router.ServeFiles("/assets/*filepath", http.Dir("assets/"))
 	
 	fmt.Println("Server Running...")
-	http.ListenAndServe(":"+string(PORT), router)
+	log.Fatal(http.ListenAndServe(":"+string(PORT), router))
 }
