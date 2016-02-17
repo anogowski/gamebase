@@ -1,4 +1,4 @@
-package main
+package models
 import (
 	"time"
 	"net/url"
@@ -56,7 +56,7 @@ func RequestUser(r *http.Request) *User{
 	if sess==nil || sess.UserID==""{
 		return nil
 	}
-	user, err := globalUserStore.FindUser(sess.UserID)
+	user, err := GlobalUserStore.FindUser(sess.UserID)
 	if err!=nil{
 		panic(err)
 	}

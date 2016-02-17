@@ -9,7 +9,7 @@ import (
 var PORT int
 func init(){
 	if PORT==0{
-		PORT = 80
+		PORT = 8080
 	}
 }
 
@@ -17,6 +17,7 @@ func main() {
 	router := httprouter.New()
 	router.Handle("GET", "/login", HandleLoginPage)
 	router.Handle("POST", "/login", HandleLoginAction)
+	router.ServeFiles("/assets/*filepath", http.Dir("assets/"))
 	
 	fmt.Println("Server Running...")
 	http.ListenAndServe(":"+string(PORT), router)

@@ -1,4 +1,4 @@
-package main
+package models
 import (
 	
 )
@@ -10,6 +10,6 @@ type UserStore interface{
 	Authenticate(name, pass string)(*User, error)
 }
 
-var globalUserStore UserStore
+var GlobalUserStore UserStore
 
 //TODO: implement the UserStore interface and set the globalUserStore

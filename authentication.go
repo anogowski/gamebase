@@ -3,10 +3,11 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"log"
+	"github.com/anogowski/gamebase/models"
 )
 
 func HandleLoginPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
-	RenderTemplate(w, r, "/users/login", nil);
+	models.RenderTemplate(w, r, "/users/login", nil);
 }
 func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	next := r.FormValue("next")
@@ -18,18 +19,18 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 		pword := r.FormValue("signPass")
 		repeat := r.FormValue("repeatPass")
 		if pword!=repeat{
-			RenderTemplate(w, r, "/users/login", map[string]interface{}{"Error":"Passwords don't match.", "UName":uname});
+			models.RenderTemplate(w, r, "/users/login", map[string]interface{}{"Error":"Passwords don't match.", "UName":uname});
 			return
 		}
-		user, err := globalUserStore.FindUserByName(uname)
+		user, err := models.GlobalUserStore.FindUserByName(uname)
 		if err!=nil{
 			panic(err)
 		}
 		if user!=nil{
-			RenderTemplate(w, r, "/users/login", map[string]interface{}{"Error":"Username not available.", "UName":uname});
+			models.RenderTemplate(w, r, "/users/login", map[string]interface{}{"Error":"Username not available.", "UName":uname});
 			return
 		}
-		user, err = globalUserStore.CreateUser(uname, pword)
+		user, err = models.GlobalUserStore.CreateUser(uname, pword)
 		if err!=nil{
 			panic(err)
 		}
@@ -40,9 +41,9 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 	} else{
 		uname := r.FormValue("loginUser")
 		pword := r.FormValue("loginPass")
-		_, err := globalUserStore.Authenticate(uname, pword)
+		_, err := models.GlobalUserStore.Authenticate(uname, pword)
 		if err!=nil{
-			RenderTemplate(w, r, "/users/login", map[string]interface{}{"Error":err.Error(), "UName":uname});
+			models.RenderTemplate(w, r, "/users/login", map[string]interface{}{"Error":err.Error(), "UName":uname});
 			return
 		}
 		http.Redirect(w, r, next+"?flash=Login+Success", http.StatusFound)
