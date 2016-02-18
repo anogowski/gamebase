@@ -7,10 +7,11 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-var PORT int
+var PORT string
 func init(){
-	if PORT==0{
-		PORT = 8080
+	PORT = os.GetEnv("PORT")
+	if PORT==""{
+		PORT = "8080"
 	}
 }
 
@@ -21,5 +22,5 @@ func main() {
 	router.ServeFiles("/assets/*filepath", http.Dir("assets/"))
 	
 	fmt.Println("Server Running...")
-	log.Fatal(http.ListenAndServe(":"+string(PORT), router))
+	log.Fatal(http.ListenAndServe(":"+PORT, router))
 }
