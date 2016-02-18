@@ -10,7 +10,7 @@ import (
 
 var PORT string
 func init(){
-	PORT = os.GetEnv("PORT")
+	PORT = os.Getenv("PORT")
 	if PORT==""{
 		PORT = "8080"
 	}
