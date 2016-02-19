@@ -34,7 +34,7 @@ func NewPostgresUserStore() *PostgresUserStore{
 	}
 	return &ustore
 }
-func (this *PostgresUserStore) CreateUser(name, pass string)(*User, error){
+func (this *PostgresUserStore) CreateUser(name, pass, email string)(*User, error){
 	user, err := this.FindUserByName(name)
 	if err!=nil{
 		return nil,err
@@ -42,7 +42,7 @@ func (this *PostgresUserStore) CreateUser(name, pass string)(*User, error){
 	if user!=nil{
 		return nil,errors.New("Username already taken.")
 	}
-	user = NewUser(name, pass)
+	user = NewUser(name, pass, email)
 	if _,err = this.db.Exec("INSERT INTO users VALUES('"+user.UserId+"', '"+user.UserName+"', '"+user.Password+"', '"+user.Email+"')"); err!=nil{
 		return user,err
 	}
