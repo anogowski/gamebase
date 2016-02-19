@@ -1,18 +1,19 @@
 package main
 
 import (
-	"os"
-	"log"
 	"fmt"
-	"net/http"
-	"github.com/julienschmidt/httprouter"
+	"github.com/anogowski/gamebase/Godeps/_workspace/src/github.com/julienschmidt/httprouter"
 	"github.com/anogowski/gamebase/models"
+	"log"
+	"net/http"
+	"os"
 )
 
 var PORT string
-func init(){
+
+func init() {
 	PORT = os.Getenv("PORT")
-	if PORT==""{
+	if PORT == "" {
 		PORT = "8080"
 	}
 	models.GlobalUserStore = models.NewPostgresUserStore()
@@ -23,7 +24,7 @@ func main() {
 	router.Handle("GET", "/login", HandleLoginPage)
 	router.Handle("POST", "/login", HandleLoginAction)
 	router.ServeFiles("/assets/*filepath", http.Dir("assets/"))
-	
+
 	fmt.Println("Server Running...")
 	log.Fatal(http.ListenAndServe(":"+PORT, router))
 }
