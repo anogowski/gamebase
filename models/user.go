@@ -45,3 +45,27 @@ func (this *User) AddMessage(message string){
 func (this *User) CheckPassword(pass string)bool{
 	return bcrypt.CompareHashAndPassword([]byte(this.Password), []byte(pass))==nil
 }
+
+func (this *User) UpdateEmail(mail string) {
+
+}
+
+func (this *User) UpdatePassword(pass string) {
+
+}
+
+func (this *User) UpdateGame(game Game) {
+
+}
+
+func (this *User) DeleteMessage(message string) {
+
+}
+
+func (this *User) DeleteGame(game Game) {
+
+}
+
+func (this *User) DeleteFriend(friend User) {
+
+}
