@@ -1,11 +1,12 @@
 package models
 
 type Game struct {
+	GameId    string
 	Title     string
 	Publisher string
 	Rating    float64
 	Review    []Review
-	GameId    string
+	GameTags  []Tags
 }
 
 const MAX_RATING int = 5
