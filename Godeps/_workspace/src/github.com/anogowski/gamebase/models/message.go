@@ -7,5 +7,5 @@ type Message struct{
 }
 
 func NewMessage(to, from User, theMessage string)*Message{
-	return &message{To: to, From: from, TheMessage: theMessage}
+	return &Message{To: to, From: from, TheMessage: theMessage}
 }
