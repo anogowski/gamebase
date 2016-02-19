@@ -26,11 +26,11 @@ func NewPostgresUserStore() *PostgresUserStore{
 		log.Fatal("Error opening the database: %q", err)
 	}
 	ustore := PostgresUserStore{db:db}
-	if _, err :=ustore.db.Exec("CREATE TABLE IF NOT EXISTS users (id STRING PRIMARY KEY, name STRING, password STRING, email STRING)"); err!=nil{
-		log.Fatal("Error creating users table")
+	if _, err :=ustore.db.Exec("CREATE TABLE IF NOT EXISTS users (id VARCHAR PRIMARY KEY, name VARCHAR, password VARCHAR, email VARCHAR)"); err!=nil{
+		log.Fatal("Error creating users table: %q", err)
 	}
-	if _, err :=ustore.db.Exec("CREATE TABLE IF NOT EXISTS friends (id STRING, friendid STRING, PRIMARY KEY(id, friendid))"); err!=nil{
-		log.Fatal("Error creating friends table")
+	if _, err :=ustore.db.Exec("CREATE TABLE IF NOT EXISTS friends (id VARCHAR, friendid VARCHAR, PRIMARY KEY(id, friendid))"); err!=nil{
+		log.Fatal("Error creating friends table: %q", err)
 	}
 	return &ustore
 }
