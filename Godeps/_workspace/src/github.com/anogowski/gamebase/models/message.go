@@ -6,6 +6,6 @@ type Message struct{
 	TheMessage string
 }
 
-func (this *Message) NewMessage(to, from User, theMessage string){
-	return message{To: to, From: from, TheMessage: theMessage}
+func NewMessage(to, from User, theMessage string)*Message{
+	return &message{To: to, From: from, TheMessage: theMessage}
 }
