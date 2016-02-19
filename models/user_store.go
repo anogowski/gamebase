@@ -8,7 +8,7 @@ import (
 )
 
 type UserStore interface{
-	CreateUser(name, pass string)(*User, error)
+	CreateUser(name, pass, email string)(*User, error)
 	FindUser(id string)(*User,error)
 	FindUserByName(name string)(*User, error)
 	UpdateUser(user User)error
