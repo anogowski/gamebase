@@ -20,7 +20,7 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 		pword := r.FormValue("signPass")
 		repeat := r.FormValue("repeatPass")
 		if pword != repeat {
-			models.RenderTemplate(w, r, "/users/login", map[string]interface{}{"Error": "Passwords don't match.", "UName": uname})
+			models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": "Passwords don't match.", "UName": uname})
 			return
 		}
 		user, err := models.GlobalUserStore.FindUserByName(uname)
@@ -28,7 +28,7 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 			panic(err)
 		}
 		if user != nil {
-			models.RenderTemplate(w, r, "/users/login", map[string]interface{}{"Error": "Username not available.", "UName": uname})
+			models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": "Username not available.", "UName": uname})
 			return
 		}
 		user, err = models.GlobalUserStore.CreateUser(uname, pword)
@@ -44,7 +44,7 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 		pword := r.FormValue("loginPass")
 		_, err := models.GlobalUserStore.Authenticate(uname, pword)
 		if err != nil {
-			models.RenderTemplate(w, r, "/users/login", map[string]interface{}{"Error": err.Error(), "UName": uname})
+			models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": err.Error(), "UName": uname})
 			return
 		}
 		http.Redirect(w, r, next+"?flash=Login+Success", http.StatusFound)
