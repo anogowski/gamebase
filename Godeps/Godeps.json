@@ -1,8 +1,15 @@
 {
 	"ImportPath": "gamebase",
 	"GoVersion": "go1.5",
-	"Packages": [
-		"./..."
-	],
-	"Deps": []
+	"Deps": [
+		{
+			"ImportPath": "github.com/anogowski/gamebase/models",
+			"Rev": "d887f92af0037a27c01d3af29fc92af59730e3bf"
+		},
+		{
+			"ImportPath": "github.com/julienschmidt/httprouter",
+			"Comment": "v1.1-28-g153d9c9",
+			"Rev": "153d9c9fa8b6a5995c6a300cca099e1f3408733f"
+		}
+	]
 }

@@ -1,33 +1,47 @@
 package models
 
 import (
-	
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	userName string
-	password string
-	userId string
-	games []Game
-	messages []string
-	friends []User
+	UserName string
+	Password string
+	UserId string
+	Email string
+	Games []Game
+	Messages []string
+	Friends []User
 }
 
+const (
+	hashcost = 10
+	userIDlen = 20
+)
+
+func NewUser(user_name, pass string) *User{
+	user := User{}
+	user.InitUser(user_name, pass)
+	return &user
+}
 func (this *User) InitUser(user_name string, pass string) {
-	this.userName = user_name
-	this.password = pass
-	//TODO: Figure out a static id, maybe GenerateID("user_", 20)
-	this.userId = string(1)
+	this.UserName = user_name
+	hash, _ := bcrypt.GenerateFromPassword([]byte(pass), hashcost)
+	this.Password = string(hash)
+	this.UserId = GenerateID("user_", userIDlen)
 }
 
 func (this *User) AddGame(game Game)	{
-	this.games = append(this.games,game)
+	this.Games = append(this.Games,game)
 }
 
 func (this *User) AddFriend(friend User){
-	this.friends = append(this.friends, friend)
+	this.Friends = append(this.Friends, friend)
 }
 
 func (this *User) AddMessage(message string){
-	this.messages = append(this.messages, message)
+	this.Messages = append(this.Messages, message)
+}
+func (this *User) CheckPassword(pass string)bool{
+	return bcrypt.CompareHashAndPassword([]byte(this.Password), []byte(pass))==nil
 }

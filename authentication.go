@@ -7,7 +7,7 @@ import (
 )
 
 func HandleLoginPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
-	models.RenderTemplate(w, r, "/users/login", nil);
+	models.RenderTemplate(w, r, "users/login", nil);
 }
 func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	next := r.FormValue("next")

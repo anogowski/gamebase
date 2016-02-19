@@ -20,3 +20,5 @@ body { background-color:#000000; color:#aaaaff; }
 .uservid { display:inline-block; border-color:#0a0a2a; border-width:2px; border-style:solid; border-radius:0.25em; margin:2em; }
 .uservid iframe { margin-left:0.5em; margin-right:0.5em; margin-bottom:0.5em; }
 .small { font-size:0.75em; }
+.left { float:left; }
+.right { float:right; }

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"github.com/julienschmidt/httprouter"
+	"github.com/anogowski/gamebase/models"
 )
 
 var PORT string
@@ -14,6 +15,7 @@ func init(){
 	if PORT==""{
 		PORT = "8080"
 	}
+	models.GlobalUserStore = models.NewPostgresUserStore()
 }
 
 func main() {
