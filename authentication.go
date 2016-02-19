@@ -17,6 +17,7 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 	}
 	if r.URL.Query().Get("signup") == "true" {
 		uname := r.FormValue("signUser")
+		email := r.FormValue("signEmail")
 		pword := r.FormValue("signPass")
 		repeat := r.FormValue("repeatPass")
 		if pword != repeat {
@@ -31,7 +32,7 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 			models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": "Username not available.", "UName": uname})
 			return
 		}
-		user, err = models.GlobalUserStore.CreateUser(uname, pword)
+		user, err = models.GlobalUserStore.CreateUser(uname, pword, email)
 		if err != nil {
 			panic(err)
 		}
