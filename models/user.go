@@ -21,7 +21,7 @@ const (
 
 func NewUser(user_name, pass, mail string) *User {
 	user := User{}
-	user.InitUser(user_name, pass)
+	user.InitUser(user_name, pass, mail)
 	return &user
 }
 func (this *User) InitUser(user_name string, pass string, mail string) {

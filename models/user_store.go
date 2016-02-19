@@ -43,13 +43,13 @@ func (this *PostgresUserStore) CreateUser(name, pass string)(*User, error){
 		return nil,errors.New("Username already taken.")
 	}
 	user = NewUser(name, pass)
-	if _,err = this.db.Exec("INSERT INTO users VALUES("+user.UserId+", "+user.UserName+", "+user.Password+", "+user.Email+")"); err!=nil{
+	if _,err = this.db.Exec("INSERT INTO users VALUES('"+user.UserId+"', '"+user.UserName+"', '"+user.Password+"', '"+user.Email+"')"); err!=nil{
 		return user,err
 	}
 	return user,nil
 }
 func (this *PostgresUserStore) FindUser(id string)(*User, error){
-	row := this.db.QueryRow("SELECT * FROM users WHERE id=?", id)
+	row := this.db.QueryRow("SELECT * FROM users WHERE id="+id)
 	user := User{}
 	err := row.Scan(&user.UserId, &user.UserName, &user.Password, &user.Email);
 	switch{
@@ -61,19 +61,19 @@ func (this *PostgresUserStore) FindUser(id string)(*User, error){
 	return &user,nil
 }
 func (this *PostgresUserStore) FindUserByName(name string)(*User, error){
-	row := this.db.QueryRow("SELECT * FROM users WHERE name=?", name)
+	row := this.db.QueryRow("SELECT id, name, password, email FROM users WHERE name='"+name+"'")
 	user := User{}
 	err := row.Scan(&user.UserId, &user.UserName, &user.Password, &user.Email);
 	switch{
 		case err==sql.ErrNoRows:
-			break;
+			return nil,nil
 		case err!=nil:
 			return &user,err
 	}
 	return &user,nil
 }
 func (this *PostgresUserStore) UpdateUser(user User)error{
-	if _,err := this.db.Exec("UPDATE users SET name=?, password=?, email=? WHERE id=?", user.UserName, user.Password, user.Email, user.UserId); err!=nil{
+	if _,err := this.db.Exec("UPDATE users SET name='"+user.UserName+"', password='"+user.Password+"', email='"+user.Email+"' WHERE id='"+user.UserId+"'"); err!=nil{
 		return err
 	}
 	return nil
@@ -82,6 +82,9 @@ func (this *PostgresUserStore) Authenticate(name, pass string)(*User, error){
 	user, err := this.FindUserByName(name)
 	if err!=nil{
 		return nil,err
+	}
+	if user==nil{
+		return nil,errors.New("Incorrect username.")
 	}
 	if user.CheckPassword(pass){
 		return user,nil
