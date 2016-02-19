@@ -22,7 +22,7 @@ func (this *Game) UpdatePublisher(pub string) {
 	this.Publisher = pub
 }
 
-func (this *Game) UpdateRating(rating int) {
+func (this *Game) UpdateRating(rating float64) {
 	if rating > MAX_RATING {
 		this.Rating = MAX_RATING
 	} else if rating < 0 {
