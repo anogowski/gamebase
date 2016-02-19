@@ -34,3 +34,7 @@ func (this *Review) UpdateBody(body string) {
 func (this *Review) UpdateURL(url string) {
 	this.URL = url
 }
+
+func (this *Review) DeleteURL(url string) {
+
+}

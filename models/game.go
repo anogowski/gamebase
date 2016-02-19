@@ -5,6 +5,7 @@ type Game struct {
 	Publisher string
 	Rating    float64
 	Review    []Review
+	GameId    string
 }
 
 const MAX_RATING int = 5
