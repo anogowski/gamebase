@@ -55,8 +55,7 @@ func (this *PostgresSessionStore) Save(sess *Session) error {
 		if _, err := this.db.Exec("INSERT INTO sessions VALUES(($1), ($2), ($3))", sess.ID, sess.UserID, sess.Expiry); err != nil {
 			return err
 		}
-	}
-	else{
+	} else{
 		if _, err := this.db.Exec("UPDATE sessions SET userid=($2), expiry=($3) WHERE id=$(1)", sess.ID, sess.UserID, sess.Expiry); err!=nil{
 			return err
 		}
