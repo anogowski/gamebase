@@ -49,7 +49,7 @@ func (this *PostgresSessionStore) Delete(sess *Session) error {
 	return nil
 }
 func (this *PostgresSessionStore) Save(sess *Session) error {
-	if _, err := this.db.Exec("INSERT INTO sessions VALUES('" + sess.ID + "', '" + sess.UserID + "', '" + string(sess.Expiry) + "')"); err != nil {
+	if _, err := this.db.Exec("INSERT INTO sessions VALUES(($1), ($2), ($3))", sess.ID, sess.UserID, sess.Expiry); err != nil {
 		return err
 	}
 	return nil
