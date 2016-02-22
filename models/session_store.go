@@ -25,7 +25,8 @@ func NewPostgresSessionStore() *PostgresSessionStore {
 		log.Fatal("Error opening the database: %q", err)
 	}
 	sessstore := PostgresSessionStore{db: db}
-	if _, err := sessstore.db.Exec("CREATE TABLE IF NOT EXISTS sessions (id VARCHAR(25) PRIMARY KEY, userid VARCHAR(25), expiry TIMESTAMP)"); err != nil {
+	sessstore.db.Exec("DROP TABLE sessions")
+	if _, err := sessstore.db.Exec("CREATE TABLE IF NOT EXISTS sessions (id VARCHAR(30) PRIMARY KEY, userid VARCHAR(30), expiry TIMESTAMP)"); err != nil {
 		log.Fatal("Error creating sessions table: %q", err)
 	}
 	return &sessstore
@@ -49,8 +50,16 @@ func (this *PostgresSessionStore) Delete(sess *Session) error {
 	return nil
 }
 func (this *PostgresSessionStore) Save(sess *Session) error {
-	if _, err := this.db.Exec("INSERT INTO sessions VALUES(($1), ($2), ($3))", sess.ID, sess.UserID, sess.Expiry); err != nil {
-		return err
+	row := this.db.QueryRow("SELECT id FROM sessions WHERE id=($1)", sess.ID)
+	if row==nil{
+		if _, err := this.db.Exec("INSERT INTO sessions VALUES(($1), ($2), ($3))", sess.ID, sess.UserID, sess.Expiry); err != nil {
+			return err
+		}
+	}
+	else{
+		if _, err := this.db.Exec("UPDATE sessions SET userid=($2), expiry=($3) WHERE id=$(1)", sess.ID, sess.UserID, sess.Expiry); err!=nil{
+			return err
+		}
 	}
 	return nil
 }
