@@ -22,7 +22,8 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 			models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": "Passwords don't match.", "UName": uname})
 			return
 		}
-		user, err := models.GlobalUserStore.FindUserByName(uname)
+		var err error
+		user, err = models.GlobalUserStore.FindUserByName(uname)
 		if err != nil {
 			panic(err)
 		}
@@ -41,7 +42,8 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 	} else {
 		uname := r.FormValue("loginUser")
 		pword := r.FormValue("loginPass")
-		user, err := models.GlobalUserStore.Authenticate(uname, pword)
+		var err error
+		user, err = models.GlobalUserStore.Authenticate(uname, pword)
 		if err != nil {
 			models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": err.Error(), "UName": uname})
 			return
