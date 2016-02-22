@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/anogowski/gamebase/Godeps/_workspace/src/github.com/julienschmidt/httprouter"
-	"github.com/anogowski/gamebase/models"
+	"gamebase/Godeps/_workspace/src/github.com/anogowski/gamebase/models"
+	"gamebase/Godeps/_workspace/src/github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
 )
@@ -11,7 +11,7 @@ func HandleLoginPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 	models.RenderTemplate(w, r, "users/login", nil)
 }
 func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var user *User
+	var user *models.User
 	flash := ""
 	if r.URL.Query().Get("signup") == "true" {
 		uname := r.FormValue("signUser")
@@ -48,9 +48,9 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 		}
 		flash = "?flash=Login+Success"
 	}
-	sess := FindOrCreateSession(w, r)
+	sess := models.FindOrCreateSession(w, r)
 	sess.UserID = user.UserId
-	err := GlobalSessionStore.Save(sess)
+	err := models.GlobalSessionStore.Save(sess)
 	if err!=nil{
 		panic(err)
 	}
@@ -61,12 +61,12 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 	http.Redirect(w, r, next+flash, http.StatusFound)
 }
 func HandleLogout(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
-	sess := RequestSession(r)
+	sess := models.RequestSession(r)
 	if sess!=nil{
-		err := GlobalSessionStore.Delete(sess)
+		err := models.GlobalSessionStore.Delete(sess)
 		if err!=nil{
 			panic(err)
 		}
 	}
-	RenderTemplate(w,r, "users/logout", nil)
+	models.RenderTemplate(w,r, "users/logout", nil)
 }
