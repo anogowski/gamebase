@@ -22,7 +22,7 @@ func (this *Session) Expired()bool{
 func NewSession(w http.ResponseWriter) *Session{
 	exp := time.Now().Add(sessionLength)
 	sess := &Session{
-		ID : GenerateID("sess", sessionIDLength),
+		ID : GenerateID("sess_", sessionIDLength),
 		Expiry : exp,
 	}
 	cookie := http.Cookie{
@@ -31,6 +31,7 @@ func NewSession(w http.ResponseWriter) *Session{
 		Expires: exp,
 	}
 	http.SetCookie(w, &cookie)
+	GlobalSessionStore.Save(sess)
 	return sess
 }
 func RequestSession(r *http.Request) *Session{
@@ -38,7 +39,7 @@ func RequestSession(r *http.Request) *Session{
 	if err!=nil{
 		return nil
 	}
-	sess, err := globalSessionStore.Find(cookie.Value)
+	sess, err := GlobalSessionStore.Find(cookie.Value)
 	if err!=nil{
 		panic(err)
 	}
@@ -46,7 +47,7 @@ func RequestSession(r *http.Request) *Session{
 		return nil
 	}
 	if sess.Expired(){
-		globalSessionStore.Delete(sess)
+		GlobalSessionStore.Delete(sess)
 		return nil
 	}
 	return sess

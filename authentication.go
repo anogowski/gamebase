@@ -11,10 +11,8 @@ func HandleLoginPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 	models.RenderTemplate(w, r, "users/login", nil)
 }
 func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	next := r.FormValue("next")
-	if next == "" {
-		next = "/"
-	}
+	var user *User
+	flash := ""
 	if r.URL.Query().Get("signup") == "true" {
 		uname := r.FormValue("signUser")
 		email := r.FormValue("signEmail")
@@ -39,15 +37,36 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 		if user != nil {
 			log.Fatal("Failed to create user.")
 		}
-		http.Redirect(w, r, next+"?flash=Signup+Success", http.StatusFound)
+		flash = "?flash=Signup+Success"
 	} else {
 		uname := r.FormValue("loginUser")
 		pword := r.FormValue("loginPass")
-		_, err := models.GlobalUserStore.Authenticate(uname, pword)
+		user, err := models.GlobalUserStore.Authenticate(uname, pword)
 		if err != nil {
 			models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": err.Error(), "UName": uname})
 			return
 		}
-		http.Redirect(w, r, next+"?flash=Login+Success", http.StatusFound)
+		flash = "?flash=Login+Success"
 	}
+	sess := FindOrCreateSession(w, r)
+	sess.UserID = user.UserId
+	err := GlobalSessionStore.Save(sess)
+	if err!=nil{
+		panic(err)
+	}
+	next := r.FormValue("next")
+	if next == "" {
+		next = "/"
+	}
+	http.Redirect(w, r, next+flash, http.StatusFound)
+}
+func HandleLogout(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
+	sess := RequestSession(r)
+	if sess!=nil{
+		err := GlobalSessionStore.Delete(sess)
+		if err!=nil{
+			panic(err)
+		}
+	}
+	RenderTemplate(w,r, "users/logout", nil)
 }

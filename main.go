@@ -17,12 +17,14 @@ func init() {
 		PORT = "8080"
 	}
 	models.GlobalUserStore = models.NewPostgresUserStore()
+	models.GlobalSessionStore = models.NewPostgresSessionStore()
 }
 
 func main() {
 	router := httprouter.New()
 	router.Handle("GET", "/login", HandleLoginPage)
 	router.Handle("POST", "/login", HandleLoginAction)
+	router.Handle("GET", "/logout", HandleLogout)
 	router.ServeFiles("/assets/*filepath", http.Dir("assets/"))
 
 	fmt.Println("Server Running...")

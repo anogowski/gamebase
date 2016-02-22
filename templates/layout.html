@@ -7,7 +7,12 @@
 <body onload="javascript:initShortened()">
 	<div class="nav">
 		<a class="sitetitle" href="/">Gamebase</a>
+		{{if .CurrentUser}}
+		<a class="navitem" href="/account">{{.CurrentUser.UserName}}</a>
+		<a class="navitem" href="/logout">Logout</a>
+		{{else}}
 		<a class="navitem" href="/login">Login|Sign Up</a>
+		{{end}}
 		<form class="navitem"><input type="search" class="search"/><input type="submit" value="&#x1F50E;"/></form>
 	</div>
 	<div class="content">
