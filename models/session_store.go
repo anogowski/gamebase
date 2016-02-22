@@ -12,7 +12,7 @@ type SessionStore interface{
 }
 var GlobalSessionStore SessionStore
 
-type PostgresSessionStore type{
+type PostgresSessionStore struct{
 	db *sql.DB
 }
 func NewPostgresSessionStore() *PostgresSessionStore{
