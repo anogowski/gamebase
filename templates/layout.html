@@ -8,8 +8,8 @@
 	<div class="nav">
 		<a class="sitetitle" href="/">Gamebase</a>
 		{{if .CurrentUser}}
-		<a class="navitem" href="/account">{{.CurrentUser.UserName}}</a>
 		<a class="navitem" href="/logout">Logout</a>
+		<a class="navitem" href="/account">{{.CurrentUser.UserName}}</a>
 		{{else}}
 		<a class="navitem" href="/login">Login|Sign Up</a>
 		{{end}}

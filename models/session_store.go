@@ -25,14 +25,13 @@ func NewPostgresSessionStore() *PostgresSessionStore {
 		log.Fatal("Error opening the database: %q", err)
 	}
 	sessstore := PostgresSessionStore{db: db}
-	sessstore.db.Exec("DROP TABLE sessions")
 	if _, err := sessstore.db.Exec("CREATE TABLE IF NOT EXISTS sessions (id VARCHAR(30) PRIMARY KEY, userid VARCHAR(30), expiry TIMESTAMP)"); err != nil {
 		log.Fatal("Error creating sessions table: %q", err)
 	}
 	return &sessstore
 }
 func (this *PostgresSessionStore) Find(id string) (*Session, error) {
-	row := this.db.QueryRow("SELECT id,userid,expiry FROM sessions WHERE id=" + id)
+	row := this.db.QueryRow("SELECT id,userid,expiry FROM sessions WHERE id='"+id+"'")
 	sess := Session{}
 	err := row.Scan(&sess.ID, &sess.UserID, &sess.Expiry)
 	switch {
@@ -50,13 +49,14 @@ func (this *PostgresSessionStore) Delete(sess *Session) error {
 	return nil
 }
 func (this *PostgresSessionStore) Save(sess *Session) error {
-	row := this.db.QueryRow("SELECT id FROM sessions WHERE id=($1)", sess.ID)
-	if row==nil{
+	row := this.db.QueryRow("SELECT id FROM sessions WHERE id='$1'", sess.ID)
+	s := &Session{}
+	if err := row.Scan(s.ID); err==sql.ErrNoRows{
 		if _, err := this.db.Exec("INSERT INTO sessions VALUES(($1), ($2), ($3))", sess.ID, sess.UserID, sess.Expiry); err != nil {
 			return err
 		}
 	} else{
-		if _, err := this.db.Exec("UPDATE sessions SET userid=($2), expiry=($3) WHERE id=$(1)", sess.ID, sess.UserID, sess.Expiry); err!=nil{
+		if _, err := this.db.Exec("UPDATE sessions SET userid=($2), expiry=($3) WHERE id=($1)", sess.ID, sess.UserID, sess.Expiry); err!=nil{
 			return err
 		}
 	}

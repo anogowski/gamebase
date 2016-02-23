@@ -19,10 +19,11 @@ type Session struct{
 func (this *Session) Expired()bool{
 	return this.Expiry.Before(time.Now())
 }
-func NewSession(w http.ResponseWriter) *Session{
+func NewSession(w http.ResponseWriter, userid string) *Session{
 	exp := time.Now().Add(sessionLength)
 	sess := &Session{
 		ID : GenerateID("sess_", sessionIDLength),
+		UserID : userid,
 		Expiry : exp,
 	}
 	cookie := http.Cookie{
@@ -30,8 +31,11 @@ func NewSession(w http.ResponseWriter) *Session{
 		Value: sess.ID,
 		Expires: exp,
 	}
+	err := GlobalSessionStore.Save(sess)
+	if err!=nil{
+		panic(err)
+	}
 	http.SetCookie(w, &cookie)
-	GlobalSessionStore.Save(sess)
 	return sess
 }
 func RequestSession(r *http.Request) *Session{
@@ -63,10 +67,10 @@ func RequestUser(r *http.Request) *User{
 	}
 	return user
 }
-func FindOrCreateSession(w http.ResponseWriter, r *http.Request) *Session{
+func FindOrCreateSession(w http.ResponseWriter, r *http.Request, userid string) *Session{
 	sess := RequestSession(r)
 	if sess==nil{
-		sess = NewSession(w)
+		sess = NewSession(w, userid)
 	}
 	return sess
 }
