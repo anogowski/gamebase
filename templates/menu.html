@@ -2,12 +2,12 @@
 	<ul>
 	{{if .Taglist}}
 		{{range .Taglist}}
-			<li>
-				{{.}}
-			</li>
+			<a href="/search?tag={{.}}">
+				<li>{{.}}</li>
+			</a>
 		{{end}}
 	{{else}}
-		None
+		No Tags
 	{{end}}
 	</ul>
 {{end}}
