@@ -1,88 +1,13 @@
 {{define "menu"}}
-		<div class="menu">
-			<ul>
-				Genre
-				<li>
-					Action
-					<ul>
-						<li>Platformer</li>
-						<li>Shooter</li>
-						<li>Fighting/Beat'em Up</li>
-					</ul>
-				</li>
-				<li>
-					Action-Adventure
-					<ul>
-						<li>Stealth</li>
-						<li>Survival</li>
-						<li>Metroidvania</li>
-					</ul>
-				</li>
-				<li>
-					Adventure
-					<ul>
-						<li>Text Adventures</li>
-						<li>Graphic Adventures</li>
-						<li>Visual Novels</li>
-						<li>Interactive Movie</li>
-						<li>Real-Time 3D Adventures</li>
-					</ul>
-				</li>
-				<li>
-					Role-Playing
-					<ul>
-						<li>ARPGs</li>
-						<li>MMORPGs</li>
-						<li>Roguelikes</li>
-						<li>Tactical RPGs</li>
-						<li>Sandbox RPGs</li>
-						<li>JRPGs</li>
-						<li>WRPGs</li>
-					</ul>
-				</li>
-				<li>
-					Simulation
-					<ul>
-						<li>Construction/Management</li>
-						<li>Life</li>
-						<li>Vehicle</li>
-					</ul>
-				</li>
-				<li>
-					Strategy
-					<ul>
-						<li>4X</li>
-						<li>Artillery</li>
-						<li>RTS</li>
-						<li>MMORTS</li>
-						<li>Tower Defense</li>
-						<li>Turn-Based Strategy</li>
-						<li>Wargame</li>
-					</ul>
-				</li>
-				<li>
-					Sports
-					<ul>
-						<li>Racing</li>
-						<li>Sports</li>
-						<li>Competitive</li>
-						<li>Sports-Based Fighting</li>
-					</ul>
-				</li>
-				<li>
-					Educational
-					<ul>
-						<li>Programming</li>
-						<li>Logic</li>
-						<li>Trivia</li>
-						<li>Teaching</li>
-					</ul>
-				</li>
-				<li>MMO</li>
-				<li>Casual</li>
-				<li>Music</li>
-				<li>Party</li>
-				<li>Board/Card</li>
-			</ul>
-		</div>
+	<ul>
+	{{if .Taglist}}
+		{{range .Taglist}}
+			<li>
+				{{.}}
+			</li>
+		{{end}}
+	{{else}}
+		None
+	{{end}}
+	</ul>
 {{end}}

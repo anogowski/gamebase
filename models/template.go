@@ -11,8 +11,15 @@ var layoutFuncs = template.FuncMap{
 	"yield":func()(string,error){
 		return "",fmt.Errorf("bad yield called")
 	},
+	"yieldmenu":func()(string,error){
+		return "",fmt.Errorf("bad yieldmenu called")
+	},
+	"yieldchat":func()(string,error){
+		return "",fmt.Errorf("bad yieldchat called")
+	},
 }
 var layout = template.Must(template.New("layout.html").Funcs(layoutFuncs).ParseFiles("templates/layout.html"))
+var laytemplates = template.Must(template.New("t").ParseFiles("templates/chat.html", "templates/menu.html"))
 var templates = template.Must(template.New("t").ParseGlob("templates/**/*.html"))
 var errTemplate = `<h1>Error rendering template %s</h1><p>%s</p>`
 
@@ -22,11 +29,22 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 	}
 	data["CurrentUser"] = RequestUser(r)
 	data["Flash"] = r.URL.Query().Get("flash")
+	data["Taglist"], _ = GlobalTagStore.GetTags()
 	
 	funcs := template.FuncMap{
 		"yield":func()(template.HTML,error){
 			buf := bytes.NewBuffer(nil)
 			err := templates.ExecuteTemplate(buf, page, data)
+			return template.HTML(buf.String()), err
+		},
+		"yieldmenu":func()(template.HTML,error){
+			buf := bytes.NewBuffer(nil)
+			err := laytemplates.ExecuteTemplate(buf, "menu", data)
+			return template.HTML(buf.String()), err
+		},
+		"yieldchat":func()(template.HTML,error){
+			buf := bytes.NewBuffer(nil)
+			err := laytemplates.ExecuteTemplate(buf, "chat", data)
 			return template.HTML(buf.String()), err
 		},
 	}

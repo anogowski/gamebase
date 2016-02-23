@@ -18,6 +18,7 @@ func init() {
 	}
 	models.GlobalUserStore = models.NewPostgresUserStore()
 	models.GlobalSessionStore = models.NewPostgresSessionStore()
+	models.GlobalTagStore = models.NewPostgresTagStore()
 }
 
 func main() {
