@@ -8,6 +8,18 @@ import (
 
 func HandleSearch(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	tag := r.URL.Query().Get("tag")
-	//res, err := models.GlobalGameStore.FindTagged(tag)
-	models.RenderTemplate(w, r, "game/search", map[string]interface{}{"Tag":tag/*, "SearchResults":res, "Error":err*/})
+	nameinclude := r.URL.Query().Get("NameIncludes")
+	res := []models.Game{}
+	var err error
+	if tag!=""{
+		//var tagres []models.Game
+		//tagres, err = models.GlobalGameStore.FindTagged(tag)
+		//res = append(res, tagres)
+	}
+	if nameinclude!=""{
+		//var namres []models.Game
+		//namres, err = models.GlobalGameStore.FindNameIncludes(nameinclude)
+		//res = append(res, namres)
+	}
+	models.RenderTemplate(w, r, "game/search", map[string]interface{}{"NameIncludes":nameinclude, "Tag":tag, "SearchResults":res, "Error":err})
 }

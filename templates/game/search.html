@@ -1,5 +1,5 @@
 {{define "game/search"}}
-	<p>Showing games tagged "{{.Tag}}"</p>
+	<p>Showing games {{if .NameIncludes}}named "{{.NameIncludes}}"{{end}} {{if .Tag}}tagged "{{.Tag}}"{{end}}</p>
 	{{if .SearchResults}}
 		{{range .SearchResults}}
 			<a href="/game/{{URLQueryEscaper .Title}}">{{.Title}}</a>
