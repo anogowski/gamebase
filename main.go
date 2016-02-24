@@ -26,6 +26,7 @@ func main() {
 	router.Handle("GET", "/login", HandleLoginPage)
 	router.Handle("POST", "/login", HandleLoginAction)
 	router.Handle("GET", "/logout", HandleLogout)
+	router.Handle("GET", "/search", HandleSearch)
 	router.ServeFiles("/assets/*filepath", http.Dir("assets/"))
 
 	fmt.Println("Server Running...")

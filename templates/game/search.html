@@ -1,0 +1,10 @@
+{{define "game/search"}}
+	<p>Showing games tagged "{{.Tag}}"</p>
+	{{if .SearchResults}}
+		{{range .SearchResults}}
+			<a href="/game/{{URLQueryEscaper .Title}}">{{.Title}}</a>
+		{{end}}
+	{{else}}
+		No results
+	{{end}}
+{{end}}

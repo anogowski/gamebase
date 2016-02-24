@@ -23,7 +23,7 @@ var layoutFuncs = template.FuncMap{
 }
 var layout = template.Must(template.New("layout.html").Funcs(layoutFuncs).ParseFiles("templates/layout.html"))
 var laytemplates = template.Must(template.New("t").Funcs(layoutFuncs).ParseFiles("templates/chat.html", "templates/menu.html"))
-var templates = template.Must(template.New("t").ParseGlob("templates/**/*.html"))
+var templates = template.Must(template.New("t").Funcs(layoutFuncs).ParseGlob("templates/**/*.html"))
 var errTemplate = `<h1>Error rendering template %s</h1><p>%s</p>`
 
 func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data map[string]interface{}){
