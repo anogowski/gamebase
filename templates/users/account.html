@@ -1,0 +1,50 @@
+{{define "users/account"}}
+	<div class="mid error">
+		{{if .Error}}
+		{{.Error}}
+		{{end}}
+	</div>
+	<div class="mid">
+		<h1>Account</h1>
+		<form action="/account" method="POST">
+			<script type="text/javascript" src="/assets/js/account.js"></script>
+			<div class="formgrp">
+				<label for="accountName">UserName</label>
+				<input type="text" value="{{.CurrentUser.UserName}}" name="accountName" id="accountName" disabled="disabled"/>
+			</div>
+			<div class="formgrp">
+				<label for="accountEmail">Email</label>
+				<input type="text" value="{{.CurrentUser.Email}}" name="accountEmail" id="accountEmail" />
+			</div>
+			<div class="formgrp">
+				<label for="accountNewPassword">New Password</label>
+				<input type="password" id="accountNewPassword" name="accountNewPassword" />
+			</div>
+			<div class="formgrp">
+				<h3>Friend List (click to remove)</h3>
+				<ul class="friendList">
+					{{range .CurrentUser.Friends}}
+						<a href="#" onclick="javascript:removeFriend('accountFriendList', '{{URLQueryEscaper .UserName}}', this);">{{.UserName}}</a>
+					{{end}}
+				</ul>
+				<input type="hidden" value="{{.CurrentUser.Friends}}" name="accountFriendList" id="accountFriendList"/>
+			</div>
+			<div class="formgrp">
+				<h3>Game List (click to remove)</h3>
+				<ul class="gameList">
+					{{range .CurrentUser.Games}}
+						<a href="#" onclick="javascript:removeGame('accountGameList', '{{URLQueryEscaper .Title}}', this);">{{.Title}}</a>
+					{{end}}
+				</ul>
+				<input type="hidden" value="{{.CurrentUser.Games}}" name="accountGameList" id="accountGameList"/>
+			</div>
+			<div class="formgrp">
+				<label for="accountPassword">Current Password (necessary for all changes)</label>
+				<input type="password" id="accountPassword" name="accountPassword" />
+			</div>
+			<div class="formgrp">
+				<input type="submit" value="Apply" />
+			</div>
+		</form>
+	</div>
+{{end}}
