@@ -33,6 +33,7 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 	data["CurrentUser"] = RequestUser(r)
 	data["Flash"] = r.URL.Query().Get("flash")
 	data["Taglist"], _ = GlobalTagStore.GetTags()
+	//data["ChatMessages"] = MessageStore.GetMessagesTo(data["CurrentUser"])
 	
 	funcs := template.FuncMap{
 		"URLQueryEscaper":func(s interface{})(string,error){

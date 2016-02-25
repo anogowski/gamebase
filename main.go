@@ -29,6 +29,7 @@ func main() {
 	router.Handle("GET", "/search", HandleSearch)
 	router.Handle("GET", "/account", HandleAccountPage)
 	router.Handle("POST", "/account", HandleAccountAction)
+	router.Handle("POST", "/chat", HandleChatAction)
 	router.ServeFiles("/assets/*filepath", http.Dir("assets/"))
 
 	fmt.Println("Server Running...")

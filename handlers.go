@@ -35,3 +35,10 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		
 	}
 }
+
+func HandleChatAction(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
+	if models.SignedIn(w,r){
+		//TODO: send the chatNewMsg to chatTo
+		
+	}
+}

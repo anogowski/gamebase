@@ -1,6 +1,26 @@
 {{define "chat"}}
 	{{if .CurrentUser}}
 		<p>Chat</p>
+		<div class="chatlist">
+			{{range .ChatMessages}}
+				<div class="chatmsg">
+					<p class="chatfrom">{{.From}}</p>
+					<p class="chatmessage">{{.TheMessage}}</p>
+				</div>
+			{{else}}
+				<p class="nochatmsg">No Messages</p>
+			{{end}}
+		</div>
+		<form method="post" action="/chat" class="chatsend">
+			<div class="formgrp">
+				<label for="chatTo">To</label>
+				<input type="text" id="chatTo" name="chatTo" />
+			</div>
+			<div class="formgrp">
+				<label for="chatNewMsg">Msg</label>
+				<textarea id="chatNewMsg" name="chatNewMsg"></textarea>
+			</div>
+		</form>
 	{{else}}
 		<p>Login/Sign-up to chat or send messages.</p>
 	{{end}}
