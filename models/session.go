@@ -74,11 +74,12 @@ func FindOrCreateSession(w http.ResponseWriter, r *http.Request, userid string) 
 	}
 	return sess
 }
-func RequireLogin(w http.ResponseWriter, r *http.Request){
+func SignedIn(w http.ResponseWriter, r *http.Request)bool{
 	if RequestUser(r)!=nil{
-		return
+		return true
 	}
 	query := url.Values{}
 	query.Add("next", url.QueryEscape(r.URL.String()))
 	http.Redirect(w, r, "/login?"+query.Encode(), http.StatusFound)
+	return false
 }

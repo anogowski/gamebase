@@ -23,3 +23,15 @@ func HandleSearch(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	}
 	models.RenderTemplate(w, r, "game/search", map[string]interface{}{"NameIncludes":nameinclude, "Tag":tag, "SearchResults":res, "Error":err})
 }
+
+func HandleAccountPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
+	if models.SignedIn(w, r){
+		models.RenderTemplate(w, r, "users/account", nil)
+	}
+}
+func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
+	if models.SignedIn(w, r){
+		//TODO: handle account update
+		
+	}
+}
