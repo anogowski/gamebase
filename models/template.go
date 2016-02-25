@@ -8,9 +8,6 @@ import (
 )
 
 var layoutFuncs = template.FuncMap{
-	"URLQueryEscaper":func(s interface{})(string,error){
-		return template.URLQueryEscaper(s),nil
-	},
 	"yield":func()(string,error){
 		return "",fmt.Errorf("bad yield called")
 	},
@@ -19,6 +16,12 @@ var layoutFuncs = template.FuncMap{
 	},
 	"yieldchat":func()(string,error){
 		return "",fmt.Errorf("bad yieldchat called")
+	},
+	"RenderTemplateGameLink":func(href, onclick string)(string,error){
+		return "",fmt.Errorf("bad RenderTemplate called")
+	},
+	"URLQueryEscaper":func(s interface{})(string,error){
+		return template.URLQueryEscaper(s),nil
 	},
 }
 var layout = template.Must(template.New("layout.html").Funcs(layoutFuncs).ParseFiles("templates/layout.html"))
@@ -36,9 +39,6 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 	//data["ChatMessages"] = MessageStore.GetMessagesTo(data["CurrentUser"])
 	
 	funcs := template.FuncMap{
-		"URLQueryEscaper":func(s interface{})(string,error){
-			return template.URLQueryEscaper(s),nil
-		},
 		"yield":func()(template.HTML,error){
 			buf := bytes.NewBuffer(nil)
 			err := templates.ExecuteTemplate(buf, page, data)
@@ -54,6 +54,12 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 			err := laytemplates.ExecuteTemplate(buf, "chat", data)
 			return template.HTML(buf.String()), err
 		},
+		"RenderTemplateGameLink":func(href, onclick string)(template.HTML,error){
+			buf := bytes.NewBuffer(nil)
+			err := templates.ExecuteTemplate(buf, "home/index", map[string]interface{}{"GameLinkHREF":href, "GameLinkONCLICK":onclick})
+			return template.HTML(buf.String()), err
+		},
+		"URLQueryEscaper":layoutFuncs["URLQueryEscaper"],
 	}
 	layoutclone, _ := layout.Clone()
 	layoutclone.Funcs(funcs)

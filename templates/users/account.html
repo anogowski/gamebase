@@ -25,6 +25,8 @@
 				<ul class="friendList">
 					{{range .CurrentUser.Friends}}
 						<a href="#" onclick="javascript:removeFriend('accountFriendList', '{{URLQueryEscaper .UserName}}', this);">{{.UserName}}</a>
+					{{else}}
+						<p>No Friends</p>
 					{{end}}
 				</ul>
 				<input type="hidden" value="{{.CurrentUser.Friends}}" name="accountFriendList" id="accountFriendList"/>
@@ -33,7 +35,9 @@
 				<h3>Game List (click to remove)</h3>
 				<ul class="gameList">
 					{{range .CurrentUser.Games}}
-						<a href="#" onclick="javascript:removeGame('accountGameList', '{{URLQueryEscaper .Title}}', this);">{{.Title}}</a>
+						{{RenderTemplateGameLink . "#" "javascript:removeGame('accountGameList', '{{URLQueryEscaper .Title}}', this);"}}
+					{{else}}
+						<p>No Games</p>
 					{{end}}
 				</ul>
 				<input type="hidden" value="{{.CurrentUser.Games}}" name="accountGameList" id="accountGameList"/>

@@ -1,0 +1,10 @@
+{{define "home/index"}}
+	<div class="mid">{{.Flash}}</div>
+	<div>
+		{{range .RandomGames}}
+			{{RenderTemplateGameLink .}}
+		{{else}}
+			<p>No Games</p>
+		{{end}}
+	</div>
+{{end}}

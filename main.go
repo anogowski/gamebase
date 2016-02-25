@@ -23,6 +23,7 @@ func init() {
 
 func main() {
 	router := httprouter.New()
+	router.Handle("GET", "/", HandleIndex)
 	router.Handle("GET", "/login", HandleLoginPage)
 	router.Handle("POST", "/login", HandleLoginAction)
 	router.Handle("GET", "/logout", HandleLogout)

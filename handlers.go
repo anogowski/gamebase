@@ -6,6 +6,12 @@ import (
 	"net/http"
 )
 
+func HandleIndex(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
+	randgames := []models.Game{}
+	//randgames := models.GlobalGameStore.GetRandomGames(10)
+	models.RenderTemplate(w, r, "home/index", map[string]interface{}{"RandomGames":randgames})
+}
+
 func HandleSearch(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	tag := r.URL.Query().Get("tag")
 	nameinclude := r.URL.Query().Get("NameIncludes")
