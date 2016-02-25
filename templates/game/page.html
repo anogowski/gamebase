@@ -1,95 +1,58 @@
 {{define "game/page"}}
-		<div class="page">
-			<h1>Elder Scrolls: Skyrim, The</h1>
-			<iframe width="320" height="240" allowfullscreen="true" allowscriptaccess="always" scrolling="no" src="https://www.youtube.com/embed/PjqsYzBrP-M"></iframe>
-			<h2>Description</h2>
-			<p class="description">
-				EPIC FANTASY REBORN <br/>
-				The next chapter in the highly anticipated Elder Scrolls saga arrives from the makers of the 2006 and 2008 Games of the Year, Bethesda Game Studios. Skyrim reimagines and revolutionizes the open-world fantasy epic, bringing to life a complete virtual world open for you to explore any way you choose. <br/>
-				<br/>
-				LIVE ANOTHER LIFE, IN ANOTHER WORLD <br/>
-				Play any type of character you can imagine, and do whatever you want; the legendary freedom of choice, storytelling, and adventure of The Elder Scrolls is realized like never before. <br/>
-				<br/>
-				ALL NEW GRAPHICS AND GAMEPLAY ENGINE <br/>
-				Skyrim’s new game engine brings to life a complete virtual world with rolling clouds, rugged mountains, bustling cities, lush fields, and ancient dungeons. <br/>
-				<br/>
-				YOU ARE WHAT YOU PLAY <br/>
-				Choose from hundreds of weapons, spells, and abilities. The new character system allows you to play any way you want and define yourself through your actions. <br/>
-				<br/>
-				DRAGON RETURN <br/>
-				Battle ancient dragons like you’ve never seen. As Dragonborn, learn their secrets and harness their power for yourself.<br/>
-			</p>
-			<p class="copyright">&copy; 2011 Bethesda Softworks LLC, a ZeniMax Media company. The Elder Scrolls, Skyrim, Bethesda, Bethesda Game Studios, Bethesda Softworks,
-				ZeniMax and related logos are registered trademarks or trademarks of ZeniMax Media Inc. in the U.S. and/or other countries. All other trademarks and
-				trade names are the properties of their respective owners. All Rights Reserved.</p>
-			<div class="average">
-				<h2>Average</h2>
-				<font class="gold">&#x2605;&#x2605;&#x2605;&#x2605;</font><font class="white">&#x2606;</font>
-				<p>Out of 203 Reviews</p>
+	<h1 class="left">{{.Game.Title}}</h1>
+	<h1 class="right">{{.Game.Publisher}}</h1>
+	{{if .Game.TrailerURL}}
+		<iframe width="320" height="240" allowfullscreen="true" allowscriptaccess="always" scrolling="no" src="{{.Game.TrailerURL}}"></iframe>
+	{{end}}
+	<h2>Description</h2>
+	<p class="description">
+		{{.Game.Description}}
+	</p>
+	<p class="copyright">
+		{{.Game.Copyright}}
+	</p>
+	<div class="average">
+		<h2>Average</h2>
+		{{RenderTemplateRating .Game.Rating}}
+		<p>Out of {{.ReviewCount}} Reviews</p>
+	</div>
+	<h2>Top Reviews <a class="small" href="/review/{{URLQueryEscaper .Game.Title}}">See All</a></h2>
+	<div class="reviews">
+		{{if .CurrentUser}}
+			<a href="/review/{{URLQueryEscaper .Game.Title}}/new">Post your own review.</a>
+		{{else}}
+			<p><a href="/review/{{URLQueryEscaper .Game.Title}}/new">Login/Sign-up</a> to post your own review.</p>
+		{{end}}
+		{{range .TopReviews}}
+			<div class="review shortened">
+				<div class="reviewer">{{FindUserNameByID .UserId}} ({{ReviewCount .UserId}} Reviews)</div>
+				{{RenderTemplateRating .Rating}}
+				<font class="upped">{{.Likes}}&#x1F44D;</font>
+				<font class="downed">{{.Dislikes}}&#x1F44E;</font>
+				<p>
+					{{.Body}}
+				</p>
 			</div>
-			<h2>Top Reviews <a class="small" href="/Elder+Scrolls+Skyrim+The/reviews">See All</a></h2>
-			<div class="reviews">
-				<p>Login/Sign-up to post your own review.</p>
-				<div class="review shortened">
-					<div class="reviewer">Nate Hertzler (23 Reviews)</div>
-					<font class="gold">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</font><font class="white"></font>
-					<font class="upped">307&#x1F44D;</font>
-					<font class="downed">2&#x1F44E;</font>
-					<p>
-						Time passes really fast when you are playing this game. The first six hours went by in the blink of an eye yesterday ... my character is at level 10 and I feel like I have barely scratched the surface of anything. If you like these kinds of games, you will be hooked because Bethesda has managed to create something which really nails it on every level. I am a heavily magic oriented player so I spent most of my time so far in the mages' guild in winterhold. For some reason though the Dark Brotherhood wants me dead and sent an assassin to kill me. I was just messing around with some conjuration spells in a forest glen and the assassin was killed by this flame creature I had conjured before I even knew what was going on. Looted the body and found a note saying they want me dead. Stuff like that just happens and it is awesome. Dungeons btw are really fun and very well designed.<br/>
-						<br/>
-						I do have one gripe that I see has been addressed by some other reviewers who gave a low rating for the game on amazon. That is that you have to pause the action to switch spells. In Oblivion, I could instantly switch spells with the d-pad and then cast them with RB while wielding a sword and shield. In Skyrim, you must assign a spell to one hand or the other, so it kind of feels like you have lost your RB button. I can understand this complaint.<br/>
-						<br/>
-						However, if you have posted about this, keep in mind that your RB button is not idle. It has been reserved for shouts, and you will obtain shouts eventually although you have to play along the main quest until you get the first one. I have none as yet because I am focused on the mages' guild for now. However once you do you get shouts, you can instantly cast them with RB while also dual wielding whatever you choose.<br/>
-						<br/>
-						The bottom line though is that this game is basically like Oblivion on steroids. If you liked Oblivion and spent 200+ hours playing it like I did, you will be addicted to Skyrim. Having playing all through yesterday and now it's 4 am and I'm getting up to play some more rather than get some sleep, this is probably the best game I've ever played. That's a lot of praise coming from a life long gamer. Again, so long as you like RPG's as opposed to say, MW3 (which a lot of people are playing non stop right now as well), this is the game for you. BTW $65 almost feels like a very low price if you were to actually measure out how many hours you are going to spend playing this game over the next year or so, and divide it by $65. I could spend $65 in a heartbeat at say, a Jets game at the Meadowlands, but that money goes a LONG way when playing Skyrim.<br/>
-						<br/>
-						To sum up...why am I wasting my time typing this review? Time to go play Skyrim.
-					</p>
-				</div>
-				<div class="review shortened">
-					<div class="poster">Eluca Firseer (72 Reviews)</div>
-					<font class="gold">&#x2605;&#x2605;&#x2605;</font><font class="white">&#x2606;&#x2606;</font>
-					<font class="upped">289&#x1F44D;</font>
-					<font class="downed">3&#x1F44E;</font>
-					<p>
-					I'd say the fundamental trade-off going from Oblivion to Skyrim is that the world looks and feels better, but there's less overt reason for you to be there. Skyrim is packed with "miscellaneous objectives" (read: fetch quests) to the point that almost every NPC needs you to go over to yon dungeon and get ye flask, and it gets old fairly quickly. Dungeons look more varied, but what you do in them is largely the same and often devoid of meaningful context- just barrel through rooms of enemies until you get ye flask, then return to town. The major questlines don't fare much better, as they're exceedingly short-lived and so have little sense of buildup or progression. A few quests into the Companions' (Fighter's Guild) questline and I'm already part of their inner circle- apparently they have no qualms entrusting leadership of the guild to strangers. Now, if the way you play Elder Scrolls games is to wander around on your own and not worry overmuch about quests, this probably won't bother you. For me, though, I like the context-heavy sidequests and gradual guild progression in Oblivion, and I was disappointed to see these things placed on a back burner for Skyrim. To be fair, when I just explored on my own, the game was a great deal more fun, and I feel like whether you enjoy this game will depend on how you play it and on your expectations coming from previous games in the series.<br/>
-					<br/>
-					My other major, major bone to pick with Skyrim is the interface- especially inventory management- which is not very customizable and drags out total playtime much more than it needs to. For one thing, there is no "shift" button to assign shortcuts. Want to set Right Bumper + Face Button as a certain spell? Too bad- you're forced to dive into menus as a magic user. Sure, there's a favorites system, but instead of having one list on each direction on the d-pad- for example, a weapons list, a magic list, a potions list- everything's in the same list. How is that supposed to help me make quick decisions, exactly? Now, again, if you appreciate the time this gives you to catch your breath, this likely won't bother you. However, if you're like me and want to spend as little time in the menus as possible, you're probably going to feel awfully limited as to how you play the game, which runs contrary to the flagship buzzword of the Elder Scrolls series: player choice.<br/>
-					<br/>
-					If you buy a house, you can't organize the items in chests and drawers AT ALL- the items don't even auto-sort. Moreover, if you have more than one house, the containers are not shared, so why would you want to store your loot in more than one location? It would just mean more loading screens as you travel back and forth.<br/>
-					<br/>
-					By the way, the loading screens are LONG, even with a disc-install- I've waited upwards of a full minute for traveling long distances, and even going in and out of shops can take more than ten seconds. What makes this even worse is the encumbrance system- if you carry too much, you pretty much can't move, so after every dungeon looting session you'll have to immediately go back to town to sell the stuff. It got to the point where I exclusively focused on increasing how much I could carry, but even then you have to sit on the stuff for a bit, since merchants have limited gold.<br/>
-					<br/>
-					If you loot a dragon the bones tend to weigh in at 75 (!), which means after every dragon battle you'll probably go straight back to town to sell or store them, which means more loading screens. Sometimes dragons rudely interrupt as soon as you fast-travel, so instead of doing what you were going to do, you may feel compelled to play along. Honestly, I didn't find dragon fights to be very exciting, as they played out the same way almost every time (except when they glitched up), and I never felt the shouts you gain by defeating them were all that useful for a stealth character, which is the path I chose.<br/>
-					<br/>
-					Speaking of choosing paths, as soon as you start selecting perks, there's no turning back. What if you decide the perks you've chosen are not as useful as you thought they'd be, or maybe you'd like to try a different playstyle for a while? Too bad- perks are permanent. Is that supposed to be player choice?<br/>
-					<br/>
-					There are also plenty of balancing issues. For instance, you can become a master of smithing in no time by just forging iron daggers (pretty much the easiest item to forge), but if you want merchants to carry more gold, be prepared to buy and sell A LOT of stuff.<br/>
-					<br/>
-					Overall, I think all of these design issues can really mar the experience.<br/>
-					<br/>
-					Basically, if you're looking for a quest-oriented game like Oblivion, you're probably not going to find that here; Skyrim is more of a DIY exploration-oriented game, and while in that respect it performs respectably, even admirably, there are a host of design issues that simply shouldn't be there, and the rampant loading times artificially extend total playtime. As this is the sort of game you can spend hundreds of hours on, I caution you, the reader, to look beyond the unconditional praise this game is unsurprisingly getting to decide whether it's something into which it's worth investing your time.<br/>
-					<br/>
-					Edit: I should mention I haven't played the entire game, but I've completed two guild questlines and over 150 miscellaneous objectives, and have done a lot of traveling on my own, so I feel I've seen enough to write a review.
-					</p>
-				</div>
+		{{else}}
+			<p>No Reviews Yet</p>
+		{{end}}
+	</div>
+	<h2>Top User Videos <a class="small" href="/videos/{{URLQueryEscaper .Game.Title}}">See All</a></h2>
+	<div class="uservids">
+		{{if .CurrentUser}}
+			<a href="/videos/{{URLQueryEscaper .Game.Title}}/new">Post your own video</a>
+		{{else}}
+			<p><a href="/videos/{{URLQueryEscaper .Game.Title}}/new">Login/Sign-up</a> to post your own video.</p>
+		{{end}}
+		{{range .TopUserVids}}
+			<div class="uservid">
+				<div class="poster">{{FindUserNameByID .UserId}} ({{VideoCount .UserId}} Videos)</div>
+				<font class="upped">{{.Likes}}&#x1F44D;</font>
+				<font class="downed">{{.Dislikes}}&#x1F44E;</font>
+				<iframe width="320" height="240" allowfullscreen="true" allowscriptaccess="always" scrolling="no" src="{{.URL}}"></iframe>
 			</div>
-			<h2>Top User Videos <a class="small" href="/Elder+Scrolls+Skyrim+The/videos">See All</a></h2>
-			<div class="uservids">
-				<p>Login/Sign-up to post your own video.</p>
-				<div class="uservid">
-					<div class="poster">rydargames (97 Videos)</div>
-					<font class="upped">792&#x1F44D;</font>
-					<font class="downed">17&#x1F44E;</font>
-					<iframe width="320" height="240" allowfullscreen="true" allowscriptaccess="always" scrolling="no" src="https://www.youtube.com/embed/3H5obPE9bDA"></iframe>
-				</div>
-				<div class="uservid">
-					<div class="poster">RoosterTeeth (123 Videos)</div>
-					<font class="upped">734&#x1F44D;</font>
-					<font class="downed">5&#x1F44E;</font>
-					<iframe width="320" height="240" allowfullscreen="true" allowscriptaccess="always" scrolling="no" src="https://www.youtube.com/embed/RWl-IHKsKdE"></iframe>
-				</div>
-			</div>
-		</div>
+		{{else}}
+			<p>No User-Posted Videos Yet</p>
+		{{end}}
+	</div>
 {{end}}

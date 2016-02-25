@@ -18,7 +18,33 @@ var layoutFuncs = template.FuncMap{
 		return "",fmt.Errorf("bad yieldchat called")
 	},
 	"RenderTemplateGameLink":func(href, onclick string)(string,error){
-		return "",fmt.Errorf("bad RenderTemplate called")
+		return "",fmt.Errorf("bad RenderTemplateGameLink called")
+	},
+	"RenderTemplateRating":func(rating float64)(string,error){
+		return "",fmt.Errorf("bad RenderTemplateRating called")
+	},
+	"FindUserNameByID":func(userid string)(string,error){
+		user, err := GlobalUserStore.FindUser(userid)
+		if err!=nil{
+			return "",err
+		}
+		return user.UserName,nil
+	},
+	"ReviewCount":func(userid string)(string,error){
+		return "ReviewCount not yet implemented",nil
+		//count, err := GlobalReviewStore.CountByUser(userid)
+		//if err!=nil{
+		//	return "0",err
+		//}
+		//return string(count),nil
+	},
+	"VideoCount":func(userid string)(string,error){
+		return "VideoCount not yet implemented",nil
+		//count, err := GlobalVideoStore.CountByUser(userid)
+		//if err!=nil{
+		//	return "0",err
+		//}
+		//return string(count),nil
 	},
 	"URLQueryEscaper":func(s interface{})(string,error){
 		return template.URLQueryEscaper(s),nil
@@ -59,6 +85,14 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 			err := templates.ExecuteTemplate(buf, "home/index", map[string]interface{}{"GameLinkHREF":href, "GameLinkONCLICK":onclick})
 			return template.HTML(buf.String()), err
 		},
+		"RenderTemplateRating":func(rating float64)(template.HTML,error){
+			buf := bytes.NewBuffer(nil)
+			err := templates.ExecuteTemplate(buf, "review/rating", map[string]interface{}{"Rating":rating})
+			return template.HTML(buf.String()), err
+		},
+		"FindUserNameByID":layoutFuncs["FindUserNameByID"],
+		"ReviewCount":layoutFuncs["ReviewCount"],
+		"VideoCount":layoutFuncs["VideoCount"],
 		"URLQueryEscaper":layoutFuncs["URLQueryEscaper"],
 	}
 	layoutclone, _ := layout.Clone()

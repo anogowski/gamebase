@@ -1,0 +1,16 @@
+{{define "review/rating"}}
+	<font class="gold">
+		{{if ge 1 .Rating}}&#x2605;{{end}}
+		{{if ge 2 .Rating}}&#x2605;{{end}}
+		{{if ge 3 .Rating}}&#x2605;{{end}}
+		{{if ge 4 .Rating}}&#x2605;{{end}}
+		{{if ge 5 .Rating}}&#x2605;{{end}}
+	</font>
+	<font class="white">
+		{{if lt 1 .Rating}}&#x2606;{{end}}
+		{{if lt 2 .Rating}}&#x2606;{{end}}
+		{{if lt 3 .Rating}}&#x2606;{{end}}
+		{{if lt 4 .Rating}}&#x2606;{{end}}
+		{{if lt 5 .Rating}}&#x2606;{{end}}
+	</font>
+{{end}}
