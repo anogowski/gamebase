@@ -70,7 +70,7 @@ func (this *PostgresUserStore) FindUserByName(name string) (*User, error) {
 	case err == sql.ErrNoRows:
 		return nil, nil
 	case err != nil:
-		return &user, err
+		return nil, err
 	}
 	return &user, nil
 }
