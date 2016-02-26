@@ -18,14 +18,29 @@ type DAL interface {
 	DeleteUserGame(user User, gameTitle string) error
 	AddUserFriend(user User, friendId string) error
 	DeleteUserFriend(user User, friendId string) error
+	SendMessage()
+	GetGamesList()
+	GetFriendsList()
+	GetMessages()
+
 	//GAME
 	CreateGame(title, publisher string) (*Game, error)
 	FindGame(id string) (*Game, error)
 	UpdateGame(title, publisher string) error
+	GetGames()
+
 	//Review
-	CreateReview(name, pass, email string, rating float64) (*Review, error)
-	UpdateReview()
+	CreateReview(title, body, url, userId, gameId string, rating float64) (*Review, error)
+	FindReview(userId, gameId) (*Review, error)
+	UpdateReview(title, body, url, userId, gameId string, rating float64) error
 	DeleteReview(userId, gameId string) error
+	GetReviews()
+
+	//Tags
+	AddTag()
+	UpdateTag()
+	RemoveTag()
+	GetTags()
 }
 
 func (this *DAL) CreateUser(name, pass, email string) (*User, error) {

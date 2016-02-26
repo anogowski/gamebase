@@ -3,20 +3,22 @@ package models
 type Review struct {
 	Title  string
 	Body   string
-	Rating float64
+	URL    string
 	UserId string
 	GameId string
-	URL    string
+	Rating float64
 }
 
 const MAX_RATING float64 = 5
 
-func (this *Review) InitReview(title, body, userId string, rating float64, url string) {
+func (this *Review) InitReview(title, body, url, userId, gameId string, rating float64) {
 	this.Title = title
 	this.Body = body
-	this.UserId = userId
-	this.Rating = rating
 	this.URL = url
+	this.UserId = userId
+	this.GameId = gameId
+	this.Rating = rating
+
 	//CALL DAL
 }
 
