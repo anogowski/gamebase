@@ -26,6 +26,12 @@ var layoutFuncs = template.FuncMap{
 	"RenderTemplateReview":func(rev Review, revclass string)(string,error){
 		return "",fmt.Errorf("bad RenderTemplateReview called")
 	},
+	"RenderTemplateVideo":func(url, width, height interface{})(string,error){
+		return "",fmt.Errorf("bad RenderTemplateVideo called")
+	},
+	"RenderTemplateUserVideo":func(vid Video, width, height interface{})(string,error){
+		return "",fmt.Errorf("bad RenderTemplateUserVideo called")
+	},
 	"FindUserNameByID":func(userid string)(string,error){
 		user, err := GlobalUserStore.FindUser(userid)
 		if err!=nil{
@@ -96,6 +102,16 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 		"RenderTemplateReview":func(rev Review, revclass string)(template.HTML,error){
 			buf := bytes.NewBuffer(nil)
 			err := templates.ExecuteTemplate(buf, "review/review", map[string]interface{}{"ReviewClass":revclass, "Review":rev})
+			return template.HTML(buf.String()), err
+		},
+		"RenderTemplateVideo":func(url, width, height interface{})(template.HTML,error){
+			buf := bytes.NewBuffer(nil)
+			err := templates.ExecuteTemplate(buf, "game/video", map[string]interface{}{"VideoURL":url, "VideoWidth":width, "VideoHeight":height})
+			return template.HTML(buf.String()), err
+		},
+		"RenderTemplateUserVideo":func(vid Video, width, height interface{})(template.HTML,error){
+			buf := bytes.NewBuffer(nil)
+			err := templates.ExecuteTemplate(buf, "users/video", map[string]interface{}{"Video":vid, "VideoWidth":width, "VideoHeight":height})
 			return template.HTML(buf.String()), err
 		},
 		"FindUserNameByID":layoutFuncs["FindUserNameByID"],

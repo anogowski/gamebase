@@ -2,7 +2,7 @@
 	<h1 class="left">{{.Game.Title}}</h1>
 	<h1 class="right">{{.Game.Publisher}}</h1>
 	{{if .Game.TrailerURL}}
-		<iframe width="320" height="240" allowfullscreen="true" allowscriptaccess="always" scrolling="no" src="{{.Game.URL}}"></iframe>
+		{{RenderTemplateVideo .Game.URL 320 240}}
 	{{end}}
 	<h2>Description</h2>
 	<p class="description">
@@ -37,12 +37,7 @@
 			<p><a href="/videos/{{URLQueryEscaper .Game.Title}}/new">Login/Sign-up</a> to post your own video.</p>
 		{{end}}
 		{{range .TopUserVids}}
-			<div class="uservid">
-				<div class="poster">{{FindUserNameByID .UserId}} ({{VideoCount .UserId}} Videos)</div>
-				<font class="upped">{{.Likes}}&#x1F44D;</font>
-				<font class="downed">{{.Dislikes}}&#x1F44E;</font>
-				<iframe width="320" height="240" allowfullscreen="true" allowscriptaccess="always" scrolling="no" src="{{.URL}}"></iframe>
-			</div>
+			{{RenderTemplateUserVideo . 320 240}}
 		{{else}}
 			<p>No User-Posted Videos Yet</p>
 		{{end}}
