@@ -1,8 +1,6 @@
 package models
 
-import (
-	"golang.org/x/crypto/bcrypt"
-)
+import "golang.org/x/crypto/bcrypt"
 
 type User struct {
 	UserName string
@@ -34,10 +32,12 @@ func (this *User) InitUser(user_name string, pass string, mail string) {
 
 func (this *User) AddGame(game Game) {
 	this.Games = append(this.Games, game)
+	//CALL DAL
 }
 
 func (this *User) AddFriend(friend User) {
 	this.Friends = append(this.Friends, friend)
+	//CALL DAL
 }
 
 func (this *User) AddMessage(message string) {
@@ -47,27 +47,29 @@ func (this *User) CheckPassword(pass string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(this.Password), []byte(pass)) == nil
 }
 
-func (this *User) UpdateEmail(mail string) {
-	this.Email = mail
-}
-
-func (this *User) UpdatePassword(pass string) {
+func (this *User) UpdateUser(user_name, pass, mail string) {
+	this.UserName = user_name
 	this.Password = pass
-
+	this.Email = mail
+	//CALL DAL
 }
 
-func (this *User) UpdateGame(game Game) {
-
+func (this *User) AddGameToList(gameId string) {
+	//CALL DAL
 }
 
-func (this *User) DeleteMessage(message string) {
-
+func (this *User) AddFriendToList(friendId string) {
+	//CALL DAL
 }
 
-func (this *User) DeleteGame(game Game) {
-
+func (this *User) DeleteGameFromList(gameId string) {
+	//CALL DAL
 }
 
-func (this *User) DeleteFriend(friend User) {
+func (this *User) DeleteFriendFromList(friendId string) {
+	//CALL DAL
+}
 
+func (this *User) SendMessage(body, userId string) {
+	//CALL DAL
 }

@@ -1,17 +1,28 @@
 package models
 
 type Game struct {
+	GameId    string
 	Title     string
 	Publisher string
 	Rating    float64
 	Review    []Review
 }
 
-const MAX_RATING float64 = 5
+const (
+	MAX_RATING  float64 = 5
+	GAME_ID_LEN         = 20
+)
+
+func NewGame(gameId, title, publisher string) *Game {
+	game := Game{}
+	game.InitGame(title, publisher)
+	return &game
+}
 
 func (this *Game) InitGame(title string, pub string) {
 	this.Title = title
 	this.Publisher = pub
+	this.GameId = GenerateID("game_", GAME_ID_LEN)
 }
 
 func (this *Game) UpdateTitle(title string) {
@@ -23,15 +34,5 @@ func (this *Game) UpdatePublisher(pub string) {
 }
 
 func (this *Game) UpdateRating(rating float64) {
-	if rating > MAX_RATING {
-		this.Rating = MAX_RATING
-	} else if rating < 0 {
-		this.Rating = 0
-	} else {
-		this.Rating = rating
-	}
-}
-
-func (this *Game) UpdateReview(review Review) {
-
+	//Get raitings from reviews
 }
