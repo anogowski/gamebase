@@ -1,0 +1,32 @@
+{{define "review/new"}}
+	<form action="/review/{{URLQueryEscaper .Game.Title}}/new" method="post">
+		<div class="formgrp">
+			<label for="gameTitle">Review for</label>
+			<input type="text" value="{{URLQueryEscaper .Game.Title}}" id="gameTitle" name="gameTitle" disabled="disabled" />
+		</div>
+		<div class="formgrp">
+			<label for="reviewVid">Video URL (optional)</label>
+			<input type="text" id="reviewVid" name="reviewVid" value="{{.Review.URL}}" />
+		</div>
+		<div class="formgrp">
+			<label for="reviewRating">Rating</label>
+			<div id="reviewRating" name="reviewRating">
+				{{if .Rating}}
+					{{RenderTemplateRating .Review.Rating}}
+				{{else}}
+					{{RenderTemplateRating 0}}
+				{{end}}
+			</div>
+		</div>
+		<div class="formgrp">
+			<label for="reviewBody">Review</label>
+			<textarea id="reviewBody" name="reviewBody">
+				{{.Review.Body}}
+			</textarea>
+		</div>
+		<div class="formgrp">
+			<input type="hidden" id="gameID" name="gameID" value="{{.Game.GameId}}"/>
+			<input type="submit"/>
+		</div>
+	</form>
+{{end}}

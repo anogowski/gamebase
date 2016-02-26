@@ -88,8 +88,16 @@ func HandleReview(w http.ResponseWriter, r *http.Request, params httprouter.Para
 func HandleReviewNew(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	if models.SignedIn(w,r){
 		//gameid := params.ByName("wild")
-		//TODO: display the new review page
-		
+		var gam *models.Game
+		var err error
+		//gam, err := models.GlobalGameStore.Find(gameid)
+		if err!=nil{
+			panic(err)
+		}
+		if gam==nil{
+			http.NotFound(w,r)
+		}
+		models.RenderTemplate(w,r, "review/new", map[string]interface{}{"Game":gam})
 	}
 }
 func HandleReviewNewAction(w http.ResponseWriter, r *http.Request, params httprouter.Params){
