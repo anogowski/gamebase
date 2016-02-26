@@ -82,8 +82,8 @@ func HandleGamePageNewAction(w http.ResponseWriter, r *http.Request, _ httproute
 }
 func HandleReview(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	//reviewid := params.ByName("wild")
-	//TODO: display the given review
-	
+	//rev, err := models.GlobalReviewStore.Find(reviewid)
+	//models.RenderTemplate(w,r, "review/review", map[string]interface{}{"Review":rev})
 }
 func HandleReviewNew(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	if models.SignedIn(w,r){

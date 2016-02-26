@@ -2,7 +2,7 @@
 	<h1 class="left">{{.Game.Title}}</h1>
 	<h1 class="right">{{.Game.Publisher}}</h1>
 	{{if .Game.TrailerURL}}
-		<iframe width="320" height="240" allowfullscreen="true" allowscriptaccess="always" scrolling="no" src="{{.Game.TrailerURL}}"></iframe>
+		<iframe width="320" height="240" allowfullscreen="true" allowscriptaccess="always" scrolling="no" src="{{.Game.URL}}"></iframe>
 	{{end}}
 	<h2>Description</h2>
 	<p class="description">
@@ -24,15 +24,7 @@
 			<p><a href="/review/{{URLQueryEscaper .Game.Title}}/new">Login/Sign-up</a> to post your own review.</p>
 		{{end}}
 		{{range .TopReviews}}
-			<div class="review shortened">
-				<div class="reviewer">{{FindUserNameByID .UserId}} ({{ReviewCount .UserId}} Reviews)</div>
-				{{RenderTemplateRating .Rating}}
-				<font class="upped">{{.Likes}}&#x1F44D;</font>
-				<font class="downed">{{.Dislikes}}&#x1F44E;</font>
-				<p>
-					{{.Body}}
-				</p>
-			</div>
+			{{RenderTemplateReview . "shortened"}}
 		{{else}}
 			<p>No Reviews Yet</p>
 		{{end}}
