@@ -19,7 +19,7 @@ func (this *Review) InitReview(body, url, userId, gameId string, rating float64)
 	this.GameId = gameId
 	this.Rating = rating
 	this.ReviewId = GenerateID("review_", REVIEW_ID_LEN)
-
+	//CALL DAL
 }
 
 func (this *Review) UpdateReview(body, url string, rating float64) {

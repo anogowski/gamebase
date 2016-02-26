@@ -35,6 +35,10 @@ func (this *Game) UpdateGame(title, pub, url string) {
 	Dal.UpdateGame(this)
 }
 
+func (this *Game) DeleteGame() {
+
+}
+
 func (this *Game) UpdateRating(rating float64) {
 	//Get raitings from reviews
 }
