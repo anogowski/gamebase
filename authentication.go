@@ -5,13 +5,15 @@ import (
 	"gamebase/Godeps/_workspace/src/github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
+	"net/url"
 )
 
 func HandleLoginPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	models.RenderTemplate(w, r, "users/login", nil)
+	models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Next":r.URL.Query().Get("next")})
 }
 func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	var user *models.User
+	next := string(r.FormValue("next"))
 	flash := ""
 	if r.URL.Query().Get("signup") == "true" {
 		uname := r.FormValue("signUser")
@@ -19,7 +21,7 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 		pword := r.FormValue("signPass")
 		repeat := r.FormValue("repeatPass")
 		if pword != repeat {
-			models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": "Passwords don't match.", "UName": uname})
+			models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": "Passwords don't match.", "UName": uname, "Next":next})
 			return
 		}
 		var err error
@@ -28,7 +30,7 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 			panic(err)
 		}
 		if user != nil {
-			models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": "Username not available.", "UName": uname})
+			models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": "Username not available.", "UName": uname, "Next":next})
 			return
 		}
 		user, err = models.GlobalUserStore.CreateUser(uname, pword, email)
@@ -45,21 +47,19 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 		var err error
 		user, err = models.GlobalUserStore.Authenticate(uname, pword)
 		if err != nil {
-			models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": err.Error(), "UName": uname})
+			models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": err.Error(), "UName": uname, "Next":next})
 			return
 		}
 		flash = "?flash=Login+Success"
 	}
-	sess := models.FindOrCreateSession(w, r)
-	sess.UserID = user.UserId
-	err := models.GlobalSessionStore.Save(sess)
+	next, err := url.QueryUnescape(next)
 	if err!=nil{
-		panic(err)
+		next = ""
 	}
-	next := r.FormValue("next")
-	if next == "" {
+	if next==""{
 		next = "/"
 	}
+	models.FindOrCreateSession(w, r, user.UserId)
 	http.Redirect(w, r, next+flash, http.StatusFound)
 }
 func HandleLogout(w http.ResponseWriter, r *http.Request, _ httprouter.Params){

@@ -1,0 +1,12 @@
+{{define "video/uservideo"}}
+	<div class="uservid">
+		{{if .Video}}
+			<div class="poster">{{FindUserNameByID .Video.UserID}} ({{VideoCount .Video.UserID}} Videos)</div>
+			<font class="upped">{{.Video.Likes}}&#x1F44D;</font>
+			<font class="downed">{{.Video.Dislikes}}&#x1F44E;</font>
+			{{RenderTemplateVideo .Video.URL .VideoWidth .VideoHeight}}
+		{{else}}
+			<p>Failed to find Video</p>
+		{{end}}
+	</div>
+{{end}}

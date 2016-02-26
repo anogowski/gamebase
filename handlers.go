@@ -61,7 +61,7 @@ func HandleGamePage(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 	if err!=nil{
 		panic(err)
 	}
-	var game models.Game
+	var game *models.Game
 	//game, err := models.GlobalGameStore.Find(gameid)
 	if err!=nil{
 		panic(err)
@@ -94,9 +94,6 @@ func HandleReviewNew(w http.ResponseWriter, r *http.Request, params httprouter.P
 		if err!=nil{
 			panic(err)
 		}
-		if gam==nil{
-			http.NotFound(w,r)
-		}
 		models.RenderTemplate(w,r, "review/new", map[string]interface{}{"Game":gam})
 	}
 }
@@ -109,36 +106,37 @@ func HandleReviewNewAction(w http.ResponseWriter, r *http.Request, params httpro
 }
 func HandleVideo(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	videoid := params.ByName("wild")
-	curuser := models.RequestUser(r)
-	if curuser!=nil && videoid==curuser.UserId{
-		user, err := models.GlobalUserStore.FindUser(videoid)
-		if err!=nil{
-			panic(err)
-		}
-		if user==nil{
-			http.NotFound(w,r)
-		}
+	user, err := models.GlobalUserStore.FindUser(videoid)
+	if err!=nil{
+		panic(err)
+	}
+	if user!=nil{
 		var vids []models.Video
 		//vids, err = models.GlobalVideoStore.FindByUser(user.UserId)
 		if err!=nil{
 			panic(err)
 		}
-		models.RenderTemplate(w,r, "users/allvideos", map[string]interface{}{"User":user, "AllVideos":vids})
+		models.RenderTemplate(w,r, "videos/alluservideos", map[string]interface{}{"User":user, "AllVideos":vids})
 	} else{
-		var vid models.Video
+		var vid *models.Video
 		var err error
 		//vid, err = models.GlobalVideoStore.Find(videoid)
 		if err!=nil{
 			panic(err)
 		}
-		models.RenderTemplate(w,r, "users/video", map[string]interface{}{"Video":vid, "VideoWidth":640, "VideoHeight":480})
+		models.RenderTemplate(w,r, "video/uservideo", map[string]interface{}{"Video":vid, "VideoWidth":640, "VideoHeight":480})
 	}
 }
 func HandleVideoNew(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	if models.SignedIn(w,r){
 		//gameid := params.ByName("wild")
-		//TODO: display the new video page
-		
+		var gam *models.Game
+		var err error
+		//game, err = models.GlobalGameStore.Find(gameid)
+		if err!=nil{
+			panic(err)
+		}
+		models.RenderTemplate(w,r, "video/new", map[string]interface{}{"Game":gam})
 	}
 }
 func HandleVideoNewAction(w http.ResponseWriter, r *http.Request, params httprouter.Params){

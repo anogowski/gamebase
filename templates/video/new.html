@@ -1,0 +1,20 @@
+{{define "video/new"}}
+	{{if .Game}}
+		<form action="/videos/{{URLQueryEscaper .Game.GameId}}/new" method="post">
+			<div class="formgrp">
+				<label for="gameTitle">Review for</label>
+				<input type="text" value="{{URLQueryEscaper .Game.Title}}" id="gameTitle" name="gameTitle" disabled="disabled" />
+			</div>
+			<div class="formgrp">
+				<label for="reviewVid">Video URL</label>
+				<input type="text" id="vidURL" name="vidURL" value="{{.Video.URL}}" />
+			</div>
+			<div class="formgrp">
+				<input type="hidden" id="gameID" name="gameID" value="{{.Game.GameId}}"/>
+				<input type="submit"/>
+			</div>
+		</form>
+	{{else}}
+		<p>Failed to Find Game for Video</p>
+	{{end}}
+{{end}}

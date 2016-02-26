@@ -1,15 +1,16 @@
 {{define "game/page"}}
+	{{if .Game}}
 	<h1 class="left">{{.Game.Title}}</h1>
 	<h1 class="right">{{.Game.Publisher}}</h1>
-	{{if .Game.TrailerURL}}
+	{{if .Game.URL}}
 		{{RenderTemplateVideo .Game.URL 320 240}}
 	{{end}}
 	<h2>Description</h2>
 	<p class="description">
-		{{.Game.Description}}
+		.Game.Description
 	</p>
 	<p class="copyright">
-		{{.Game.Copyright}}
+		.Game.Copyright
 	</p>
 	<div class="average">
 		<h2>Average</h2>
@@ -45,4 +46,7 @@
 			<p>No User-Posted Videos Yet</p>
 		{{end}}
 	</div>
+	{{else}}
+		<p>Failed to load Game</p>
+	{{end}}
 {{end}}

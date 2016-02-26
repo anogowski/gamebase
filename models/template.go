@@ -73,10 +73,42 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 	data["Taglist"], _ = GlobalTagStore.GetTags()
 	//data["ChatMessages"] = MessageStore.GetMessagesTo(data["CurrentUser"])
 	
+	var templateClone *template.Template
+	
+	renderFuncs := template.FuncMap{
+		"RenderTemplateGameLink":func(href, onclick string)(template.HTML,error){
+			buf := bytes.NewBuffer(nil)
+			err := templateClone.ExecuteTemplate(buf, "home/index", map[string]interface{}{"GameLinkHREF":href, "GameLinkONCLICK":onclick})
+			return template.HTML(buf.String()), err
+		},
+		"RenderTemplateRating":func(rating float64)(template.HTML,error){
+			buf := bytes.NewBuffer(nil)
+			err := templateClone.ExecuteTemplate(buf, "review/rating", map[string]interface{}{"Rating":rating})
+			return template.HTML(buf.String()), err
+		},
+		"RenderTemplateReview":func(rev Review)(template.HTML,error){
+			buf := bytes.NewBuffer(nil)
+			err := templateClone.ExecuteTemplate(buf, "review/review", map[string]interface{}{"Review":rev})
+			return template.HTML(buf.String()), err
+		},
+		"RenderTemplateVideo":func(url, width, height interface{})(template.HTML,error){
+			buf := bytes.NewBuffer(nil)
+			err := templateClone.ExecuteTemplate(buf, "video/embed", map[string]interface{}{"VideoURL":url, "VideoWidth":width, "VideoHeight":height})
+			return template.HTML(buf.String()), err
+		},
+		"RenderTemplateUserVideo":func(vid Video, width, height interface{})(template.HTML,error){
+			buf := bytes.NewBuffer(nil)
+			err := templateClone.ExecuteTemplate(buf, "video/uservideo", map[string]interface{}{"Video":vid, "VideoWidth":width, "VideoHeight":height})
+			return template.HTML(buf.String()), err
+		},
+	}
+	templateClone, _ = templates.Clone()
+	templateClone.Funcs(renderFuncs)
+	
 	funcs := template.FuncMap{
 		"yield":func()(template.HTML,error){
 			buf := bytes.NewBuffer(nil)
-			err := templates.ExecuteTemplate(buf, page, data)
+			err := templateClone.ExecuteTemplate(buf, page, data)
 			return template.HTML(buf.String()), err
 		},
 		"yieldmenu":func()(template.HTML,error){
@@ -89,38 +121,13 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 			err := laytemplates.ExecuteTemplate(buf, "chat", data)
 			return template.HTML(buf.String()), err
 		},
-		"RenderTemplateGameLink":func(href, onclick string)(template.HTML,error){
-			buf := bytes.NewBuffer(nil)
-			err := templates.ExecuteTemplate(buf, "home/index", map[string]interface{}{"GameLinkHREF":href, "GameLinkONCLICK":onclick})
-			return template.HTML(buf.String()), err
-		},
-		"RenderTemplateRating":func(rating float64)(template.HTML,error){
-			buf := bytes.NewBuffer(nil)
-			err := templates.ExecuteTemplate(buf, "review/rating", map[string]interface{}{"Rating":rating})
-			return template.HTML(buf.String()), err
-		},
-		"RenderTemplateReview":func(rev Review)(template.HTML,error){
-			buf := bytes.NewBuffer(nil)
-			err := templates.ExecuteTemplate(buf, "review/review", map[string]interface{}{"Review":rev})
-			return template.HTML(buf.String()), err
-		},
-		"RenderTemplateVideo":func(url, width, height interface{})(template.HTML,error){
-			buf := bytes.NewBuffer(nil)
-			err := templates.ExecuteTemplate(buf, "game/video", map[string]interface{}{"VideoURL":url, "VideoWidth":width, "VideoHeight":height})
-			return template.HTML(buf.String()), err
-		},
-		"RenderTemplateUserVideo":func(vid Video, width, height interface{})(template.HTML,error){
-			buf := bytes.NewBuffer(nil)
-			err := templates.ExecuteTemplate(buf, "users/video", map[string]interface{}{"Video":vid, "VideoWidth":width, "VideoHeight":height})
-			return template.HTML(buf.String()), err
-		},
 		"FindUserNameByID":layoutFuncs["FindUserNameByID"],
 		"ReviewCount":layoutFuncs["ReviewCount"],
 		"VideoCount":layoutFuncs["VideoCount"],
 		"URLQueryEscaper":layoutFuncs["URLQueryEscaper"],
 	}
 	layoutclone, _ := layout.Clone()
-	layoutclone.Funcs(funcs)
+	layoutclone.Funcs(funcs).Funcs(renderFuncs)
 	err := layoutclone.Execute(w, data)
 	if err!=nil{
 		http.Error(w, fmt.Sprintf(errTemplate, html.EscapeString(page), html.EscapeString(err.Error())), http.StatusInternalServerError)

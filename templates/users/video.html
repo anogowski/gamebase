@@ -1,8 +1,0 @@
-{{define "users/video"}}
-	<div class="uservid">
-		<div class="poster">{{FindUserNameByID .Video.UserID}} ({{VideoCount .Video.UserID}} Videos)</div>
-		<font class="upped">{{.Video.Likes}}&#x1F44D;</font>
-		<font class="downed">{{.Video.Dislikes}}&#x1F44E;</font>
-		{{RenderTemplateVideo .Video.URL .VideoWidth .VideoHeight}}
-	</div>
-{{end}}

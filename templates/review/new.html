@@ -1,5 +1,6 @@
 {{define "review/new"}}
-	<form action="/review/{{URLQueryEscaper .Game.Title}}/new" method="post">
+	{{if .Game}}
+	<form action="/review/{{URLQueryEscaper .Game.GameId}}/new" method="post">
 		<div class="formgrp">
 			<label for="gameTitle">Review for</label>
 			<input type="text" value="{{URLQueryEscaper .Game.Title}}" id="gameTitle" name="gameTitle" disabled="disabled" />
@@ -29,4 +30,7 @@
 			<input type="submit"/>
 		</div>
 	</form>
+	{{else}}
+		<p>Failed to Find Game to Review</p>
+	{{end}}
 {{end}}

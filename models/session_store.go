@@ -49,14 +49,14 @@ func (this *PostgresSessionStore) Delete(sess *Session) error {
 	return nil
 }
 func (this *PostgresSessionStore) Save(sess *Session) error {
-	row := this.db.QueryRow("SELECT id FROM sessions WHERE id='$1'", sess.ID)
+	row := this.db.QueryRow("SELECT id FROM sessions WHERE id='"+sess.ID+"'")
 	s := &Session{}
 	if err := row.Scan(s.ID); err==sql.ErrNoRows{
-		if _, err := this.db.Exec("INSERT INTO sessions VALUES(($1), ($2), ($3))", sess.ID, sess.UserID, sess.Expiry); err != nil {
+		if _, err := this.db.Exec("INSERT INTO sessions VALUES('"+sess.ID+"', '"+sess.UserID+"', '"+sess.Expiry.Format("2006-01-02 15:04:05")+"')"); err != nil {
 			return err
 		}
 	} else{
-		if _, err := this.db.Exec("UPDATE sessions SET userid=($2), expiry=($3) WHERE id=($1)", sess.ID, sess.UserID, sess.Expiry); err!=nil{
+		if _, err := this.db.Exec("UPDATE sessions SET userid='"+sess.UserID+"', expiry='"+sess.Expiry.Format("2006-01-02 15:04:05")+"' WHERE id='"+sess.ID+"'"); err!=nil{
 			return err
 		}
 	}
