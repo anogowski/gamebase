@@ -1,29 +1,28 @@
 package models
 
 type Review struct {
-	Title  string
-	Body   string
-	URL    string
-	UserId string
-	GameId string
-	Rating float64
+	ReviewId string
+	UserId   string
+	GameId   string
+	Body     string
+	URL      string
+	Rating   float64
 }
 
 const REVIEW_MAX_RATING float64 = 5
+const REVIEW_ID_LEN = 20
 
-func (this *Review) InitReview(title, body, url, userId, gameId string, rating float64) {
-	this.Title = title
+func (this *Review) InitReview(body, url, userId, gameId string, rating float64) {
 	this.Body = body
 	this.URL = url
 	this.UserId = userId
 	this.GameId = gameId
 	this.Rating = rating
+	this.ReviewId = GenerateID("review_", REVIEW_ID_LEN)
 
-	//CALL DAL
 }
 
-func (this *Review) UpdateReview(title, body, url string, rating float64) {
-	this.Title = title
+func (this *Review) UpdateReview(body, url string, rating float64) {
 	this.Body = body
 	this.URL = url
 	if rating > REVIEW_MAX_RATING {

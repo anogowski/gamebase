@@ -26,32 +26,38 @@ type DAL interface {
 	DeleteUserFriend(user User, friendId string) error
 	FindUser(id string) (*User, error)
 	FindUserByName(name string) (*User, error)
-	GetUsers()
-	SendMessage()
-	GetGamesList()
-	GetFriendsList()
-	GetMessages()
+	/*
+		GetUsers()
+		SendMessage()
+		GetGamesList()
+		GetFriendsList()
+		GetMessages()
+	*/
 
 	//GAME
-	CreateGame(title, publisher string) (*Game, error)
-	UpdateGame(title, publisher string) error
-	DeleteGame(gameId string) error
+	CreateGame(id, title, publisher, url string) (*Game, error)
+	UpdateGame(title, publisher, url string) error
+	//DeleteGame(gameId string) error
 	FindGame(id string) (*Game, error)
-	GetGames()
+
+	//GetGames()
 
 	//Review
-	CreateReview(title, body, url, userId, gameId string, rating float64) (*Review, error)
-	UpdateReview(title, body, url, userId, gameId string, rating float64) error
-	DeleteReview(userId, gameId string) error
-	FindReview(userId, gameId) (*Review, error)
-	GetReviews()
-
+	/*
+		CreateReview(title, body, url, userId, gameId string, rating float64) (*Review, error)
+		UpdateReview(title, body, url, userId, gameId string, rating float64) error
+		DeleteReview(userId, gameId string) error
+		FindReview(userId, gameId) (*Review, error)
+		GetReviews()
+	*/
 	//Tags
-	AddTag()
-	UpdateTag()
-	RemoveTag()
-	FindTag()
-	GetTags()
+	/*
+		AddTag()
+		UpdateTag()
+		RemoveTag()
+		FindTag()
+		GetTags()
+	*/
 }
 
 func (this *DataAccessLayer) CreateUser(name, pass, email string) (*User, error) {
@@ -100,16 +106,16 @@ func (this *DataAccessLayer) UpdateUser(user User) error {
 	return nil
 }
 
-func (this *DataAccessLayer) AddUserGame(user User, gameTitle string) error {
-	if _, err := this.db.Exec("INSERT INTO gamesowned VALUES('" + user.UserId + "', '" + gameTitle + "')"); err != nil {
+func (this *DataAccessLayer) AddUserGame(user User, gameId string) error {
+	if _, err := this.db.Exec("INSERT INTO user_games VALUES('" + user.UserId + "', '" + gameId + "')"); err != nil {
 		return err
 	}
 	return nil
 
 }
 
-func (this *DataAccessLayer) DeleteUserGame(user User, gameTitle string) error {
-	if _, err := this.db.Exec("DELETE FROM gamesowned WHERE (' id=" + user.UserId + "'AND gameTitle='" + gameTitle + "')"); err != nil {
+func (this *DataAccessLayer) DeleteUserGame(user User, gameId string) error {
+	if _, err := this.db.Exec("DELETE FROM user_games WHERE (' id=" + user.UserId + "'AND gameId='" + gameId + "')"); err != nil {
 		return err
 	}
 	return nil
@@ -132,7 +138,7 @@ func (this *DataAccessLayer) DeleteUserFriend(user User, friendId string) error 
 
 }
 
-func (this *DataAccessLayer) CreateGame(id, title, publisher string, rating float64) (*Game, error) {
+func (this *DataAccessLayer) CreateGame(id, title, publisher, url string) (*Game, error) {
 	game, err := this.FindGame(id)
 	if err != nil {
 		return nil, err
@@ -141,10 +147,17 @@ func (this *DataAccessLayer) CreateGame(id, title, publisher string, rating floa
 		return nil, errors.New("Game already exists.")
 	}
 	game = NewGame(title, publisher)
-	if _, err = this.db.Exec("INSERT INTO games VALUES('" + game.GameId + "', '" + game.Title + "', '" + game.Publisher + "', '" + game.Raiting + "')"); err != nil {
+	if _, err = this.db.Exec("INSERT INTO games VALUES('" + game.GameId + "', '" + game.Title + "', '" + game.Publisher + "', '" + game.URL + "')"); err != nil {
 		return game, err
 	}
 	return game, nil
+}
+
+func (this *DataAccessLayer) UpdateGame(game Game) error {
+	if _, err := this.db.Exec("UPDATE games SET title='" + game.Title + "', publisher='" + game.publisher + "', url='" + game.URL + "' WHERE id='" + game.GameId + "'"); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (this *DataAccessLayer) FindGame(id string) (*Game, error) {

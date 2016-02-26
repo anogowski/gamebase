@@ -55,19 +55,19 @@ func (this *User) UpdateUser(user_name, pass, mail string) {
 }
 
 func (this *User) AddGameToList(gameId string) {
-	//CALL DAL
+	Dal.AddUserGame(this, gameId)
 }
 
 func (this *User) AddFriendToList(friendId string) {
-	//CALL DAL
+	Dal.AddUserFriend(this, friendId)
 }
 
 func (this *User) DeleteGameFromList(gameId string) {
-	//CALL DAL
+	Dal.DeleteUserGame(this, gameId)
 }
 
 func (this *User) DeleteFriendFromList(friendId string) {
-	//CALL DAL
+	Dal.DeleteUserFriend(this, friendId)
 }
 
 func (this *User) SendMessage(body, userId string) {
