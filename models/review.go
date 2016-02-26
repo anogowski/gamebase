@@ -26,8 +26,8 @@ func (this *Review) UpdateReview(title, body, url string, rating float64) {
 	this.Title = title
 	this.Body = body
 	this.URL = url
-	if rating > MAX_RATING {
-		this.Rating = MAX_RATING
+	if rating > REVIEW_MAX_RATING {
+		this.Rating = REVIEW_MAX_RATING
 	} else if rating < 0 {
 		this.Rating = 0
 	} else {
