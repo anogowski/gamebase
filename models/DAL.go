@@ -3,17 +3,27 @@ package models
 import (
 	"database/sql"
 	"errors"
-
+	"os"
+	"log"
 	_ "gamebase/Godeps/_workspace/src/github.com/lib/pq"
 )
 
 var Dal DAL
 
 func init() {
-	Dal = DataAccessLayer{}
+	Dal = NewDataAccessLayer()
 }
 
 type DataAccessLayer struct {
+	db *sql.DB
+}
+func NewDataAccessLayer()*DataAccessLayer{
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Fatal("Error opening the database: %q", err)
+	}
+	dal := &DataAccessLayer{db:db}
+	return dal
 }
 
 type DAL interface {
@@ -36,7 +46,7 @@ type DAL interface {
 
 	//GAME
 	CreateGame(id, title, publisher, url string) (*Game, error)
-	UpdateGame(title, publisher, url string) error
+	UpdateGame(game Game) error
 	//DeleteGame(gameId string) error
 	FindGame(id string) (*Game, error)
 
@@ -143,10 +153,10 @@ func (this *DataAccessLayer) CreateGame(id, title, publisher, url string) (*Game
 	if err != nil {
 		return nil, err
 	}
-	if user != nil {
+	if game != nil {
 		return nil, errors.New("Game already exists.")
 	}
-	game = NewGame(title, publisher)
+	game = NewGame(title, publisher, url)
 	if _, err = this.db.Exec("INSERT INTO games VALUES('" + game.GameId + "', '" + game.Title + "', '" + game.Publisher + "', '" + game.URL + "')"); err != nil {
 		return game, err
 	}
@@ -154,7 +164,7 @@ func (this *DataAccessLayer) CreateGame(id, title, publisher, url string) (*Game
 }
 
 func (this *DataAccessLayer) UpdateGame(game Game) error {
-	if _, err := this.db.Exec("UPDATE games SET title='" + game.Title + "', publisher='" + game.publisher + "', url='" + game.URL + "' WHERE id='" + game.GameId + "'"); err != nil {
+	if _, err := this.db.Exec("UPDATE games SET title='" + game.Title + "', publisher='" + game.Publisher + "', url='" + game.URL + "' WHERE id='" + game.GameId + "'"); err != nil {
 		return err
 	}
 	return nil
@@ -163,7 +173,7 @@ func (this *DataAccessLayer) UpdateGame(game Game) error {
 func (this *DataAccessLayer) FindGame(id string) (*Game, error) {
 	row := this.db.QueryRow("SELECT * FROM games WHERE id='" + id + "'")
 	game := Game{}
-	err := row.Scan(&game.GameId, &game.Title, &game.Publisher, &game.Raiting)
+	err := row.Scan(&game.GameId, &game.Title, &game.Publisher, &game.Rating)
 	switch {
 	case err == sql.ErrNoRows:
 		return nil, nil

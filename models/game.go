@@ -14,9 +14,9 @@ const (
 	GAME_ID_LEN             = 20
 )
 
-func NewGame(gameId, title, publisher string) *Game {
+func NewGame(title, publisher, url string) *Game {
 	game := Game{}
-	game.InitGame(title, publisher)
+	game.InitGame(title, publisher, url)
 	return &game
 }
 
@@ -32,7 +32,7 @@ func (this *Game) UpdateGame(title, pub, url string) {
 	this.Title = title
 	this.Publisher = pub
 	this.URL = url
-	Dal.UpdateGame(this)
+	Dal.UpdateGame(*this)
 }
 
 func (this *Game) DeleteGame() {
