@@ -1,0 +1,12 @@
+{{define "users/allreviews"}}
+	<div class="poster">{{.User.UserName}}</div>
+	<div class="reviews">
+	{{range .AllReviews}}
+		<div class="review shortened">
+			{{RenderTemplateReview .}}
+		</div>
+	{{else}}
+		<p>No Reviews Yet.</p>
+	{{end}}
+	</div>
+{{end}}

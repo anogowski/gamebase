@@ -23,7 +23,7 @@ var layoutFuncs = template.FuncMap{
 	"RenderTemplateRating":func(rating float64)(string,error){
 		return "",fmt.Errorf("bad RenderTemplateRating called")
 	},
-	"RenderTemplateReview":func(rev Review, revclass string)(string,error){
+	"RenderTemplateReview":func(rev Review)(string,error){
 		return "",fmt.Errorf("bad RenderTemplateReview called")
 	},
 	"RenderTemplateVideo":func(url, width, height interface{})(string,error){
@@ -99,9 +99,9 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 			err := templates.ExecuteTemplate(buf, "review/rating", map[string]interface{}{"Rating":rating})
 			return template.HTML(buf.String()), err
 		},
-		"RenderTemplateReview":func(rev Review, revclass string)(template.HTML,error){
+		"RenderTemplateReview":func(rev Review)(template.HTML,error){
 			buf := bytes.NewBuffer(nil)
-			err := templates.ExecuteTemplate(buf, "review/review", map[string]interface{}{"ReviewClass":revclass, "Review":rev})
+			err := templates.ExecuteTemplate(buf, "review/review", map[string]interface{}{"Review":rev})
 			return template.HTML(buf.String()), err
 		},
 		"RenderTemplateVideo":func(url, width, height interface{})(template.HTML,error){

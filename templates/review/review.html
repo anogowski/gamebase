@@ -1,14 +1,11 @@
 {{define "review/review"}}
-	<div class="review {{.ReviewClass}}">
-		<div class="reviewer">{{FindUserNameByID .Review.UserId}} ({{ReviewCount .Review.UserId}} Reviews)</div>
-		{{RenderTemplateRating .Review.Rating}}
-		<font class="upped">{{.Review.Likes}}&#x1F44D;</font>
-		<font class="downed">{{.Review.Dislikes}}&#x1F44E;</font>
-		<p>
-			{{if .Review.URL}}
-				{{RenderTemplateUserVideo .Review.URL 320 240}}
-			{{end}}
-			{{.Review.Body}}
-		</p>
-	</div>
+	{{RenderTemplateRating .Review.Rating}}
+	<font class="upped">{{.Review.Likes}}&#x1F44D;</font>
+	<font class="downed">{{.Review.Dislikes}}&#x1F44E;</font>
+	<p>
+		{{if .Review.URL}}
+			{{RenderTemplateUserVideo .Review.URL 320 240}}
+		{{end}}
+		{{.Review.Body}}
+	</p>
 {{end}}

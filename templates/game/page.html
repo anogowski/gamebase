@@ -24,7 +24,10 @@
 			<p><a href="/review/{{URLQueryEscaper .Game.Title}}/new">Login/Sign-up</a> to post your own review.</p>
 		{{end}}
 		{{range .TopReviews}}
-			{{RenderTemplateReview . "shortened"}}
+			<div class="review shortened">
+				<div class="reviewer">{{FindUserNameByID .Review.UserId}} ({{ReviewCount .Review.UserId}} Reviews)</div>
+				{{RenderTemplateReview .}}
+			</div>
 		{{else}}
 			<p>No Reviews Yet</p>
 		{{end}}
