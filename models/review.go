@@ -9,7 +9,7 @@ type Review struct {
 	Rating float64
 }
 
-const MAX_RATING float64 = 5
+const REVIEW_MAX_RATING float64 = 5
 
 func (this *Review) InitReview(title, body, url, userId, gameId string, rating float64) {
 	this.Title = title

@@ -9,7 +9,7 @@ type Game struct {
 }
 
 const (
-	MAX_RATING  float64 = 5
+	GAME_MAX_RATING  float64 = 5
 	GAME_ID_LEN         = 20
 )
 
