@@ -1,0 +1,12 @@
+{{define "users/allvideos"}}
+	<div class="poster">{{.User.UserName}}</div>
+	<div class="videos">
+	{{range .AllVideos}}
+		{{RenderTemplateVideo . 320 240}}
+	{{else}}
+		<p>
+			No Videos Yet.
+		</p>
+	{{end}}
+	</div>
+{{end}}

@@ -100,9 +100,31 @@ func HandleReviewNewAction(w http.ResponseWriter, r *http.Request, params httpro
 	}
 }
 func HandleVideo(w http.ResponseWriter, r *http.Request, params httprouter.Params){
-	//videoid := params.ByName("wild")
-	//TODO: display the video page
-	
+	videoid := params.ByName("wild")
+	curuser := models.RequestUser(r)
+	if curuser!=nil && videoid==curuser.UserId{
+		user, err := models.GlobalUserStore.FindUser(videoid)
+		if err!=nil{
+			panic(err)
+		}
+		if user==nil{
+			http.NotFound(w,r)
+		}
+		var vids []models.Video
+		//vids, err = models.GlobalVideoStore.FindByUser(user.UserId)
+		if err!=nil{
+			panic(err)
+		}
+		models.RenderTemplate(w,r, "users/allvideos", map[string]interface{}{"User":user, "AllVideos":vids})
+	} else{
+		var vid models.Video
+		var err error
+		//vid, err = models.GlobalVideoStore.Find(videoid)
+		if err!=nil{
+			panic(err)
+		}
+		models.RenderTemplate(w,r, "users/video", map[string]interface{}{"Video":vid, "VideoWidth":640, "VideoHeight":480})
+	}
 }
 func HandleVideoNew(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	if models.SignedIn(w,r){
