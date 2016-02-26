@@ -1,5 +1,4 @@
-//TODO:	placeholder methods connecting to the database
-package services
+package models
 
 import (
 	"database/sql"
@@ -8,16 +7,26 @@ import (
 	_ "gamebase/Godeps/_workspace/src/github.com/lib/pq"
 )
 
+var Dal DAL
+
+func init() {
+	Dal = DataAccessLayer{}
+}
+
+type DataAccessLayer struct {
+}
+
 type DAL interface {
 	//USER
 	CreateUser(name, pass, email string) (*User, error)
-	FindUser(id string) (*User, error)
-	FindUserByName(name string) (*User, error)
 	UpdateUser(user User) error
 	AddUserGame(user User, gameTitle string) error
 	DeleteUserGame(user User, gameTitle string) error
 	AddUserFriend(user User, friendId string) error
 	DeleteUserFriend(user User, friendId string) error
+	FindUser(id string) (*User, error)
+	FindUserByName(name string) (*User, error)
+	GetUsers()
 	SendMessage()
 	GetGamesList()
 	GetFriendsList()
@@ -25,25 +34,27 @@ type DAL interface {
 
 	//GAME
 	CreateGame(title, publisher string) (*Game, error)
-	FindGame(id string) (*Game, error)
 	UpdateGame(title, publisher string) error
+	DeleteGame(gameId string) error
+	FindGame(id string) (*Game, error)
 	GetGames()
 
 	//Review
 	CreateReview(title, body, url, userId, gameId string, rating float64) (*Review, error)
-	FindReview(userId, gameId) (*Review, error)
 	UpdateReview(title, body, url, userId, gameId string, rating float64) error
 	DeleteReview(userId, gameId string) error
+	FindReview(userId, gameId) (*Review, error)
 	GetReviews()
 
 	//Tags
 	AddTag()
 	UpdateTag()
 	RemoveTag()
+	FindTag()
 	GetTags()
 }
 
-func (this *DAL) CreateUser(name, pass, email string) (*User, error) {
+func (this *DataAccessLayer) CreateUser(name, pass, email string) (*User, error) {
 	user, err := this.FindUserByName(name)
 	if err != nil {
 		return nil, err
@@ -57,7 +68,7 @@ func (this *DAL) CreateUser(name, pass, email string) (*User, error) {
 	}
 	return user, nil
 }
-func (this *DAL) FindUser(id string) (*User, error) {
+func (this *DataAccessLayer) FindUser(id string) (*User, error) {
 	row := this.db.QueryRow("SELECT * FROM users WHERE id='" + id + "'")
 	user := User{}
 	err := row.Scan(&user.UserId, &user.UserName, &user.Password, &user.Email)
@@ -69,7 +80,7 @@ func (this *DAL) FindUser(id string) (*User, error) {
 	}
 	return &user, nil
 }
-func (this *DAL) FindUserByName(name string) (*User, error) {
+func (this *DataAccessLayer) FindUserByName(name string) (*User, error) {
 	row := this.db.QueryRow("SELECT id, name, password, email FROM users WHERE name='" + name + "'")
 	user := User{}
 	err := row.Scan(&user.UserId, &user.UserName, &user.Password, &user.Email)
@@ -82,46 +93,46 @@ func (this *DAL) FindUserByName(name string) (*User, error) {
 	return &user, nil
 }
 
-func (this *DAL) UpdateUser(user User) error {
+func (this *DataAccessLayer) UpdateUser(user User) error {
 	if _, err := this.db.Exec("UPDATE users SET name='" + user.UserName + "', password='" + user.Password + "', email='" + user.Email + "' WHERE id='" + user.UserId + "'"); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (this *DAL) AddUserGame(user User, gameTitle string) error {
-	if _, err := this.db.Exec("INSERT INTO user_games VALUES('" + user.UserId + "', '" + gameTitle + "')"); err != nil {
+func (this *DataAccessLayer) AddUserGame(user User, gameTitle string) error {
+	if _, err := this.db.Exec("INSERT INTO gamesowned VALUES('" + user.UserId + "', '" + gameTitle + "')"); err != nil {
 		return err
 	}
 	return nil
 
 }
 
-func (this *DAL) DeleteUserGame(user User, gameTitle string) error {
-	if _, err := this.db.Exec("DELETE FROM user_games WHERE (' id=" + user.UserId + "'AND gameTitle='" + gameTitle + "')"); err != nil {
+func (this *DataAccessLayer) DeleteUserGame(user User, gameTitle string) error {
+	if _, err := this.db.Exec("DELETE FROM gamesowned WHERE (' id=" + user.UserId + "'AND gameTitle='" + gameTitle + "')"); err != nil {
 		return err
 	}
 	return nil
 
 }
 
-func (this *DAL) AddUserFriend(user User, friendId string) error {
-	if _, err := this.db.Exec("INSERT INTO user_friends VALUES('" + user.UserId + "', '" + friendId + "')"); err != nil {
+func (this *DataAccessLayer) AddUserFriend(user User, friendId string) error {
+	if _, err := this.db.Exec("INSERT INTO friends VALUES('" + user.UserId + "', '" + friendId + "')"); err != nil {
 		return err
 	}
 	return nil
 
 }
 
-func (this *DAL) DeleteUserFriend(user User, friendId string) error {
-	if _, err := this.db.Exec("DELETE FROM user_friends WHERE (' id=" + user.UserId + "'AND friendId='" + friendId + "')"); err != nil {
+func (this *DataAccessLayer) DeleteUserFriend(user User, friendId string) error {
+	if _, err := this.db.Exec("DELETE FROM friends WHERE (' id=" + user.UserId + "'AND friendId='" + friendId + "')"); err != nil {
 		return err
 	}
 	return nil
 
 }
 
-func (this *DAL) CreateGame(id, title, publisher string, rating float64) (*Game, error) {
+func (this *DataAccessLayer) CreateGame(id, title, publisher string, rating float64) (*Game, error) {
 	game, err := this.FindGame(id)
 	if err != nil {
 		return nil, err
@@ -136,7 +147,7 @@ func (this *DAL) CreateGame(id, title, publisher string, rating float64) (*Game,
 	return game, nil
 }
 
-func (this *DAL) FindGame(id string) (*Game, error) {
+func (this *DataAccessLayer) FindGame(id string) (*Game, error) {
 	row := this.db.QueryRow("SELECT * FROM games WHERE id='" + id + "'")
 	game := Game{}
 	err := row.Scan(&game.GameId, &game.Title, &game.Publisher, &game.Raiting)
