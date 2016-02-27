@@ -1,7 +1,7 @@
-{{define "video/uservideo"}}
-	<div class="uservid">
+{{define "video/gamevideo"}}
+	<div class="gamevid">
 		{{if .Video}}
-			<a href="/users/{{URLQueryEscaper .Video.UserID}}" class="poster">{{FindUserNameByID .Video.UserID}} ({{VideoCount .Video.UserID}} Videos)</a>
+			<div class="videogamename">{{FindGameNameByID .Video.GameID}} ({{VideoGameCount .Video.GameID}} Videos)</div>
 			<font class="upped">{{.Video.Likes}}&#x1F44D;</font>
 			<font class="downed">{{.Video.Dislikes}}&#x1F44E;</font>
 			{{RenderTemplateVideo .Video.URL .VideoWidth .VideoHeight}}

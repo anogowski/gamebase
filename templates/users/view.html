@@ -1,0 +1,27 @@
+{{define "users/view"}}
+	{{if .User}}
+	<h1 class="ViewUserName">User: {{.User.UserName}}</h1>
+	<a href="/friend/{{URLQueryEscaper .User.UserId}}">Add Friend</a>
+	<h3>Videos</h3>
+	<div class="videos">
+		{{range .Videos}}
+			{{RenderTemplateGameVideo . 320 240}}
+		{{else}}
+			<p>No Videos Yet</p>
+		{{end}}
+	</div>
+	<h3>Reviews</h3>
+	<div class="reviews">
+		{{range .Reviews}}
+			<div class="review shortened">
+				<a href="/game/{{URLQueryEscaper .Review.GameId}}" class="reviewGame">{{FindGameNameByID .Review.GameId}} ({{ReviewGameCount .Review.GameId}} Reviews)</a>
+				{{RenderTemplateReview .}}
+			</div>
+		{{else}}
+			<p>No Reviews Yet</p>
+		{{end}}
+	</div>
+	{{else}}
+		<p>Failed to Find User</p>
+	{{end}}
+{{end}}

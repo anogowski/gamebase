@@ -39,6 +39,7 @@ func main() {
 	router.Handle("GET", "/account", HandleAccountPage)
 	router.Handle("POST", "/account", HandleAccountAction)
 	router.Handle("POST", "/chat", HandleChatAction)
+	router.Handle("GET", "/users/:wild", HandleUserPage)
 	router.ServeFiles("/assets/*filepath", http.Dir("assets/"))
 
 	fmt.Println("Server Running...")

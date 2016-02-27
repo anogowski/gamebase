@@ -3,6 +3,7 @@
 	<div class="reviews">
 	{{range .AllReviews}}
 		<div class="review shortened">
+			<a href="/game/{{URLQueryEscaper .GameId}}">{{FindGameNameByID .GameId}}</a>
 			{{RenderTemplateReview .}}
 		</div>
 	{{else}}

@@ -145,3 +145,22 @@ func HandleVideoNewAction(w http.ResponseWriter, r *http.Request, params httprou
 		
 	}
 }
+
+func HandleUserPage(w http.ResponseWriter, r *http.Request, params httprouter.Params){
+	userid := params.ByName("wild")
+	user, err := models.GlobalUserStore.FindUser(userid)
+	if err!=nil{
+		panic(err)
+	}
+	var vids []models.Video
+	var revs []models.Review
+	//vids, err = models.GlobalVideoStore.FindByUser(userid)
+	if err!=nil{
+		panic(err)
+	}
+	//revs, err = models.GlobalReviewStore.FindByUser(userid)
+	if err!=nil{
+		panic(err)
+	}
+	models.RenderTemplate(w,r, "users/view", map[string]interface{}{"User":user, "Reviews":revs, "Videos":vids})
+}

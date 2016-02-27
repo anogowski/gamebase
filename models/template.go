@@ -29,6 +29,9 @@ var layoutFuncs = template.FuncMap{
 	"RenderTemplateVideo":func(url, width, height interface{})(string,error){
 		return "",fmt.Errorf("bad RenderTemplateVideo called")
 	},
+	"RenderTemplateGameVideo":func(url, width, height interface{})(string,error){
+		return "",fmt.Errorf("bad RenderTemplateGameVideo called")
+	},
 	"RenderTemplateUserVideo":func(vid Video, width, height interface{})(string,error){
 		return "",fmt.Errorf("bad RenderTemplateUserVideo called")
 	},
@@ -38,6 +41,14 @@ var layoutFuncs = template.FuncMap{
 			return "",err
 		}
 		return user.UserName,nil
+	},
+	"FindGameNameByID":func(gameid string)(string,error){
+		return "FindGameNameByID not yet implemented",nil
+		//user, err := GlobalGameStore.Find(gameid)
+		//if err!=nil{
+		//	return "",err
+		//}
+		//return user.UserName,nil
 	},
 	"ReviewCount":func(userid string)(string,error){
 		return "ReviewCount not yet implemented",nil
@@ -50,6 +61,22 @@ var layoutFuncs = template.FuncMap{
 	"VideoCount":func(userid string)(string,error){
 		return "VideoCount not yet implemented",nil
 		//count, err := GlobalVideoStore.CountByUser(userid)
+		//if err!=nil{
+		//	return "0",err
+		//}
+		//return string(count),nil
+	},
+	"ReviewGameCount":func(gameid string)(string,error){
+		return "ReviewGameCount not yet implemented",nil
+		//count, err := GlobalReviewStore.CountByGame(gameid)
+		//if err!=nil{
+		//	return "0",err
+		//}
+		//return string(count),nil
+	},
+	"VideoGameCount":func(gameid string)(string,error){
+		return "VideoGameCount not yet implemented",nil
+		//count, err := GlobalVideoStore.CountByGame(gameid)
 		//if err!=nil{
 		//	return "0",err
 		//}
@@ -94,6 +121,11 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 		"RenderTemplateVideo":func(url, width, height interface{})(template.HTML,error){
 			buf := bytes.NewBuffer(nil)
 			err := templateClone.ExecuteTemplate(buf, "video/embed", map[string]interface{}{"VideoURL":url, "VideoWidth":width, "VideoHeight":height})
+			return template.HTML(buf.String()), err
+		},
+		"RenderTemplateGameVideo":func(vid Video, width, height interface{})(template.HTML,error){
+			buf := bytes.NewBuffer(nil)
+			err := templateClone.ExecuteTemplate(buf, "video/gamevideo", map[string]interface{}{"Video":vid, "VideoWidth":width, "VideoHeight":height})
 			return template.HTML(buf.String()), err
 		},
 		"RenderTemplateUserVideo":func(vid Video, width, height interface{})(template.HTML,error){

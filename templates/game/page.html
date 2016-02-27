@@ -26,7 +26,7 @@
 		{{end}}
 		{{range .TopReviews}}
 			<div class="review shortened">
-				<div class="reviewer">{{FindUserNameByID .Review.UserId}} ({{ReviewCount .Review.UserId}} Reviews)</div>
+				<a href="/users/{{URLQueryEscaper .Review.UserId}}" class="reviewer">{{FindUserNameByID .Review.UserId}} ({{ReviewCount .Review.UserId}} Reviews)</a>
 				{{RenderTemplateReview .}}
 			</div>
 		{{else}}
