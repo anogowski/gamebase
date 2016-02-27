@@ -1,0 +1,52 @@
+{{define "game/new"}}
+	<form action="game/new" method="post">
+		<script type="text/javascript" src="/assets/js/game.js"></script>
+		<div class="formgrp">
+			<label for="gameTitle">Title</label>
+			<input type="text" name="gameTitle" id="gameTitle" {{if .Game}}value="{{.Game.Title}}"{{end}}/>
+		</div>
+		<div class="formgrp">
+			<label for="gamePublisher">Publisher</label>
+			<input type="text" name="gamePublisher" id="gamePublisher" {{if .Game}}value="{{.Game.Publisher}}"{{end}}/>
+		</div>
+		<div class="formgrp">
+			<label for="gameCopyright">Copyright</label>
+			<input type="text" name="gameCopyright" id="gameCopyright" {{if .Game}}value=".Game.Copyright"{{end}}/>
+		</div>
+		<div class="formgrp">
+			<label for="gameTrailer">Trailer URL</label>
+			<input type="text" name="gameTrailer" id="gameTrailer" {{if .Game}}value="{{.Game.URL}}"{{end}}/>
+		</div>
+		<div class="formgrp">
+			<label for="gameDescription">Description</label>
+			<textarea name="gameDescription" id="gameDescription">
+				{{if .Game}}
+					{{.Game.Title}}
+				{{end}}
+			</textarea>
+		</div>
+		<div class="formgrp">
+			<label for="gameTagsDIV">Tags (Click To Remove)</label>
+			<div id="addTagsDIV" name="addTagsDIV">
+				{{range .Tags}}
+					<a href="#" onclick="javascript:removeTag('gameTags', '{{URLQueryEscaper .}}', this);">{{.}}</a>
+				{{end}}
+			</div>
+			<label for="remTagsDIV">Available Tags (Click To Add)</label>
+			<div id="remTagsDIV" name="remTagsDIV">
+				{{range .Taglist}}
+					<a href="#" onclick="javascript:addTag('gameTags', '{{URLQueryEscaper .}}', this);">{{.}}</a>
+				{{end}}
+			</div>
+			<id class="formgrp">
+				<label for="newTag">New Tag</label>
+				<input type="text" id="newTag" name="newTag" onkeypress="javascript:if(event.keyCode==13){event.preventDefault(); addTag('gameTags', queryEscape(document.getElementById('newTag').value), undefined);}" />
+				<input type="button" onclick="javascript:addTag('gameTags', queryEscape(document.getElementById('newTag').value), undefined);" value="Add Tag"/>
+			</id>
+			<input type="hidden" id="gameTags" name="gameTags" value=""/>
+		</div>
+		<div class="formgrp">
+			<input type="submit" value="Create Game"/>
+		</div>
+	</form>
+{{end}}

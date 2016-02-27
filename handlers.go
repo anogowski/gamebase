@@ -70,8 +70,7 @@ func HandleGamePage(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 }
 func HandleGamePageNew(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	if models.SignedIn(w,r){
-		//TODO: handle showing the new game page
-		
+		models.RenderTemplate(w,r, "game/new", nil)
 	}
 }
 func HandleGamePageNewAction(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
