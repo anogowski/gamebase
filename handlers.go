@@ -164,3 +164,22 @@ func HandleUserPage(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 	}
 	models.RenderTemplate(w,r, "users/view", map[string]interface{}{"User":user, "Reviews":revs, "Videos":vids})
 }
+func HandleFriendAdd(w http.ResponseWriter, r *http.Request, params httprouter.Params){
+	if models.SignedIn(w,r){
+		friendid := params.ByName("wild")
+		friend, err := models.GlobalUserStore.FindUser(friendid)
+		if err!=nil{
+			panic(err)
+		}
+		user := models.RequestUser(r)
+		if user==nil || friend==nil || user.UserId==friend.UserId{
+			models.RenderTemplate(w,r, "users/friend", nil)
+			return
+		}
+		//err = models.FriendStore.AddFriend(user.UserId, friendid)
+		if err!=nil{
+			panic(err)
+		}
+		models.RenderTemplate(w,r, "users/friend", map[string]interface{}{"Friend":friend})
+	}
+}

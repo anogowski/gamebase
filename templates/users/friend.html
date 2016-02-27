@@ -1,0 +1,7 @@
+{{define "users/friend"}}
+	{{if .Friend}}
+		<p>{{.Friend.UserName}} successfully added as a friend</p>
+	{{else}}
+		<p>Failed to add friend</p>
+	{{end}}
+{{end}}
