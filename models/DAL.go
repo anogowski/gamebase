@@ -218,17 +218,15 @@ func (this *DataAccessLayer) CreateReview(review Review) error {
 	if rview != nil {
 		return errors.New("Review already exists.")
 	}
-	if _, err = this.db.Exec("INSERT INTO reviews VALUES('" + review.ReviewId + "', '" + review.UserId + "', '" + review.GameId + "', '" + review.Body + "', '" + string(review.Rating) + "')"); err != nil {
+	f := strconv.FormatFloat(review.Rating,'g',2, 64)
+	if _, err = this.db.Exec("INSERT INTO reviews VALUES('" + review.ReviewId + "', '" + review.UserId + "', '" + review.GameId + "', '" + review.Body + "', '" + f + "')"); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (this *DataAccessLayer) UpdateReview(review Review) error {
-	f, err := strconv.ParseFloat(review.Rating, 64)
-	if err != nil {
-		return err
-	}
+	f := strconv.FormatFloat(review.Rating,'g',2, 64)
 	if _, err := this.db.Exec("UPDATE reviews SET body='" + review.Body + "', rating='" + f + "' WHERE id='" + review.ReviewId + "'"); err != nil {
 		return err
 	}
