@@ -59,7 +59,7 @@ type DAL interface {
 	CreateReview(review Review) error
 	UpdateReview(review Review) error
 	DeleteReview(reviewId string) error
-	//FindReview(userId, gameId) (*Review, error)
+	FindReview(reviewId) (*Review, error)
 	//GetReviews()
 
 	//Tags
@@ -199,7 +199,7 @@ func (this *DataAccessLayer) DeleteGame(gameId string) error {
 func (this *DataAccessLayer) FindGame(id string) (*Game, error) {
 	row := this.db.QueryRow("SELECT * FROM games WHERE id='" + id + "'")
 	game := Game{}
-	err := row.Scan(&game.GameId, &game.Title, &game.Publisher, &game.Rating)
+	err := row.Scan(&game.GameId, &game.Title, &game.Publisher)
 	switch {
 	case err == sql.ErrNoRows:
 		return nil, nil
@@ -210,9 +210,9 @@ func (this *DataAccessLayer) FindGame(id string) (*Game, error) {
 }
 
 func (this *DataAccessLayer) CreateReview(review Review) error {
-	rview, err := this.FindReview(id)
+	rview, err := this.FindReview(review.ReviewId)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if rview != nil {
 		return errors.New("Review already exists.")
@@ -224,7 +224,7 @@ func (this *DataAccessLayer) CreateReview(review Review) error {
 }
 
 func (this *DataAccessLayer) UpdateReview(review Review) error {
-	if _, err := this.db.Exec("UPDATE reviews SET title='" + review.Body + "', rating='" + review.Rating + "' WHERE id='" + review.ReviewId + "'"); err != nil {
+	if _, err := this.db.Exec("UPDATE reviews SET body='" + review.Body + "', rating='" + review.Rating + "' WHERE id='" + review.ReviewId + "'"); err != nil {
 		return err
 	}
 	return nil
@@ -236,6 +236,19 @@ func (this *DataAccessLayer) DeleteReview(reviewId string) error {
 	}
 	return nil
 
+}
+
+func (this *DataAccessLayer) FindReview(reviewId string) (*Review, error) {
+	row := this.db.QueryRow("SELECT id FROM reviews WHERE reviewId='" + reviewId + "'")
+	review := Review{}
+	err := row.Scan(&review.ReviewId, &review.UserId, &review.GameId, &review.Body, &review.Rating)
+	switch {
+	case err == sql.ErrNoRows:
+		return nil, nil
+	case err != nil:
+		return &review, err
+	}
+	return &review, nil
 }
 
 func (this *DataAccessLayer) CreateTag(tag string) error {
