@@ -3,8 +3,10 @@ package models
 import (
 	"database/sql"
 	"errors"
-	"os"
 	"log"
+	"os"
+	"time"
+
 	_ "gamebase/Godeps/_workspace/src/github.com/lib/pq"
 )
 
@@ -17,12 +19,13 @@ func init() {
 type DataAccessLayer struct {
 	db *sql.DB
 }
-func NewDataAccessLayer()*DataAccessLayer{
+
+func NewDataAccessLayer() *DataAccessLayer {
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal("Error opening the database: %q", err)
 	}
-	dal := &DataAccessLayer{db:db}
+	dal := &DataAccessLayer{db: db}
 	return dal
 }
 
@@ -36,18 +39,17 @@ type DAL interface {
 	DeleteUserFriend(user User, friendId string) error
 	FindUser(id string) (*User, error)
 	FindUserByName(name string) (*User, error)
-	/*
-		GetUsers()
-		SendMessage()
-		GetGamesList()
-		GetFriendsList()
-		GetMessages()
-	*/
+
+	//GetUsers()
+	SendMessage(from, to, message string) error
+	//GetGamesList()
+	//GetFriendsList()
+	//GetMessages()
 
 	//GAME
 	CreateGame(id, title, publisher, url string) (*Game, error)
 	UpdateGame(game Game) error
-	//DeleteGame(gameId string) error
+	DeleteGame(gameId string) error
 	FindGame(id string) (*Game, error)
 
 	//GetGames()
@@ -61,13 +63,13 @@ type DAL interface {
 		GetReviews()
 	*/
 	//Tags
-	/*
-		AddTag()
-		UpdateTag()
-		RemoveTag()
-		FindTag()
-		GetTags()
-	*/
+
+	CreateTag(tag string) error
+	UpdateTag(oldTag, newTag string) error
+	//	RemoveTag()
+	FindTag(tag string) error
+	//	GetTags()
+
 }
 
 func (this *DataAccessLayer) CreateUser(name, pass, email string) (*User, error) {
@@ -148,6 +150,20 @@ func (this *DataAccessLayer) DeleteUserFriend(user User, friendId string) error 
 
 }
 
+func (this *DataAccessLayer) SendMessage(from, to, message string) error {
+	user, err := FindUser(to)
+	if err != nil {
+		return nil, err
+	}
+	if user != nil {
+		return nil, errors.New("User does not exist")
+	}
+	if _, err = this.db.Exec("INSERT INTO messaging VALUES('" + from + "', '" + to + "', '" + message + "', '" + time.Time.Now() + "')"); err != nil {
+		return game, err
+	}
+	return game, nil
+}
+
 func (this *DataAccessLayer) CreateGame(id, title, publisher, url string) (*Game, error) {
 	game, err := this.FindGame(id)
 	if err != nil {
@@ -170,6 +186,14 @@ func (this *DataAccessLayer) UpdateGame(game Game) error {
 	return nil
 }
 
+func (this *DataAccessLayer) DeleteGame(gameId string) error {
+	if _, err := this.db.Exec("DELETE FROM games WHERE (' id=" + user.gameId + "')"); err != nil {
+		return err
+	}
+	return nil
+
+}
+
 func (this *DataAccessLayer) FindGame(id string) (*Game, error) {
 	row := this.db.QueryRow("SELECT * FROM games WHERE id='" + id + "'")
 	game := Game{}
@@ -181,4 +205,22 @@ func (this *DataAccessLayer) FindGame(id string) (*Game, error) {
 		return &game, err
 	}
 	return &game, nil
+}
+
+func (this *DataAccessLayer) CreateTag(tag string) error {
+	err := this.FindTag(tag)
+	if err == sql.ErrNoRows {
+		if _, err = this.db.Exec("INSERT INTO labels VALUES('" + tag + "')"); err != nil {
+			return err
+		}
+	} else if err != nil {
+		panic(err)
+	}
+	return nil
+}
+
+func (this *DataAccessLayer) FindTag(tag string) error {
+	row := this.db.QueryRow("SELECT name FROM labels WHERE name='" + tag + "'")
+	err := row.Scan(&tag)
+	return err
 }
