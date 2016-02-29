@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	_ "gamebase/Godeps/_workspace/src/github.com/lib/pq"
@@ -224,7 +225,11 @@ func (this *DataAccessLayer) CreateReview(review Review) error {
 }
 
 func (this *DataAccessLayer) UpdateReview(review Review) error {
-	if _, err := this.db.Exec("UPDATE reviews SET body='" + review.Body + "', rating='" + string(review.Rating) + "' WHERE id='" + review.ReviewId + "'"); err != nil {
+	f, err := strconv.ParseFloat(review.Rating, 64)
+	if err != nil {
+		return err
+	}
+	if _, err := this.db.Exec("UPDATE reviews SET body='" + review.Body + "', rating='" + f + "' WHERE id='" + review.ReviewId + "'"); err != nil {
 		return err
 	}
 	return nil
