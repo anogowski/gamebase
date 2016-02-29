@@ -59,7 +59,7 @@ type DAL interface {
 	CreateReview(review Review) error
 	UpdateReview(review Review) error
 	DeleteReview(reviewId string) error
-	FindReview(reviewId) (*Review, error)
+	FindReview(reviewId string) (*Review, error)
 	//GetReviews()
 
 	//Tags
@@ -160,7 +160,7 @@ func (this *DataAccessLayer) SendMessage(from, to, message string) error {
 	if user != nil {
 		return errors.New("User does not exist")
 	}
-	if _, err = this.db.Exec("INSERT INTO messaging VALUES('" + from + "', '" + to + "', '" + message + "', '" + time.Now() + "')"); err != nil {
+	if _, err = this.db.Exec("INSERT INTO messaging VALUES('" + from + "', '" + to + "', '" + message + "', '" + time.Now().Format("2006-01-02 15:04:05") + "')"); err != nil {
 		return err
 	}
 	return nil
@@ -189,7 +189,7 @@ func (this *DataAccessLayer) UpdateGame(game Game) error {
 }
 
 func (this *DataAccessLayer) DeleteGame(gameId string) error {
-	if _, err := this.db.Exec("DELETE FROM games WHERE (' id=" + user.gameId + "')"); err != nil {
+	if _, err := this.db.Exec("DELETE FROM games WHERE (' id=" + gameId + "')"); err != nil {
 		return err
 	}
 	return nil
@@ -217,14 +217,14 @@ func (this *DataAccessLayer) CreateReview(review Review) error {
 	if rview != nil {
 		return errors.New("Review already exists.")
 	}
-	if _, err = this.db.Exec("INSERT INTO reviews VALUES('" + review.ReviewId + "', '" + review.UserId + "', '" + review.GameId + "', '" + review.Body + "', '" + review.Rating + "')"); err != nil {
+	if _, err = this.db.Exec("INSERT INTO reviews VALUES('" + review.ReviewId + "', '" + review.UserId + "', '" + review.GameId + "', '" + review.Body + "', '" + string(review.Rating) + "')"); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (this *DataAccessLayer) UpdateReview(review Review) error {
-	if _, err := this.db.Exec("UPDATE reviews SET body='" + review.Body + "', rating='" + review.Rating + "' WHERE id='" + review.ReviewId + "'"); err != nil {
+	if _, err := this.db.Exec("UPDATE reviews SET body='" + review.Body + "', rating='" + string(review.Rating) + "' WHERE id='" + review.ReviewId + "'"); err != nil {
 		return err
 	}
 	return nil
