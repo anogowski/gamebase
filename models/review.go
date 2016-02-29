@@ -5,21 +5,19 @@ type Review struct {
 	UserId   string
 	GameId   string
 	Body     string
-	URL      string
 	Rating   float64
 }
 
 const REVIEW_MAX_RATING float64 = 5
 const REVIEW_ID_LEN = 20
 
-func (this *Review) InitReview(body, url, userId, gameId string, rating float64) {
+func (this *Review) InitReview(userId, gameId, body string, rating float64) {
 	this.Body = body
-	this.URL = url
 	this.UserId = userId
 	this.GameId = gameId
 	this.Rating = rating
 	this.ReviewId = GenerateID("review_", REVIEW_ID_LEN)
-	//CALL DAL
+	err = Dal.CreateReview(*this)
 }
 
 func (this *Review) UpdateReview(body, url string, rating float64) {
