@@ -75,8 +75,23 @@ func HandleGamePageNew(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 }
 func HandleGamePageNewAction(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	if models.SignedIn(w,r){
-		//TODO: handle creating the new game page
-		
+		title := r.FormValue("gameTitle")
+		pub := r.FormValue("gamePublisher")
+		trailer := r.FormValue("gameTrailer")
+		//copy := r.FormValue("gameCopyright")
+		//desc := r.FormValue("gameDescription")
+		tagstr := r.FormValue("gameTags")
+		var tags []string
+		err := json.Unmarshal([]byte(tagstr), &tags)
+		if err!=nil || tags==nil{
+			tags = []string{}
+		}
+		game := models.NewGame(title, pub, trailer)
+		models.DAL.CreateGame(game)
+		for _,tag := range tags{
+			models.DAL.AddGameTag(game.GameId, tag)
+		}
+		http.Redirect(w,r, "/game/"+url.QueryEscape(game.GameId), http.StatusFound)
 	}
 }
 func HandleGameEditPage(w http.ResponseWriter, r *http.Request, params httprouter.Params){
