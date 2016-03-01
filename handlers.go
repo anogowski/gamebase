@@ -87,27 +87,64 @@ func HandleGamePageNewAction(w http.ResponseWriter, r *http.Request, _ httproute
 			tags = []string{}
 		}
 		game := models.NewGame(title, pub, trailer)
-		models.DAL.CreateGame(game)
-		for _,tag := range tags{
-			models.DAL.AddGameTag(game.GameId, tag)
-		}
+		//models.DAL.CreateGame(game)
+		//for _,tag := range tags{
+		//	models.DAL.AddGameTag(game.GameId, tag)
+		//}
 		http.Redirect(w,r, "/game/"+url.QueryEscape(game.GameId), http.StatusFound)
 	}
 }
 func HandleGameEditPage(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	if models.SignedIn(w,r){
-		//gameid := params.ByName("wild")
-		//game, err := models.GlobalGameStore.Find(gameid)
-		game := models.Game{}
-		tags := []string
+		gameid := params.ByName("wild")
+		game, err := models.DAL.FindGame(gameid)
+		if err!=nil{
+			panic(err)
+		}
+		if game==nil{
+			http.Redirect(w,r, "/?flash=Game+Not+Found", http.StatusNotFound)
+			return
+		}
+		tags := []string{}
+		//tags, err := models.DAL.FindTagsByGame(gameid)
+		if err!=nil{
+			panic(err)
+		}
 		models.RenderTemplate(w,r, "game/edit", map[string]interface{}{"Game":game, "Tags":tags})
 	}
 }
 func HandleGameEditAction(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	if models.SignedIn(w,r){
-		//gameid := params.ByName("wild")
-		//TODO: update the game
-		
+		gameid := params.ByName("wild")
+		title := r.FormValue("gameTitle")
+		pub := r.FormValue("gamePublisher")
+		trailer := r.FormValue("gameTrailer")
+		//copy := r.FormValue("gameCopyright")
+		//desc := r.FormValue("gameDescription")
+		tagstr := r.FormValue("gameTags")
+		var tags []string
+		err := json.Unmarshal([]byte(tagstr), &tags)
+		if err!=nil || tags==nil{
+			tags = []string{}
+		}
+		remtagstr := r.FormValue("removedTags")
+		var remtags []string
+		err = json.Unmarshal([]byte(remtagstr), &tags)
+		if err!=nil || remtags==nil{
+			remtags = []string{}
+		}
+		game := models.NewGame(title, pub, trailer)
+		err = models.DAL.UpdateGame(game)
+		if err!=nil{
+			panic(err)
+		}
+		//for _,t := range remtags{
+		//	models.DAL.RemoveGameTag(gameid, t)
+		//}
+		//for _,t := range tags{
+		//	models.DAL.AddGameTag(gameid, t)
+		//}
+		http.Redirect(w,r, "/game/"+url.QueryEscape(game.GameId), http.StatusFound)
 	}
 }
 func HandleReview(w http.ResponseWriter, r *http.Request, params httprouter.Params){
