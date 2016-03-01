@@ -79,6 +79,22 @@ func HandleGamePageNewAction(w http.ResponseWriter, r *http.Request, _ httproute
 		
 	}
 }
+func HandleGameEditPage(w http.ResponseWriter, r *http.Request, params httprouter.Params){
+	if models.SignedIn(w,r){
+		//gameid := params.ByName("wild")
+		//game, err := models.GlobalGameStore.Find(gameid)
+		game := models.Game{}
+		tags := []string
+		models.RenderTemplate(w,r, "game/edit", map[string]interface{}{"Game":game, "Tags":tags})
+	}
+}
+func HandleGameEditAction(w http.ResponseWriter, r *http.Request, params httprouter.Params){
+	if models.SignedIn(w,r){
+		//gameid := params.ByName("wild")
+		//TODO: update the game
+		
+	}
+}
 func HandleReview(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	//reviewid := params.ByName("wild")
 	//rev, err := models.GlobalReviewStore.Find(reviewid)

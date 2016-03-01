@@ -35,7 +35,7 @@
 				<h3>Game List (click to remove)</h3>
 				<ul class="gameList">
 					{{range .CurrentUser.Games}}
-						{{RenderTemplateGameLink . "#" "javascript:removeGame('accountGameList', '{{URLQueryEscaper .Title}}', this);"}}
+						{{RenderTemplateGameLink . "#" "javascript:removeGame('accountGameList', '{{URLQueryEscaper .GameId}}', this);"}}
 					{{else}}
 						<p>No Games</p>
 					{{end}}

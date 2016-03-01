@@ -26,6 +26,8 @@ func main() {
 	router.Handle("GET", "/", HandleIndex)
 	router.Handle("GET", "/game/:wild", HandleGamePage)
 	router.Handle("POST", "/game/new", HandleGamePageNewAction)
+	router.Handle("GET", "/game/:wild/edit", HandleGameEditPage)
+	router.Handle("POST", "/game/:wild/edit", HandleGameEditAction)
 	router.Handle("GET", "/review/:wild/new", HandleReviewNew)
 	router.Handle("POST", "/review/:wild/new", HandleReviewNewAction)
 	router.Handle("GET", "/review/:wild", HandleReview)
