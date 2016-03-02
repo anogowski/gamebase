@@ -52,7 +52,8 @@ type DAL interface {
 	UpdateGame(game Game) error
 	DeleteGame(gameId string) error
 	FindGame(id string) (*Game, error)
-
+	//AddGameTag()
+	//RemoveGameTag()
 	//GetGames()
 
 	//Review
@@ -218,7 +219,7 @@ func (this *DataAccessLayer) CreateReview(review Review) error {
 	if rview != nil {
 		return errors.New("Review already exists.")
 	}
-	f := strconv.FormatFloat(review.Rating,'g',2, 64)
+	f := strconv.FormatFloat(review.Rating, 'g', 2, 64)
 	if _, err = this.db.Exec("INSERT INTO reviews VALUES('" + review.ReviewId + "', '" + review.UserId + "', '" + review.GameId + "', '" + review.Body + "', '" + f + "')"); err != nil {
 		return err
 	}
@@ -226,7 +227,7 @@ func (this *DataAccessLayer) CreateReview(review Review) error {
 }
 
 func (this *DataAccessLayer) UpdateReview(review Review) error {
-	f := strconv.FormatFloat(review.Rating,'g',2, 64)
+	f := strconv.FormatFloat(review.Rating, 'g', 2, 64)
 	if _, err := this.db.Exec("UPDATE reviews SET body='" + review.Body + "', rating='" + f + "' WHERE id='" + review.ReviewId + "'"); err != nil {
 		return err
 	}
@@ -278,4 +279,11 @@ func (this *DataAccessLayer) FindTag(tag string) error {
 	row := this.db.QueryRow("SELECT name FROM tags WHERE name='" + tag + "'")
 	err := row.Scan(&tag)
 	return err
+}
+
+func (this *DataAccessLayer) UpdateTag(oldTag, newTag string) error {
+	if _, err := this.db.Exec("UPDATE tags SET name='" + newTag + "' WHERE name='" + oldTag + "'"); err != nil {
+		return err
+	}
+	return nil
 }
