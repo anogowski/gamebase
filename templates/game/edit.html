@@ -1,0 +1,51 @@
+{{define "game/new"}}
+	<form action="game/{{URLQueryEscaper .Game.GameId}}/edit" method="post">
+		<script type="text/javascript" src="/assets/js/game.js"></script>
+		<div class="formgrp">
+			<label for="gameTitle">Title</label>
+			<input type="text" name="gameTitle" id="gameTitle" value="{{.Game.Title}}"/>
+		</div>
+		<div class="formgrp">
+			<label for="gamePublisher">Publisher</label>
+			<input type="text" name="gamePublisher" id="gamePublisher" value="{{.Game.Publisher}}"/>
+		</div>
+		<div class="formgrp">
+			<label for="gameCopyright">Copyright</label>
+			<input type="text" name="gameCopyright" id="gameCopyright" value=".Game.Copyright"/>
+		</div>
+		<div class="formgrp">
+			<label for="gameTrailer">Trailer URL</label>
+			<input type="text" name="gameTrailer" id="gameTrailer" value="{{.Game.URL}}"/>
+		</div>
+		<div class="formgrp">
+			<label for="gameDescription">Description</label>
+			<textarea name="gameDescription" id="gameDescription">
+				.Game.Body
+			</textarea>
+		</div>
+		<div class="formgrp">
+			<label for="gameTagsDIV">Tags (Click To Remove)</label>
+			<div id="addTagsDIV" name="addTagsDIV">
+				{{range .Tags}}
+					<a href="#" onclick="javascript:addTag('removedTags', '{{URLQueryEscaper .}}', undefined); removeTag('gameTags', '{{URLQueryEscaper .}}', this);">{{.}}</a>
+				{{end}}
+			</div>
+			<label for="remTagsDIV">Available Tags (Click To Add)</label>
+			<div id="remTagsDIV" name="remTagsDIV">
+				{{range .Taglist}}
+					<a href="#" onclick="javascript:removeTag('removedTags', '{{URLQueryEscaper .}}', undefined); addTag('gameTags', '{{URLQueryEscaper .}}', this);">{{.}}</a>
+				{{end}}
+			</div>
+			<id class="formgrp">
+				<label for="newTag">New Tag</label>
+				<input type="text" id="newTag" name="newTag" onkeypress="javascript:if(event.keyCode==13){event.preventDefault(); addTag('gameTags', queryEscape(document.getElementById('newTag').value), undefined);}" />
+				<input type="button" onclick="javascript:addTag('gameTags', queryEscape(document.getElementById('newTag').value), undefined);" value="Add Tag"/>
+			</id>
+			<input type="hidden" id="gameTags" name="gameTags" value=""/>
+			<input type="hidden" id="removedTags" name="removedTags" value=""/>
+		</div>
+		<div class="formgrp">
+			<input type="submit" value="Apply Game Updates"/>
+		</div>
+	</form>
+{{end}}

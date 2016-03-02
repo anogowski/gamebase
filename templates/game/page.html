@@ -2,6 +2,7 @@
 	{{if .Game}}
 	<h1 class="left">{{.Game.Title}}</h1>
 	<h1 class="right">{{.Game.Publisher}}</h1>
+	<a href="/game/{{URLQueryEscaper .Game.GameId}}/edit">Edit</a>
 	{{if .Game.URL}}
 		{{RenderTemplateVideo .Game.URL 320 240}}
 	{{end}}
@@ -17,12 +18,12 @@
 		{{RenderTemplateRating .Game.Rating}}
 		<p>Out of {{.ReviewCount}} Reviews</p>
 	</div>
-	<h2>Top Reviews <a class="small" href="/review/{{URLQueryEscaper .Game.Title}}">See All</a></h2>
+	<h2>Top Reviews <a class="small" href="/review/{{URLQueryEscaper .Game.GameId}}">See All</a></h2>
 	<div class="reviews">
 		{{if .CurrentUser}}
-			<a href="/review/{{URLQueryEscaper .Game.Title}}/new">Post your own review.</a>
+			<a href="/review/{{URLQueryEscaper .Game.GameId}}/new">Post your own review.</a>
 		{{else}}
-			<p><a href="/review/{{URLQueryEscaper .Game.Title}}/new">Login/Sign-up</a> to post your own review.</p>
+			<p><a href="/review/{{URLQueryEscaper .Game.GameId}}/new">Login/Sign-up</a> to post your own review.</p>
 		{{end}}
 		{{range .TopReviews}}
 			<div class="review shortened">
@@ -33,12 +34,12 @@
 			<p>No Reviews Yet</p>
 		{{end}}
 	</div>
-	<h2>Top User Videos <a class="small" href="/videos/{{URLQueryEscaper .Game.Title}}">See All</a></h2>
+	<h2>Top User Videos <a class="small" href="/videos/{{URLQueryEscaper .Game.GameId}}">See All</a></h2>
 	<div class="uservids">
 		{{if .CurrentUser}}
-			<a href="/videos/{{URLQueryEscaper .Game.Title}}/new">Post your own video</a>
+			<a href="/videos/{{URLQueryEscaper .Game.GameId}}/new">Post your own video</a>
 		{{else}}
-			<p><a href="/videos/{{URLQueryEscaper .Game.Title}}/new">Login/Sign-up</a> to post your own video.</p>
+			<p><a href="/videos/{{URLQueryEscaper .Game.GameId}}/new">Login/Sign-up</a> to post your own video.</p>
 		{{end}}
 		{{range .TopUserVids}}
 			{{RenderTemplateUserVideo . 320 240}}

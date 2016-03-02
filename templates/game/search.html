@@ -2,7 +2,7 @@
 	<p>Showing games {{if .NameIncludes}}named "{{.NameIncludes}}"{{end}} {{if .Tag}}tagged "{{.Tag}}"{{end}}</p>
 	{{if .SearchResults}}
 		{{range .SearchResults}}
-			<a href="/game/{{URLQueryEscaper .Title}}">{{.Title}}</a>
+			<a href="/game/{{URLQueryEscaper .GameId}}">{{.Title}}</a>
 		{{end}}
 	{{else}}
 		No results

@@ -20,8 +20,11 @@
 				<label for="chatNewMsg">Msg</label>
 				<textarea id="chatNewMsg" name="chatNewMsg"></textarea>
 			</div>
+			<div class="formgrp">
+				<input type="submit" value="Send"/>
+			</div>
 		</form>
 	{{else}}
-		<p>Login/Sign-up to chat or send messages.</p>
+		<p><a href="/login">Login/Sign-up</a> to chat or send messages.</p>
 	{{end}}
 {{end}}
