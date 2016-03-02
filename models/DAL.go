@@ -52,8 +52,8 @@ type DAL interface {
 	UpdateGame(game Game) error
 	DeleteGame(gameId string) error
 	FindGame(id string) (*Game, error)
-	//AddGameTag()
-	//RemoveGameTag()
+	AddGameTag(gameId, tag string)
+	RemoveGameTag(gameId, tag string)
 	//GetGames()
 
 	//Review
@@ -209,6 +209,22 @@ func (this *DataAccessLayer) FindGame(id string) (*Game, error) {
 		return &game, err
 	}
 	return &game, nil
+}
+
+func (this *DataAccessLayer) AddGameTag(gameId, tag string) error {
+	if _, err := this.db.Exec("INSERT INTO user_games VALUES('" + gameId + "', '" + tag + "')"); err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func (this *DataAccessLayer) DeleteGameTag(gameId, tag string) error {
+	if _, err := this.db.Exec("DELETE FROM user_games WHERE (' gameId=" + gameId + "'AND tag='" + tag + "')"); err != nil {
+		return err
+	}
+	return nil
+
 }
 
 func (this *DataAccessLayer) CreateReview(review Review) error {
