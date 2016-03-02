@@ -53,7 +53,7 @@ type DAL interface {
 	DeleteGame(gameId string) error
 	FindGame(id string) (*Game, error)
 	AddGameTag(gameId, tag string) error
-	RemoveGameTag(gameId, tag string) error
+	DeleteGameTag(gameId, tag string) error
 	//GetGames()
 
 	//Review
