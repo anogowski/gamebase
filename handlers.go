@@ -3,8 +3,9 @@ package main
 import (
 	"gamebase/Godeps/_workspace/src/github.com/anogowski/gamebase/models"
 	"gamebase/Godeps/_workspace/src/github.com/julienschmidt/httprouter"
+	"encoding/json"
 	"net/http"
-	_"net/url"
+	"net/url"
 )
 
 func HandleIndex(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
@@ -38,15 +39,13 @@ func HandleAccountPage(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 }
 func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	if models.SignedIn(w, r){
-		//TODO: handle account update
 		//update user information
 		username := r.FormValue("accountName")
 		email := r.FormValue("email")
 		newPassword := r.FormValue("accountNewPassword")
 		oldPassword := r.FormValue("accountPassword")
 
-		user, err = models.GlobalUserStore.Authenticate(username, oldPassword)
-
+		user, err := models.GlobalUserStore.Authenticate(username, oldPassword)
 		if err != nil {
 			models.RenderTemplate(w, r, "users/account", map[string]interface{}{"Error": err.Error()})
 			return
@@ -54,14 +53,14 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 
 		user.Email = email
 		if newPassword != ""{
-			hash, _ := bcrypt.GenerateFromPassword([]byte(newPassword), hashcost)
-			newPassword = string(hash)
 			user.SetPassword(newPassword)
 		}
 
-		err := models.Dal.UpdateUser(user)
+		err = models.Dal.UpdateUser(*user)
+		if err!=nil{
+			panic(err)
+		}
 		models.RenderTemplate(w, r, "users/account", nil)
-		//call the dal for update next
 	}
 }
 
