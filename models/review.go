@@ -17,7 +17,7 @@ func (this *Review) InitReview(userId, gameId, body string, rating float64) {
 	this.GameId = gameId
 	this.Rating = rating
 	this.ReviewId = GenerateID("review_", REVIEW_ID_LEN)
-	err := Dal.CreateReview(*this)
+	Dal.CreateReview(*this)
 }
 
 func (this *Review) UpdateReview(body, url string, rating float64) {

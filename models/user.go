@@ -24,12 +24,16 @@ func NewUser(user_name, pass, mail string) *User {
 }
 func (this *User) InitUser(user_name string, pass string, mail string) {
 	this.UserName = user_name
-	hash, _ := bcrypt.GenerateFromPassword([]byte(pass), hashcost)
-	this.Password = string(hash)
+	this.SetPassword(pass)
 	this.UserId = GenerateID("user_", userIDlen)
 	this.Email = mail
 }
 
+func (this *User) SetPassword(newPWord string){
+	hash, _ := bcrypt.GenerateFromPassword([]byte(pass), hashcost)
+	this.Password = string(hash)
+}
+	
 func (this *User) AddGame(game Game) {
 	this.Games = append(this.Games, game)
 	//CALL DAL

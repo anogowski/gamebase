@@ -9,7 +9,7 @@
 		<h1>Login</h1>
 		<div class="formgrp">
 			<label for="loginUser">Username</label>
-			<input type="text" id="loginUser" name="loginUser" />
+			<input type="text" id="loginUser" name="loginUser" value="{{.UName}}"/>
 		</div>
 		<div class="formgrp">
 			<label for="loginPass">Password</label>
@@ -26,11 +26,11 @@
 		<h1>Sign-Up</h1>
 		<div class="formgrp">
 			<label for="signUser">Username</label>
-			<input type="text" id="signUser" name="signUser" />
+			<input type="text" id="signUser" name="signUser" value="{{.UName}}"/>
 		</div>
 		<div class="formgrp">
 			<label for="signEmail">Email</label>
-			<input type="text" id="signEmail" name="signEmail" />
+			<input type="text" id="signEmail" name="signEmail" value="{{.Email}}"/>
 		</div>
 		<div class="formgrp">
 			<label for="signPass">Password</label>
