@@ -39,7 +39,29 @@ func HandleAccountPage(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	if models.SignedIn(w, r){
 		//TODO: handle account update
-		
+		//update user information
+		username := r.FormValue("accountName")
+		email := r.FormValue("email")
+		newPassword := r.FormValue("accountNewPassword")
+		oldPassword := r.FormValue("accountPassword")
+
+		user, err = models.GlobalUserStore.Authenticate(username, oldPassword)
+
+		if err != nil {
+			models.RenderTemplate(w, r, "users/account", map[string]interface{}{"Error": err.Error()})
+			return
+		}
+
+		user.Email = email
+		if newPassword != ""{
+			hash, _ := bcrypt.GenerateFromPassword([]byte(newPassword), hashcost)
+			newPassword = string(hash)
+			user.SetPassword(newPassword)
+		}
+
+		err := models.Dal.UpdateUser(user)
+		models.RenderTemplate(w, r, "users/account", nil)
+		//call the dal for update next
 	}
 }
 
