@@ -41,21 +41,21 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	if models.SignedIn(w, r){
 		//update user information
 		username := r.FormValue("accountName")
-		email := r.FormValue("email")
+		email := r.FormValue("accountEmail")
 		newPassword := r.FormValue("accountNewPassword")
 		oldPassword := r.FormValue("accountPassword")
-
+		
 		user, err := models.GlobalUserStore.Authenticate(username, oldPassword)
 		if err != nil {
 			models.RenderTemplate(w, r, "users/account", map[string]interface{}{"Error": err.Error()})
 			return
 		}
-
+		
 		user.Email = email
 		if newPassword != ""{
 			user.SetPassword(newPassword)
 		}
-
+		
 		err = models.Dal.UpdateUser(*user)
 		if err!=nil{
 			panic(err)
