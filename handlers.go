@@ -78,12 +78,12 @@ func HandleGamePage(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 		return
 	}
 	var err error
-	//gameid, err := url.QueryUnescape(encgameid)
+	gameid, err := url.QueryUnescape(encgameid)
 	if err!=nil{
 		panic(err)
 	}
 	var game *models.Game
-	//game, err := models.GlobalGameStore.Find(gameid)
+	game, err = models.Dal.FindGame(gameid)
 	if err!=nil{
 		panic(err)
 	}
@@ -97,10 +97,11 @@ func HandleGamePageNew(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 func HandleGamePageNewAction(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	if params.ByName("wild")=="new" && models.SignedIn(w,r){
 		title := r.FormValue("gameTitle")
+		dev := r.FormValue("gameDeveloper")
 		pub := r.FormValue("gamePublisher")
 		trailer := r.FormValue("gameTrailer")
 		//copy := r.FormValue("gameCopyright")
-		//desc := r.FormValue("gameDescription")
+		desc := r.FormValue("gameDescription")
 		tagstr := r.FormValue("gameTags")
 		var tags []string
 		err := json.Unmarshal([]byte(tagstr), &tags)
@@ -108,11 +109,18 @@ func HandleGamePageNewAction(w http.ResponseWriter, r *http.Request, params http
 			tags = []string{}
 		}
 		game := models.NewGame(title, pub, trailer)
-		models.Dal.CreateGame(game.GameId, game.Title, game.Publisher, game.URL)
+		game.Description = desc
+		game.Developer = dev
+		err = models.Dal.CreateGame(*game)
+		if err!=nil{
+			panic(err)
+		}
 		for _,tag := range tags{
 			models.Dal.AddGameTag(game.GameId, tag)
 		}
 		http.Redirect(w,r, "/game/"+url.QueryEscape(game.GameId), http.StatusFound)
+	} else{
+		http.NotFound(w,r)
 	}
 }
 func HandleGameEditPage(w http.ResponseWriter, r *http.Request, params httprouter.Params){
@@ -138,10 +146,11 @@ func HandleGameEditAction(w http.ResponseWriter, r *http.Request, params httprou
 	if models.SignedIn(w,r){
 		gameid := params.ByName("wild")
 		title := r.FormValue("gameTitle")
+		dev := r.FormValue("gameDeveloper")
 		pub := r.FormValue("gamePublisher")
 		trailer := r.FormValue("gameTrailer")
 		//copy := r.FormValue("gameCopyright")
-		//desc := r.FormValue("gameDescription")
+		desc := r.FormValue("gameDescription")
 		tagstr := r.FormValue("gameTags")
 		var tags []string
 		err := json.Unmarshal([]byte(tagstr), &tags)
@@ -154,8 +163,8 @@ func HandleGameEditAction(w http.ResponseWriter, r *http.Request, params httprou
 		if err!=nil || remtags==nil{
 			remtags = []string{}
 		}
-		game := models.NewGame(title, pub, trailer)
-		err = models.Dal.UpdateGame(*game)
+		game := models.Game{GameId:gameid, Title:title, Developer:dev, Publisher:pub, URL:trailer, Description:desc}
+		err = models.Dal.UpdateGame(game)
 		if err!=nil{
 			panic(err)
 		}

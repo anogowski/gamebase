@@ -1,5 +1,5 @@
 {{define "game/new"}}
-	<form action="game/new" method="post">
+	<form action="/game/new" method="post">
 		<script type="text/javascript" src="/assets/js/game.js"></script>
 		<div class="formgrp">
 			<label for="gameTitle">Title</label>
@@ -8,6 +8,10 @@
 		<div class="formgrp">
 			<label for="gamePublisher">Publisher</label>
 			<input type="text" name="gamePublisher" id="gamePublisher" {{if .Game}}value="{{.Game.Publisher}}"{{end}}/>
+		</div>
+		<div class="formgrp">
+			<label for="gameDeveloper">Developer</label>
+			<input type="text" name="gameDeveloper" id="gameDeveloper" {{if .Game}}value="{{.Game.Developer}}"{{end}}/>
 		</div>
 		<div class="formgrp">
 			<label for="gameCopyright">Copyright</label>
@@ -38,11 +42,11 @@
 					<a href="#" onclick="javascript:addTag('gameTags', '{{URLQueryEscaper .}}', this);">{{.}}</a>
 				{{end}}
 			</div>
-			<id class="formgrp">
+			<div class="formgrp">
 				<label for="newTag">New Tag</label>
 				<input type="text" id="newTag" name="newTag" onkeypress="javascript:if(event.keyCode==13){event.preventDefault(); addTag('gameTags', queryEscape(document.getElementById('newTag').value), undefined);}" />
 				<input type="button" onclick="javascript:addTag('gameTags', queryEscape(document.getElementById('newTag').value), undefined);" value="Add Tag"/>
-			</id>
+			</div>
 			<input type="hidden" id="gameTags" name="gameTags" value=""/>
 		</div>
 		<div class="formgrp">

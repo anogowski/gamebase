@@ -1,6 +1,7 @@
 {{define "game/page"}}
 	{{if .Game}}
 	<h1 class="left">{{.Game.Title}}</h1>
+	<h1 class="mid">{{.Game.Developer}}</h1>
 	<h1 class="right">{{.Game.Publisher}}</h1>
 	<a href="/game/{{URLQueryEscaper .Game.GameId}}/edit">Edit</a>
 	{{if .Game.URL}}
@@ -8,7 +9,7 @@
 	{{end}}
 	<h2>Description</h2>
 	<p class="description">
-		.Game.Description
+		{{.Game.Description}}
 	</p>
 	<p class="copyright">
 		.Game.Copyright

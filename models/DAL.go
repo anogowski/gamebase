@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"html"
 
 	_ "gamebase/Godeps/_workspace/src/github.com/lib/pq"
 )
@@ -48,7 +49,7 @@ type DAL interface {
 	//GetMessages()
 
 	//GAME
-	CreateGame(id, title, publisher, url string) (*Game, error)
+	CreateGame(gam Game) error
 	UpdateGame(game Game) error
 	DeleteGame(gameId string) error
 	FindGame(id string) (*Game, error)
@@ -168,23 +169,22 @@ func (this *DataAccessLayer) SendMessage(from, to, message string) error {
 	return nil
 }
 
-func (this *DataAccessLayer) CreateGame(id, title, publisher, url string) (*Game, error) {
-	game, err := this.FindGame(id)
+func (this *DataAccessLayer) CreateGame(gam Game) error {
+	game, err := this.FindGame(gam.GameId)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if game != nil {
-		return nil, errors.New("Game already exists.")
+		return errors.New("Game already exists.")
 	}
-	game = NewGame(title, publisher, url)
-	if _, err = this.db.Exec("INSERT INTO games VALUES('" + game.GameId + "', '" + game.Title + "', '" + game.Publisher + "', '" + game.URL + "')"); err != nil {
-		return game, err
+	if _, err = this.db.Exec("INSERT INTO games VALUES('" + gam.GameId + "', '" + html.EscapeString(gam.Title) + "', '"+html.EscapeString(gam.Developer)+"', '" + html.EscapeString(gam.Publisher) + "', '" + html.EscapeString(gam.Description) + "', '" + html.EscapeString(gam.URL) + "')"); err != nil {
+		return err
 	}
-	return game, nil
+	return nil
 }
 
 func (this *DataAccessLayer) UpdateGame(game Game) error {
-	if _, err := this.db.Exec("UPDATE games SET title='" + game.Title + "', publisher='" + game.Publisher + "', url='" + game.URL + "' WHERE id='" + game.GameId + "'"); err != nil {
+	if _, err := this.db.Exec("UPDATE games SET title='" + html.EscapeString(game.Title) + "', developer='"+html.EscapeString(game.Developer)+"', publisher='" + html.EscapeString(game.Publisher) + "', description='" + html.EscapeString(game.Description) + "', url='" + html.EscapeString(game.URL) + "' WHERE id='" + game.GameId + "'"); err != nil {
 		return err
 	}
 	return nil
@@ -199,9 +199,14 @@ func (this *DataAccessLayer) DeleteGame(gameId string) error {
 }
 
 func (this *DataAccessLayer) FindGame(id string) (*Game, error) {
-	row := this.db.QueryRow("SELECT * FROM games WHERE id='" + id + "'")
+	row := this.db.QueryRow("SELECT id,title,developer,publisher,description,url FROM games WHERE id='" + id + "'")
 	game := Game{}
-	err := row.Scan(&game.GameId, &game.Title, &game.Publisher)
+	err := row.Scan(&game.GameId, &game.Title, &game.Developer, &game.Publisher, &game.Description, &game.URL)
+	game.Title = html.UnescapeString(game.Title)
+	game.Developer = html.UnescapeString(game.Developer)
+	game.Publisher = html.UnescapeString(game.Publisher)
+	game.Description = html.UnescapeString(game.Description)
+	game.URL = html.UnescapeString(game.URL)
 	switch {
 	case err == sql.ErrNoRows:
 		return nil, nil
