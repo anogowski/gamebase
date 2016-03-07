@@ -45,7 +45,7 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		newPassword := r.FormValue("accountNewPassword")
 		oldPassword := r.FormValue("accountPassword")
 
-		user, err = models.GlobalUserStore.Authenticate(username, oldPassword)
+		user, err := models.GlobalUserStore.Authenticate(username, oldPassword)
 
 		if err != nil {
 			models.RenderTemplate(w, r, "users/account", map[string]interface{}{"Error": err.Error()})
