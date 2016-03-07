@@ -3,11 +3,11 @@ package models
 import (
 	"database/sql"
 	"errors"
+	"html"
 	"log"
 	"os"
 	"strconv"
 	"time"
-	"html"
 
 	_ "gamebase/Godeps/_workspace/src/github.com/lib/pq"
 )
@@ -42,7 +42,7 @@ type DAL interface {
 	FindUser(id string) (*User, error)
 	FindUserByName(name string) (*User, error)
 
-	//GetUsers()
+	GetUsers() ([]User, error)
 	SendMessage(from, to, message string) error
 	//GetGamesList()
 	//GetFriendsList()
@@ -55,7 +55,7 @@ type DAL interface {
 	FindGame(id string) (*Game, error)
 	AddGameTag(gameId, tag string) error
 	DeleteGameTag(gameId, tag string) error
-	//GetGames()
+	GetGames() ([]Game, error)
 
 	//Review
 
@@ -72,8 +72,7 @@ type DAL interface {
 	DeleteTag(tag string) error
 	FindTag(tag string) error
 	GetTags() ([]string, error)
-	FindGamesByTag(tag string)([]Game, error)
-
+	FindGamesByTag(tag string) ([]Game, error)
 }
 
 func (this *DataAccessLayer) CreateUser(name, pass, email string) (*User, error) {
@@ -174,6 +173,23 @@ func (this *DataAccessLayer) SendMessage(from, to, message string) error {
 	return nil
 }
 
+func (this *DataAccessLayer) GetUsers() ([]User, error) {
+	rows, err := this.db.Query("SELECT * FROM users")
+	if err != nil {
+		return nil, err
+	}
+	users := []User{}
+	for rows.Next() {
+		var user User
+		err = rows.Scan(&user.UserId, &user.UserName, &user.Password, &user.Email)
+		if err != nil {
+			return users, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
+
 func (this *DataAccessLayer) CreateGame(gam Game) error {
 	game, err := this.FindGame(gam.GameId)
 	if err != nil {
@@ -182,14 +198,14 @@ func (this *DataAccessLayer) CreateGame(gam Game) error {
 	if game != nil {
 		return errors.New("Game already exists.")
 	}
-	if _, err = this.db.Exec("INSERT INTO games VALUES('" + gam.GameId + "', '" + html.EscapeString(gam.Title) + "', '"+html.EscapeString(gam.Developer)+"', '" + html.EscapeString(gam.Publisher) + "', '" + html.EscapeString(gam.Description) + "', '" + html.EscapeString(gam.URL) + "')"); err != nil {
+	if _, err = this.db.Exec("INSERT INTO games VALUES('" + gam.GameId + "', '" + html.EscapeString(gam.Title) + "', '" + html.EscapeString(gam.Developer) + "', '" + html.EscapeString(gam.Publisher) + "', '" + html.EscapeString(gam.Description) + "', '" + html.EscapeString(gam.URL) + "')"); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (this *DataAccessLayer) UpdateGame(game Game) error {
-	if _, err := this.db.Exec("UPDATE games SET title='" + html.EscapeString(game.Title) + "', developer='"+html.EscapeString(game.Developer)+"', publisher='" + html.EscapeString(game.Publisher) + "', description='" + html.EscapeString(game.Description) + "', url='" + html.EscapeString(game.URL) + "' WHERE id='" + game.GameId + "'"); err != nil {
+	if _, err := this.db.Exec("UPDATE games SET title='" + html.EscapeString(game.Title) + "', developer='" + html.EscapeString(game.Developer) + "', publisher='" + html.EscapeString(game.Publisher) + "', description='" + html.EscapeString(game.Description) + "', url='" + html.EscapeString(game.URL) + "' WHERE id='" + game.GameId + "'"); err != nil {
 		return err
 	}
 	return nil
@@ -235,6 +251,26 @@ func (this *DataAccessLayer) DeleteGameTag(gameId, tag string) error {
 	}
 	return nil
 
+}
+
+func (this *DataAccessLayer) GetGames() ([]Game, error) {
+	/*
+		rows, err := this.db.Query("SELECT * FROM games")
+		if err != nil {
+			return nil, err
+		}
+		games := []Game{}
+		for rows.Next() {
+			var game Game
+			err = rows.Scan(&game.GameId, &game, &game, &game)
+			if err != nil {
+				return games, err
+			}
+			games = append(games, game)
+		}
+		return games, nil
+	*/
+	return nil, errors.New("TODO: Not implemented")
 }
 
 func (this *DataAccessLayer) CreateReview(review Review) error {
@@ -316,20 +352,21 @@ func (this *DataAccessLayer) UpdateTag(oldTag, newTag string) error {
 }
 func (this *DataAccessLayer) GetTags() ([]string, error) {
 	rows, err := this.db.Query("SELECT name FROM tags")
-	if err!=nil{
-		return nil,err
+	if err != nil {
+		return nil, err
 	}
 	tags := []string{}
-	for rows.Next(){
+	for rows.Next() {
 		var tag string
 		err = rows.Scan(&tag)
-		if err!=nil{
-			return tags,err
+		if err != nil {
+			return tags, err
 		}
 		tags = append(tags, html.UnescapeString(tag))
 	}
-	return tags,nil
+	return tags, nil
 }
-func (this *DataAccessLayer) FindGamesByTag(tag string)([]Game, error){
-	return nil,errors.New("TODO: Not implemented")
+
+func (this *DataAccessLayer) FindGamesByTag(tag string) ([]Game, error) {
+	return nil, errors.New("TODO: Not implemented")
 }
