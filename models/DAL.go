@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"html"
 
 	_ "gamebase/Godeps/_workspace/src/github.com/lib/pq"
 )
@@ -48,7 +49,7 @@ type DAL interface {
 	//GetMessages()
 
 	//GAME
-	CreateGame(id, title, publisher, url string) (*Game, error)
+	CreateGame(gam Game) error
 	UpdateGame(game Game) error
 	DeleteGame(gameId string) error
 	FindGame(id string) (*Game, error)
@@ -70,7 +71,8 @@ type DAL interface {
 	UpdateTag(oldTag, newTag string) error
 	DeleteTag(tag string) error
 	FindTag(tag string) error
-	//	GetTags()
+	GetTags() ([]string, error)
+	FindGamesByTag(tag string)([]Game, error)
 
 }
 
@@ -83,7 +85,7 @@ func (this *DataAccessLayer) CreateUser(name, pass, email string) (*User, error)
 		return nil, errors.New("Username already taken.")
 	}
 	user = NewUser(name, pass, email)
-	if _, err = this.db.Exec("INSERT INTO users VALUES('" + user.UserId + "', '" + user.UserName + "', '" + user.Password + "', '" + user.Email + "')"); err != nil {
+	if _, err = this.db.Exec("INSERT INTO users VALUES('" + user.UserId + "', '" + html.EscapeString(user.UserName) + "', '" + user.Password + "', '" + html.EscapeString(user.Email) + "')"); err != nil {
 		return user, err
 	}
 	return user, nil
@@ -99,6 +101,8 @@ func (this *DataAccessLayer) FindUser(id string) (*User, error) {
 	case err != nil:
 		return &user, err
 	}
+	user.UserName = html.UnescapeString(user.UserName)
+	user.Email = html.UnescapeString(user.Email)
 	return &user, nil
 }
 
@@ -112,11 +116,13 @@ func (this *DataAccessLayer) FindUserByName(name string) (*User, error) {
 	case err != nil:
 		return nil, err
 	}
+	user.UserName = html.UnescapeString(user.UserName)
+	user.Email = html.UnescapeString(user.Email)
 	return &user, nil
 }
 
 func (this *DataAccessLayer) UpdateUser(user User) error {
-	if _, err := this.db.Exec("UPDATE users SET name='" + user.UserName + "', password='" + user.Password + "', email='" + user.Email + "' WHERE id='" + user.UserId + "'"); err != nil {
+	if _, err := this.db.Exec("UPDATE users SET name='" + html.EscapeString(user.UserName) + "', password='" + user.Password + "', email='" + html.EscapeString(user.Email) + "' WHERE id='" + user.UserId + "'"); err != nil {
 		return err
 	}
 	return nil
@@ -162,29 +168,28 @@ func (this *DataAccessLayer) SendMessage(from, to, message string) error {
 	if user != nil {
 		return errors.New("User does not exist")
 	}
-	if _, err = this.db.Exec("INSERT INTO messaging VALUES('" + from + "', '" + to + "', '" + message + "', '" + time.Now().Format("2006-01-02 15:04:05") + "')"); err != nil {
+	if _, err = this.db.Exec("INSERT INTO messaging VALUES('" + from + "', '" + to + "', '" + html.EscapeString(message) + "', '" + time.Now().Format("2006-01-02 15:04:05") + "')"); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (this *DataAccessLayer) CreateGame(id, title, publisher, url string) (*Game, error) {
-	game, err := this.FindGame(id)
+func (this *DataAccessLayer) CreateGame(gam Game) error {
+	game, err := this.FindGame(gam.GameId)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if game != nil {
-		return nil, errors.New("Game already exists.")
+		return errors.New("Game already exists.")
 	}
-	game = NewGame(title, publisher, url)
-	if _, err = this.db.Exec("INSERT INTO games VALUES('" + game.GameId + "', '" + game.Title + "', '" + game.Publisher + "', '" + game.URL + "')"); err != nil {
-		return game, err
+	if _, err = this.db.Exec("INSERT INTO games VALUES('" + gam.GameId + "', '" + html.EscapeString(gam.Title) + "', '"+html.EscapeString(gam.Developer)+"', '" + html.EscapeString(gam.Publisher) + "', '" + html.EscapeString(gam.Description) + "', '" + html.EscapeString(gam.URL) + "')"); err != nil {
+		return err
 	}
-	return game, nil
+	return nil
 }
 
 func (this *DataAccessLayer) UpdateGame(game Game) error {
-	if _, err := this.db.Exec("UPDATE games SET title='" + game.Title + "', publisher='" + game.Publisher + "', url='" + game.URL + "' WHERE id='" + game.GameId + "'"); err != nil {
+	if _, err := this.db.Exec("UPDATE games SET title='" + html.EscapeString(game.Title) + "', developer='"+html.EscapeString(game.Developer)+"', publisher='" + html.EscapeString(game.Publisher) + "', description='" + html.EscapeString(game.Description) + "', url='" + html.EscapeString(game.URL) + "' WHERE id='" + game.GameId + "'"); err != nil {
 		return err
 	}
 	return nil
@@ -199,9 +204,14 @@ func (this *DataAccessLayer) DeleteGame(gameId string) error {
 }
 
 func (this *DataAccessLayer) FindGame(id string) (*Game, error) {
-	row := this.db.QueryRow("SELECT * FROM games WHERE id='" + id + "'")
+	row := this.db.QueryRow("SELECT id,title,developer,publisher,description,url FROM games WHERE id='" + id + "'")
 	game := Game{}
-	err := row.Scan(&game.GameId, &game.Title, &game.Publisher)
+	err := row.Scan(&game.GameId, &game.Title, &game.Developer, &game.Publisher, &game.Description, &game.URL)
+	game.Title = html.UnescapeString(game.Title)
+	game.Developer = html.UnescapeString(game.Developer)
+	game.Publisher = html.UnescapeString(game.Publisher)
+	game.Description = html.UnescapeString(game.Description)
+	game.URL = html.UnescapeString(game.URL)
 	switch {
 	case err == sql.ErrNoRows:
 		return nil, nil
@@ -212,7 +222,7 @@ func (this *DataAccessLayer) FindGame(id string) (*Game, error) {
 }
 
 func (this *DataAccessLayer) AddGameTag(gameId, tag string) error {
-	if _, err := this.db.Exec("INSERT INTO user_games VALUES('" + gameId + "', '" + tag + "')"); err != nil {
+	if _, err := this.db.Exec("INSERT INTO user_games VALUES('" + gameId + "', '" + html.EscapeString(tag) + "')"); err != nil {
 		return err
 	}
 	return nil
@@ -220,7 +230,7 @@ func (this *DataAccessLayer) AddGameTag(gameId, tag string) error {
 }
 
 func (this *DataAccessLayer) DeleteGameTag(gameId, tag string) error {
-	if _, err := this.db.Exec("DELETE FROM user_games WHERE (' gameId=" + gameId + "'AND tag='" + tag + "')"); err != nil {
+	if _, err := this.db.Exec("DELETE FROM user_games WHERE (' gameId=" + gameId + "'AND tag='" + html.EscapeString(tag) + "')"); err != nil {
 		return err
 	}
 	return nil
@@ -236,7 +246,7 @@ func (this *DataAccessLayer) CreateReview(review Review) error {
 		return errors.New("Review already exists.")
 	}
 	f := strconv.FormatFloat(review.Rating, 'g', 2, 64)
-	if _, err = this.db.Exec("INSERT INTO reviews VALUES('" + review.ReviewId + "', '" + review.UserId + "', '" + review.GameId + "', '" + review.Body + "', '" + f + "')"); err != nil {
+	if _, err = this.db.Exec("INSERT INTO reviews VALUES('" + review.ReviewId + "', '" + review.UserId + "', '" + review.GameId + "', '" + html.EscapeString(review.Body) + "', '" + f + "')"); err != nil {
 		return err
 	}
 	return nil
@@ -244,7 +254,7 @@ func (this *DataAccessLayer) CreateReview(review Review) error {
 
 func (this *DataAccessLayer) UpdateReview(review Review) error {
 	f := strconv.FormatFloat(review.Rating, 'g', 2, 64)
-	if _, err := this.db.Exec("UPDATE reviews SET body='" + review.Body + "', rating='" + f + "' WHERE id='" + review.ReviewId + "'"); err != nil {
+	if _, err := this.db.Exec("UPDATE reviews SET body='" + html.EscapeString(review.Body) + "', rating='" + f + "' WHERE id='" + review.ReviewId + "'"); err != nil {
 		return err
 	}
 	return nil
@@ -268,13 +278,14 @@ func (this *DataAccessLayer) FindReview(reviewId string) (*Review, error) {
 	case err != nil:
 		return &review, err
 	}
+	review.Body = html.UnescapeString(review.Body)
 	return &review, nil
 }
 
 func (this *DataAccessLayer) CreateTag(tag string) error {
 	err := this.FindTag(tag)
 	if err == sql.ErrNoRows {
-		if _, err = this.db.Exec("INSERT INTO tags VALUES('" + tag + "')"); err != nil {
+		if _, err = this.db.Exec("INSERT INTO tags VALUES('" + html.EscapeString(tag) + "')"); err != nil {
 			return err
 		}
 	} else if err != nil {
@@ -284,7 +295,7 @@ func (this *DataAccessLayer) CreateTag(tag string) error {
 }
 
 func (this *DataAccessLayer) DeleteTag(tag string) error {
-	if _, err := this.db.Exec("DELETE FROM tags WHERE (' name=" + tag + "')"); err != nil {
+	if _, err := this.db.Exec("DELETE FROM tags WHERE (' name=" + html.EscapeString(tag) + "')"); err != nil {
 		return err
 	}
 	return nil
@@ -292,14 +303,33 @@ func (this *DataAccessLayer) DeleteTag(tag string) error {
 }
 
 func (this *DataAccessLayer) FindTag(tag string) error {
-	row := this.db.QueryRow("SELECT name FROM tags WHERE name='" + tag + "'")
+	row := this.db.QueryRow("SELECT name FROM tags WHERE name='" + html.EscapeString(tag) + "'")
 	err := row.Scan(&tag)
 	return err
 }
 
 func (this *DataAccessLayer) UpdateTag(oldTag, newTag string) error {
-	if _, err := this.db.Exec("UPDATE tags SET name='" + newTag + "' WHERE name='" + oldTag + "'"); err != nil {
+	if _, err := this.db.Exec("UPDATE tags SET name='" + html.EscapeString(newTag) + "' WHERE name='" + html.EscapeString(oldTag) + "'"); err != nil {
 		return err
 	}
 	return nil
+}
+func (this *DataAccessLayer) GetTags() ([]string, error) {
+	rows, err := this.db.Query("SELECT name FROM tags")
+	if err!=nil{
+		return nil,err
+	}
+	tags := []string{}
+	for rows.Next(){
+		var tag string
+		err = rows.Scan(&tag)
+		if err!=nil{
+			return tags,err
+		}
+		tags = append(tags, html.UnescapeString(tag))
+	}
+	return tags,nil
+}
+func (this *DataAccessLayer) FindGamesByTag(tag string)([]Game, error){
+	return nil,errors.New("TODO: Not implemented")
 }

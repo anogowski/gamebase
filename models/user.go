@@ -30,7 +30,7 @@ func (this *User) InitUser(user_name string, pass string, mail string) {
 }
 
 func (this *User) SetPassword(newPWord string){
-	hash, _ := bcrypt.GenerateFromPassword([]byte(pass), hashcost)
+	hash, _ := bcrypt.GenerateFromPassword([]byte(newPWord), hashcost)
 	this.Password = string(hash)
 }
 	

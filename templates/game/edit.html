@@ -1,5 +1,5 @@
 {{define "game/edit"}}
-	<form action="game/{{URLQueryEscaper .Game.GameId}}/edit" method="post">
+	<form action="/game/{{URLQueryEscaper .Game.GameId}}/edit" method="post">
 		<script type="text/javascript" src="/assets/js/game.js"></script>
 		<div class="formgrp">
 			<label for="gameTitle">Title</label>
@@ -8,6 +8,10 @@
 		<div class="formgrp">
 			<label for="gamePublisher">Publisher</label>
 			<input type="text" name="gamePublisher" id="gamePublisher" value="{{.Game.Publisher}}"/>
+		</div>
+		<div class="formgrp">
+			<label for="gameDeveloper">Developer</label>
+			<input type="text" name="gameDeveloper" id="gameDeveloper" {{if .Game}}value="{{.Game.Developer}}"{{end}}/>
 		</div>
 		<div class="formgrp">
 			<label for="gameCopyright">Copyright</label>
@@ -20,7 +24,7 @@
 		<div class="formgrp">
 			<label for="gameDescription">Description</label>
 			<textarea name="gameDescription" id="gameDescription">
-				.Game.Body
+				{{.Game.Description}}
 			</textarea>
 		</div>
 		<div class="formgrp">
