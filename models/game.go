@@ -1,14 +1,14 @@
 package models
 
 type Game struct {
-	GameId    string
-	Title     string
-	Publisher string
-	Developer string
-	Rating    float64
+	GameId      string
+	Title       string
+	Publisher   string
+	Developer   string
+	Rating      float64
 	Description string
-	URL       string
-	Review    []Review
+	URL         string
+	Review      []Review
 }
 
 const (
@@ -27,7 +27,7 @@ func (this *Game) InitGame(title, pub, url string) {
 	this.Publisher = pub
 	this.URL = url
 	this.GameId = GenerateID("game_", GAME_ID_LEN)
-//	Dal.CreateGame(this.GameId, this.Title, this.Publisher, this.URL)
+	//Dal.CreateGame(this.GameId, this.Title, this.Publisher, this.URL)
 }
 
 func (this *Game) UpdateGame(title, pub, url string) {
