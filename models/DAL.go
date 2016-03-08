@@ -73,6 +73,7 @@ type DAL interface {
 	FindTag(tag string) error
 	GetTags() ([]string, error)
 	FindGamesByTag(tag string) ([]Game, error)
+	FindTagsByGame(gameid string) ([]string, error)
 }
 
 func (this *DataAccessLayer) CreateUser(name, pass, email string) (*User, error) {
@@ -368,5 +369,46 @@ func (this *DataAccessLayer) GetTags() ([]string, error) {
 }
 
 func (this *DataAccessLayer) FindGamesByTag(tag string) ([]Game, error) {
-	return nil, errors.New("TODO: Not implemented")
+	games := []Game{}
+	rows, err := this.db.Query("SELECT gameid FROM game_tags WHERE tag='"+tag+"'")
+	if err != nil {
+		if err==sql.ErrNoRows{
+			return games,nil
+		}
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var gameid string
+		err = rows.Scan(&gameid)
+		if err != nil {
+			return games, err
+		}
+		game, err := this.FindGame(gameid)
+		if err!=nil{
+			return games,err
+		}
+		games = append(games, *game)
+	}
+	return games, nil
+}
+func (this *DataAccessLayer) FindTagsByGame(gameid string) ([]string, error) {
+	tags := []string{}
+	rows, err := this.db.Query("SELECT tag FROM game_tags WHERE gameid='"+gameid+"'")
+	if err != nil {
+		if err==sql.ErrNoRows{
+			return tags,nil
+		}
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var tag string
+		err = rows.Scan(&tag)
+		if err != nil {
+			return tags, err
+		}
+		tags = append(tags, html.UnescapeString(tag))
+	}
+	return tags, nil
 }

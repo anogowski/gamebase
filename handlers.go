@@ -10,7 +10,11 @@ import (
 
 func HandleIndex(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	randgames := []models.Game{}
-	//randgames := models.GlobalGameStore.GetRandomGames(10)
+	var err error
+	//randgames,err = models.Dal.GetGames(20)
+	if err!=nil{
+		panic(err)
+	}
 	models.RenderTemplate(w, r, "home/index", map[string]interface{}{"RandomGames":randgames})
 }
 
@@ -20,13 +24,13 @@ func HandleSearch(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	res := []models.Game{}
 	var err error
 	if tag!=""{
-		//var tagres []models.Game
-		//tagres, err = models.GlobalGameStore.FindTagged(tag)
-		//res = append(res, tagres)
+		var tagres []models.Game
+		tagres, err = models.Dal.FindGamesByTag(tag)
+		res = append(res, tagres...)
 	}
 	if nameinclude!=""{
 		//var namres []models.Game
-		//namres, err = models.GlobalGameStore.FindNameIncludes(nameinclude)
+		//namres, err = models.Dal.SearchGames(nameinclude)
 		//res = append(res, namres)
 	}
 	models.RenderTemplate(w, r, "game/search", map[string]interface{}{"NameIncludes":nameinclude, "Tag":tag, "SearchResults":res, "Error":err})
@@ -141,7 +145,7 @@ func HandleGameEditPage(w http.ResponseWriter, r *http.Request, params httproute
 			return
 		}
 		tags := []string{}
-		//tags, err := models.Dal.FindTagsByGame(gameid)
+		tags, err = models.Dal.FindTagsByGame(gameid)
 		if err!=nil{
 			panic(err)
 		}
@@ -170,7 +174,7 @@ func HandleGameEditAction(w http.ResponseWriter, r *http.Request, params httprou
 			}
 		}
 		var currtags []string
-		//currtags, err = models.Dal.FindTagsByGame(gameid)
+		currtags, err = models.Dal.FindTagsByGame(gameid)
 		if err!=nil || currtags==nil{
 			currtags = []string{}
 		}

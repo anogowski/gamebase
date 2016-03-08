@@ -28,7 +28,7 @@ function addTag(inpid, add, elem, outpid, outpidnext){
 	arr.push(add);
 	inp.value = "[";
 	for(var i=0; i<arr.length; ++i){
-		inp.value += (i>0?", '":"'")+arr[i]+"'";
+		inp.value += (i>0?', "':'"')+arr[i]+'"';
 	}
 	inp.value += "]";
 }
@@ -61,7 +61,7 @@ function removeTag(inpid, rem, elem, outpid, outpidnext){
 		}
 		inp.value = "[";
 		for(var i=0; i<arr.length; ++i){
-			inp.value += (i>0?", '":"'")+arr[i]+"'";
+			inp.value += (i>0?', "':'"')+arr[i]+'"';
 		}
 		inp.value += "]";
 	}

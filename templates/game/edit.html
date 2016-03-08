@@ -45,7 +45,7 @@
 				<input type="text" id="newTag" name="newTag" onkeypress="javascript:if(event.keyCode==13){event.preventDefault(); addTag('gameTags', queryEscape(document.getElementById('newTag').value), undefined, 'addTagsDIV', 'remTagsDIV');}" />
 				<input type="button" onclick="javascript:addTag('gameTags', queryEscape(document.getElementById('newTag').value), undefined, 'addTagsDIV', 'remTagsDIV');" value="Add Tag"/>
 			</id>
-			<input type="hidden" id="gameTags" name="gameTags" value="{{JSONify .Tags}}"/>
+			<input type="hidden" id="gameTags" name="gameTags" value="[{{range .Tags}}'{{URLQueryEscaper .}}', {{end}}]"/>
 		</div>
 		<div class="formgrp">
 			<input type="submit" value="Apply Game Updates"/>
