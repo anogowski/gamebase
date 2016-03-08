@@ -43,6 +43,7 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		username := r.FormValue("accountName")
 		email := r.FormValue("accountEmail")
 		newPassword := r.FormValue("accountNewPassword")
+		confirmNewPassword := r.FormValue("confirmPassword")
 		oldPassword := r.FormValue("accountPassword")
 
 		
@@ -54,6 +55,10 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		
 		user.Email = email
 		if newPassword != ""{
+			if(newPassword != confirmNewPassword){
+				models.RenderTemplate(w, r, "users/account", map[string]interface{}{"Error": "Passwords do not match."})
+				return
+			}
 			user.SetPassword(newPassword)
 		}
 		
