@@ -1,5 +1,6 @@
 package models
 import (
+	"encoding/json"
 	"html/template"
 	"net/http"
 	"bytes"
@@ -44,11 +45,11 @@ var layoutFuncs = template.FuncMap{
 	},
 	"FindGameNameByID":func(gameid string)(string,error){
 		return "FindGameNameByID not yet implemented",nil
-		//user, err := GlobalGameStore.Find(gameid)
-		//if err!=nil{
-		//	return "",err
-		//}
-		//return user.UserName,nil
+		game, err := Dal.FindGame(gameid)
+		if err!=nil{
+			return "",err
+		}
+		return game.Title,nil
 	},
 	"ReviewCount":func(userid string)(string,error){
 		return "ReviewCount not yet implemented",nil
@@ -84,6 +85,10 @@ var layoutFuncs = template.FuncMap{
 	},
 	"URLQueryEscaper":func(s interface{})(string,error){
 		return template.URLQueryEscaper(s),nil
+	},
+	"JSONify":func(s interface{})(string,error){
+		js,err := json.Marshal(s)
+		return string(js),err
 	},
 }
 var layout = template.Must(template.New("layout.html").Funcs(layoutFuncs).ParseFiles("templates/layout.html"))
@@ -157,6 +162,7 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 		"ReviewCount":layoutFuncs["ReviewCount"],
 		"VideoCount":layoutFuncs["VideoCount"],
 		"URLQueryEscaper":layoutFuncs["URLQueryEscaper"],
+		"JSONify":layoutFuncs["JSONify"],
 	}
 	layoutclone, _ := layout.Clone()
 	layoutclone.Funcs(funcs).Funcs(renderFuncs)

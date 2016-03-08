@@ -163,19 +163,34 @@ func HandleGameEditAction(w http.ResponseWriter, r *http.Request, params httprou
 		if err!=nil || tags==nil{
 			tags = []string{}
 		}
-		remtagstr := r.FormValue("removedTags")
-		var remtags []string
-		err = json.Unmarshal([]byte(remtagstr), &tags)
-		if err!=nil || remtags==nil{
-			remtags = []string{}
+		for k,v := range tags{
+			t,err := url.QueryUnescape(v)
+			if err==nil{
+				tags[k] = t
+			}
+		}
+		var currtags []string
+		//currtags, err = models.Dal.FindTagsByGame(gameid)
+		if err!=nil || currtags==nil{
+			currtags = []string{}
 		}
 		game := models.Game{GameId:gameid, Title:title, Developer:dev, Publisher:pub, URL:trailer, Description:desc}
 		err = models.Dal.UpdateGame(game)
 		if err!=nil{
 			panic(err)
 		}
-		for _,t := range remtags{
-			models.Dal.DeleteGameTag(gameid, t)
+		for _,t := range currtags{
+			found := false
+			for k,v := range tags {
+				if t==v{
+					found = true
+					tags = append(tags[:k], tags[k+1:]...)
+					break;
+				}
+			}
+			if !found{
+				models.Dal.DeleteGameTag(gameid, t)
+			}
 		}
 		for _,t := range tags{
 			models.Dal.AddGameTag(gameid, t)

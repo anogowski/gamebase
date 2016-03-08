@@ -31,21 +31,21 @@
 			<label for="gameTagsDIV">Tags (Click To Remove)</label>
 			<div id="addTagsDIV" name="addTagsDIV">
 				{{range .Tags}}
-					<a href="#" onclick="javascript:removeTag('gameTags', '{{URLQueryEscaper .}}', this);">{{.}}</a>
+					<a href="#" onclick="javascript:removeTag('gameTags', '{{URLQueryEscaper .}}', this, 'remTagsDIV');">{{.}}</a>
 				{{end}}
 			</div>
 			<label for="remTagsDIV">Available Tags (Click To Add)</label>
 			<div id="remTagsDIV" name="remTagsDIV">
 				{{range .Taglist}}
-					<a href="#" onclick="javascript:addTag('gameTags', '{{URLQueryEscaper .}}', this);">{{.}}</a>
+					<a href="#" onclick="javascript:addTag('gameTags', '{{URLQueryEscaper .}}', this, 'addTagsDIV');">{{.}}</a>
 				{{end}}
 			</div>
 			<id class="formgrp">
 				<label for="newTag">New Tag</label>
-				<input type="text" id="newTag" name="newTag" onkeypress="javascript:if(event.keyCode==13){event.preventDefault(); addTag('gameTags', queryEscape(document.getElementById('newTag').value), undefined);}" />
-				<input type="button" onclick="javascript:addTag('gameTags', queryEscape(document.getElementById('newTag').value), undefined);" value="Add Tag"/>
+				<input type="text" id="newTag" name="newTag" onkeypress="javascript:if(event.keyCode==13){event.preventDefault(); addTag('gameTags', queryEscape(document.getElementById('newTag').value), undefined, 'addTagsDIV', 'remTagsDIV');}" />
+				<input type="button" onclick="javascript:addTag('gameTags', queryEscape(document.getElementById('newTag').value), undefined, 'addTagsDIV', 'remTagsDIV');" value="Add Tag"/>
 			</id>
-			<input type="hidden" id="gameTags" name="gameTags" value=""/>
+			<input type="hidden" id="gameTags" name="gameTags" value="{{JSONify .Tags}}"/>
 		</div>
 		<div class="formgrp">
 			<input type="submit" value="Apply Game Updates"/>
