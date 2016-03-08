@@ -136,7 +136,7 @@ func (this *DataAccessLayer) AddUserGame(user User, gameId string) error {
 }
 
 func (this *DataAccessLayer) DeleteUserGame(user User, gameId string) error {
-	if _, err := this.db.Exec("DELETE FROM user_games WHERE (' id=" + user.UserId + "'AND gameId='" + gameId + "')"); err != nil {
+	if _, err := this.db.Exec("DELETE FROM user_games WHERE (id='" + user.UserId + "' AND gameId='" + gameId + "')"); err != nil {
 		return err
 	}
 	return nil
@@ -152,7 +152,7 @@ func (this *DataAccessLayer) AddUserFriend(user User, friendId string) error {
 }
 
 func (this *DataAccessLayer) DeleteUserFriend(user User, friendId string) error {
-	if _, err := this.db.Exec("DELETE FROM friends WHERE (' id=" + user.UserId + "'AND friendId='" + friendId + "')"); err != nil {
+	if _, err := this.db.Exec("DELETE FROM friends WHERE (id='" + user.UserId + "' AND friendId='" + friendId + "')"); err != nil {
 		return err
 	}
 	return nil
@@ -212,7 +212,7 @@ func (this *DataAccessLayer) UpdateGame(game Game) error {
 }
 
 func (this *DataAccessLayer) DeleteGame(gameId string) error {
-	if _, err := this.db.Exec("DELETE FROM games WHERE (' id=" + gameId + "')"); err != nil {
+	if _, err := this.db.Exec("DELETE FROM games WHERE (id='" + gameId + "')"); err != nil {
 		return err
 	}
 	return nil
@@ -238,7 +238,7 @@ func (this *DataAccessLayer) FindGame(id string) (*Game, error) {
 }
 
 func (this *DataAccessLayer) AddGameTag(gameId, tag string) error {
-	if _, err := this.db.Exec("INSERT INTO user_games VALUES('" + gameId + "', '" + html.EscapeString(tag) + "')"); err != nil {
+	if _, err := this.db.Exec("INSERT INTO game_tags VALUES('" + gameId + "', '" + html.EscapeString(tag) + "')"); err != nil {
 		return err
 	}
 	return nil
@@ -246,7 +246,7 @@ func (this *DataAccessLayer) AddGameTag(gameId, tag string) error {
 }
 
 func (this *DataAccessLayer) DeleteGameTag(gameId, tag string) error {
-	if _, err := this.db.Exec("DELETE FROM user_games WHERE (' gameId=" + gameId + "'AND tag='" + html.EscapeString(tag) + "')"); err != nil {
+	if _, err := this.db.Exec("DELETE FROM game_tags WHERE (gameId='" + gameId + "' AND tag='" + html.EscapeString(tag) + "')"); err != nil {
 		return err
 	}
 	return nil
