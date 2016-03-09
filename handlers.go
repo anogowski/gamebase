@@ -228,7 +228,17 @@ func HandleReviewNewAction(w http.ResponseWriter, r *http.Request, params httpro
 	if models.SignedIn(w,r){
 		//gameid := params.ByName("wild")
 		//TODO: create the new review page
-		
+		//reviewid
+		reviewid := r.FormValue("reviewID")
+		//userid
+		user := models.RequestUser(r)
+		//gameid
+		gameid := r.FormValue("gameID")
+		//review
+		review := r.FormValue("reviewBody")
+		//rating
+		rating := r.FormValue("reviewRating")
+		//models.Dal.CreateReview()
 	}
 }
 func HandleVideo(w http.ResponseWriter, r *http.Request, params httprouter.Params){
