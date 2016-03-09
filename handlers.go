@@ -77,8 +77,12 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 func HandleChatAction(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	if models.SignedIn(w,r){
 		//TODO: send the chatNewMsg to chatTo
+		user := models.RequestUser(r)
 		toUser := r.FormValue("chatTo")
+		chatID := r.FormValue("chatToID")
 		theMessage := r.FormValue("chatNewMsg")
+		models.Dal.SendMessage(user, chatID, theMessage)
+
 	}
 }
 
