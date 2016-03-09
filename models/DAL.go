@@ -45,7 +45,7 @@ type DAL interface {
 	GetUsers() ([]User, error)
 	SendMessage(from, to, message string) error
 	GetGamesList(userId string) ([]Game, error)
-	//GetFriendsList()
+	GetFriendsList(userId string) ([]User, error)
 	GetMessages(userId string) ([]Message, error)
 
 	//GAME
@@ -316,6 +316,25 @@ func (this *DataAccessLayer) GetGamesList(userId string) ([]Game, error) {
 		games = append(games, game)
 	}
 	return games, nil
+}
+
+func (this *DataAccessLayer) GetFriendsList(userId string) ([]User, error) {
+
+	rows, err := this.db.Query("SELECT * FROM friends JOIN users ON friends.friendID = users.id WHERE userid ='" + userId + "'")
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
+	}
+	users := []User{}
+	defer rows.Close()
+	for rows.Next() {
+		var user User
+		err = rows.Scan(&user.UserId, &user.UserName, &user.Password, &user.Email)
+		if err != nil {
+			return users, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
 }
 
 func (this *DataAccessLayer) CreateReview(review Review) error {
