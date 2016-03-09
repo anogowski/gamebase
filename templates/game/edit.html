@@ -45,7 +45,23 @@
 				<input type="text" id="newTag" name="newTag" onkeypress="javascript:if(event.keyCode==13){event.preventDefault(); addTag('gameTags', queryEscape(document.getElementById('newTag').value), undefined, 'addTagsDIV', 'remTagsDIV');}" />
 				<input type="button" onclick="javascript:addTag('gameTags', queryEscape(document.getElementById('newTag').value), undefined, 'addTagsDIV', 'remTagsDIV');" value="Add Tag"/>
 			</id>
-			<input type="hidden" id="gameTags" name="gameTags" value="[{{range .Tags}}'{{URLQueryEscaper .}}', {{end}}]"/>
+			<input type="hidden" id="gameTags" name="gameTags" value=""/>
+			<script type="text/javascript">
+			<!--
+			{
+				var tagarr = [];
+				{{range .Tags}}
+					tagarr.push('{{URLQueryEscaper .}}');
+				{{end}}
+				var val = document.getElementById('gameTags');
+				val.value = "[";
+				for(var i=0; i<tagarr.length; ++i){
+					val.value += (i>0? ", '" : "'")+tagarr[i]+"'";
+				}
+				val.value += "]";
+			}
+			-->
+			</script>
 		</div>
 		<div class="formgrp">
 			<input type="submit" value="Apply Game Updates"/>
