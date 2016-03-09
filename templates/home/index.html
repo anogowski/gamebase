@@ -2,7 +2,7 @@
 	<div class="mid">{{.Flash}}</div>
 	<div>
 		{{range .RandomGames}}
-			{{RenderTemplateGameLink .}}
+			{{RenderTemplateGameLink . "" ""}}
 		{{else}}
 			<p>No Games</p>
 		{{end}}

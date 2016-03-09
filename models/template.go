@@ -18,7 +18,7 @@ var layoutFuncs = template.FuncMap{
 	"yieldchat":func()(string,error){
 		return "",fmt.Errorf("bad yieldchat called")
 	},
-	"RenderTemplateGameLink":func(href, onclick string)(string,error){
+	"RenderTemplateGameLink":func(game Game, href, onclick string)(string,error){
 		return "",fmt.Errorf("bad RenderTemplateGameLink called")
 	},
 	"RenderTemplateRating":func(rating float64)(string,error){
@@ -108,9 +108,12 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 	var templateClone *template.Template
 	
 	renderFuncs := template.FuncMap{
-		"RenderTemplateGameLink":func(href, onclick string)(template.HTML,error){
+		"RenderTemplateGameLink":func(game Game, href, onclick string)(template.HTML,error){
+			if href==""{
+				href = "/game/"+game.GameId
+			}
 			buf := bytes.NewBuffer(nil)
-			err := templateClone.ExecuteTemplate(buf, "home/index", map[string]interface{}{"GameLinkHREF":href, "GameLinkONCLICK":onclick})
+			err := templateClone.ExecuteTemplate(buf, "game/gamelink", map[string]interface{}{"GameLinkHREF":href, "GameLinkONCLICK":onclick, "Game":game})
 			return template.HTML(buf.String()), err
 		},
 		"RenderTemplateRating":func(rating float64)(template.HTML,error){

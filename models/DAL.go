@@ -55,7 +55,7 @@ type DAL interface {
 	FindGame(id string) (*Game, error)
 	AddGameTag(gameId, tag string) error
 	DeleteGameTag(gameId, tag string) error
-	GetGames() ([]Game, error)
+	GetGames(amnt, skip int) ([]Game, error)
 
 	//Review
 
@@ -273,8 +273,29 @@ func (this *DataAccessLayer) DeleteGameTag(gameId, tag string) error {
 
 }
 
+func (this *DataAccessLayer) GetGames(amnt, skip int) ([]Game, error) {
+	rows, err := this.db.Query("SELECT * FROM games LIMIT "+strconv.Itoa(amnt)+" OFFSET "+strconv.Itoa(skip))
+	if err != nil && err!=sql.ErrNoRows{
+		return nil, err
+	}
+	games := []Game{}
+	defer rows.Close()
+	for rows.Next() {
+		var game Game
+		err := rows.Scan(&game.GameId, &game.Title, &game.Developer, &game.Publisher, &game.Description, &game.URL)
+		if err!=nil{
+			return games,err
+		}
+		game.Title = html.UnescapeString(game.Title)
+		game.Developer = html.UnescapeString(game.Developer)
+		game.Publisher = html.UnescapeString(game.Publisher)
+		game.Description = html.UnescapeString(game.Description)
+		game.URL = html.UnescapeString(game.URL)
+		games = append(games, game)
+	}
+	return games, nil
+}
 func (this *DataAccessLayer) GetGamesList(userId string) ([]Game, error) {
-
 	rows, err := this.db.Query("SELECT * FROM user_games JOIN users ON user_games.userid = users.id WHERE userid ='" + userId + "'")
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
@@ -283,10 +304,15 @@ func (this *DataAccessLayer) GetGamesList(userId string) ([]Game, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var game Game
-		err = rows.Scan(&game.GameId, &game.Title, &game.Developer, &game.Publisher, &game.Description, &game.URL)
-		if err != nil {
-			return games, err
+		err := rows.Scan(&game.GameId, &game.Title, &game.Developer, &game.Publisher, &game.Description, &game.URL)
+		if err!=nil{
+			return games,err
 		}
+		game.Title = html.UnescapeString(game.Title)
+		game.Developer = html.UnescapeString(game.Developer)
+		game.Publisher = html.UnescapeString(game.Publisher)
+		game.Description = html.UnescapeString(game.Description)
+		game.URL = html.UnescapeString(game.URL)
 		games = append(games, game)
 	}
 	return games, nil
