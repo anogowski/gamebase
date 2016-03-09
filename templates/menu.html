@@ -2,7 +2,7 @@
 	<ul>
 	{{if .Taglist}}
 		{{range .Taglist}}
-			<a href="/search?tag={{URLQueryEscaper .}}">
+			<a href="/search?tag={{.}}">
 				<li>{{.}}</li>
 			</a>
 		{{end}}
