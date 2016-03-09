@@ -38,7 +38,7 @@ func (this *Game) UpdateGame(title, pub, url string) {
 }
 
 func (this *Game) DeleteGame() {
-
+	Dal.DeleteGame(*this.GameId)
 }
 
 func (this *Game) UpdateRating(rating float64) {

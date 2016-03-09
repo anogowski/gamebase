@@ -29,23 +29,24 @@ func (this *User) InitUser(user_name string, pass string, mail string) {
 	this.Email = mail
 }
 
-func (this *User) SetPassword(newPWord string){
+func (this *User) SetPassword(newPWord string) {
 	hash, _ := bcrypt.GenerateFromPassword([]byte(newPWord), hashcost)
 	this.Password = string(hash)
 }
-	
+
 func (this *User) AddGame(game Game) {
 	this.Games = append(this.Games, game)
-	//CALL DAL
+	//Dal.AddUserGame(*this, *game)
 }
 
 func (this *User) AddFriend(friend User) {
 	this.Friends = append(this.Friends, friend)
-	//CALL DAL
+	//Dal.AddUserFriend(*this, friend.UserId)
 }
 
 func (this *User) AddMessage(message string) {
 	this.Messages = append(this.Messages, message)
+	//Dal.
 }
 func (this *User) CheckPassword(pass string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(this.Password), []byte(pass)) == nil

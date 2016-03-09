@@ -357,7 +357,7 @@ func (this *DataAccessLayer) FindReview(reviewId string) (*Review, error) {
 }
 
 func (this *DataAccessLayer) GetReviewsByGame(gameId string) ([]Review, error) {
-	rows, err := this.db.Query("SELECT * FROM reviews WHERE gameid ='" + gameid + "'")
+	rows, err := this.db.Query("SELECT * FROM reviews WHERE gameid ='" + gameId + "'")
 	if err != nil {
 		return nil, err
 	}
