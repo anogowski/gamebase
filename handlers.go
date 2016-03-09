@@ -11,7 +11,7 @@ import (
 func HandleIndex(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	randgames := []models.Game{}
 	var err error
-	//randgames,err = models.Dal.GetGames(20)
+	randgames,err = models.Dal.GetGames(20, 0)
 	if err!=nil{
 		panic(err)
 	}
