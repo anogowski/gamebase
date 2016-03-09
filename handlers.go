@@ -78,10 +78,10 @@ func HandleChatAction(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 	if models.SignedIn(w,r){
 		//TODO: send the chatNewMsg to chatTo
 		user := models.RequestUser(r)
-		toUser := r.FormValue("chatTo")
+		//toUser := r.FormValue("chatTo")
 		chatID := r.FormValue("chatToID")
 		theMessage := r.FormValue("chatNewMsg")
-		models.Dal.SendMessage(user, chatID, theMessage)
+		models.Dal.SendMessage(user.UserId, chatID, theMessage)
 
 	}
 }
@@ -229,15 +229,15 @@ func HandleReviewNewAction(w http.ResponseWriter, r *http.Request, params httpro
 		//gameid := params.ByName("wild")
 		//TODO: create the new review page
 		//reviewid
-		reviewid := r.FormValue("reviewID")
+		//reviewid := r.FormValue("reviewID")
 		//userid
-		user := models.RequestUser(r)
+		//user := models.RequestUser(r)
 		//gameid
-		gameid := r.FormValue("gameID")
+		//gameid := r.FormValue("gameID")
 		//review
-		review := r.FormValue("reviewBody")
+		//review := r.FormValue("reviewBody")
 		//rating
-		rating := r.FormValue("reviewRating")
+		//rating := r.FormValue("reviewRating")
 		//models.Dal.CreateReview()
 	}
 }
