@@ -44,9 +44,9 @@ type DAL interface {
 
 	GetUsers() ([]User, error)
 	SendMessage(from, to, message string) error
-	//GetGamesList()
+	GetGamesList(userId string) ([]Game, error)
 	//GetFriendsList()
-	//GetMessages()
+	GetMessages(userId string) ([]Message, error)
 
 	//GAME
 	CreateGame(gam Game) error
@@ -63,7 +63,8 @@ type DAL interface {
 	UpdateReview(review Review) error
 	DeleteReview(reviewId string) error
 	FindReview(reviewId string) (*Review, error)
-	//GetReviews()
+	GetReviewsByGame(gameId string) ([]Review, error)
+	GetReviewsByUser(userId string) ([]Review, error)
 
 	//Tags
 
@@ -191,6 +192,24 @@ func (this *DataAccessLayer) GetUsers() ([]User, error) {
 	return users, nil
 }
 
+func (this *DataAccessLayer) GetMessages(userId string) ([]Message, error) {
+
+	rows, err := this.db.Query("SELECT * FROM messaging WHERE userid ='" + userId + "'")
+	if err != nil {
+		return nil, err
+	}
+	messages := []Message{}
+	for rows.Next() {
+		var message Message
+		err = rows.Scan(&message.From, &message.To, &message.TheMessage, &message.TimeStamp)
+		if err != nil {
+			return messages, err
+		}
+		messages = append(messages, message)
+	}
+	return messages, nil
+}
+
 func (this *DataAccessLayer) CreateGame(gam Game) error {
 	game, err := this.FindGame(gam.GameId)
 	if err != nil {
@@ -276,6 +295,28 @@ func (this *DataAccessLayer) GetGames(amnt, skip int) ([]Game, error) {
 	}
 	return games, nil
 }
+func (this *DataAccessLayer) GetGamesList(userId string) ([]Game, error) {
+	rows, err := this.db.Query("SELECT * FROM user_games JOIN users ON user_games.userid = users.id WHERE userid ='" + userId + "'")
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
+	}
+	games := []Game{}
+	defer rows.Close()
+	for rows.Next() {
+		var game Game
+		err := rows.Scan(&game.GameId, &game.Title, &game.Developer, &game.Publisher, &game.Description, &game.URL)
+		if err!=nil{
+			return games,err
+		}
+		game.Title = html.UnescapeString(game.Title)
+		game.Developer = html.UnescapeString(game.Developer)
+		game.Publisher = html.UnescapeString(game.Publisher)
+		game.Description = html.UnescapeString(game.Description)
+		game.URL = html.UnescapeString(game.URL)
+		games = append(games, game)
+	}
+	return games, nil
+}
 
 func (this *DataAccessLayer) CreateReview(review Review) error {
 	rview, err := this.FindReview(review.ReviewId)
@@ -320,6 +361,40 @@ func (this *DataAccessLayer) FindReview(reviewId string) (*Review, error) {
 	}
 	review.Body = html.UnescapeString(review.Body)
 	return &review, nil
+}
+
+func (this *DataAccessLayer) GetReviewsByGame(gameId string) ([]Review, error) {
+	rows, err := this.db.Query("SELECT * FROM reviews WHERE gameid ='" + gameid + "'")
+	if err != nil {
+		return nil, err
+	}
+	reivews := []Review{}
+	for rows.Next() {
+		var review Review
+		err = rows.Scan(&review.ReviewId, &review.UserId, &review.GameId, &review.Body, &review.Rating)
+		if err != nil {
+			return reivews, err
+		}
+		reivews = append(reivews, review)
+	}
+	return reivews, nil
+}
+
+func (this *DataAccessLayer) GetReviewsByUser(userId string) ([]Review, error) {
+	rows, err := this.db.Query("SELECT * FROM reviews WHERE userid ='" + userId + "'")
+	if err != nil {
+		return nil, err
+	}
+	reivews := []Review{}
+	for rows.Next() {
+		var review Review
+		err = rows.Scan(&review.ReviewId, &review.UserId, &review.GameId, &review.Body, &review.Rating)
+		if err != nil {
+			return reivews, err
+		}
+		reivews = append(reivews, review)
+	}
+	return reivews, nil
 }
 
 func (this *DataAccessLayer) CreateTag(tag string) error {
@@ -373,10 +448,10 @@ func (this *DataAccessLayer) GetTags() ([]string, error) {
 
 func (this *DataAccessLayer) FindGamesByTag(tag string) ([]Game, error) {
 	games := []Game{}
-	rows, err := this.db.Query("SELECT gameid FROM game_tags WHERE tag='"+tag+"'")
+	rows, err := this.db.Query("SELECT gameid FROM game_tags WHERE tag='" + tag + "'")
 	if err != nil {
-		if err==sql.ErrNoRows{
-			return games,nil
+		if err == sql.ErrNoRows {
+			return games, nil
 		}
 		return nil, err
 	}
@@ -388,8 +463,8 @@ func (this *DataAccessLayer) FindGamesByTag(tag string) ([]Game, error) {
 			return games, err
 		}
 		game, err := this.FindGame(gameid)
-		if err!=nil{
-			return games,err
+		if err != nil {
+			return games, err
 		}
 		games = append(games, *game)
 	}
@@ -397,10 +472,10 @@ func (this *DataAccessLayer) FindGamesByTag(tag string) ([]Game, error) {
 }
 func (this *DataAccessLayer) FindTagsByGame(gameid string) ([]string, error) {
 	tags := []string{}
-	rows, err := this.db.Query("SELECT tag FROM game_tags WHERE gameid='"+gameid+"'")
+	rows, err := this.db.Query("SELECT tag FROM game_tags WHERE gameid='" + gameid + "'")
 	if err != nil {
-		if err==sql.ErrNoRows{
-			return tags,nil
+		if err == sql.ErrNoRows {
+			return tags, nil
 		}
 		return nil, err
 	}
