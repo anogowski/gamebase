@@ -207,6 +207,16 @@ func HandleGameEditAction(w http.ResponseWriter, r *http.Request, params httprou
 		http.Redirect(w,r, "/game/"+url.QueryEscape(game.GameId), http.StatusFound)
 	}
 }
+func HandleGameClaimAction(w http.ResponseWriter, r *http.Request, params httprouter.Params){
+	if models.SignedIn(w,r){
+		gameid := params.ByName("wild")
+		err := models.Dal.AddUserGame(*models.RequestUser(r), gameid)
+		if err!=nil{
+			panic(err)
+		}
+		http.Redirect(w,r, "/game/"+url.QueryEscape(gameid), http.StatusFound)
+	}
+}
 func HandleReview(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	//reviewid := params.ByName("wild")
 	//rev, err := models.GlobalReviewStore.Find(reviewid)
