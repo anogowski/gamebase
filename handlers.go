@@ -29,9 +29,9 @@ func HandleSearch(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 		res = append(res, tagres...)
 	}
 	if nameinclude!=""{
-		//var namres []models.Game
-		//namres, err = models.Dal.SearchGames(nameinclude)
-		//res = append(res, namres)
+		var namres []models.Game
+		namres, err = models.Dal.SearchGames(nameinclude)
+		res = append(res, namres...)
 	}
 	models.RenderTemplate(w, r, "game/search", map[string]interface{}{"NameIncludes":nameinclude, "Tag":tag, "SearchResults":res, "Error":err})
 }
@@ -78,10 +78,10 @@ func HandleChatAction(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 	if models.SignedIn(w,r){
 		//TODO: send the chatNewMsg to chatTo
 		user := models.RequestUser(r)
-		toUser := r.FormValue("chatTo")
+		//toUser := r.FormValue("chatTo")
 		chatID := r.FormValue("chatToID")
 		theMessage := r.FormValue("chatNewMsg")
-		models.Dal.SendMessage(user, chatID, theMessage)
+		models.Dal.SendMessage(user.UserId, chatID, theMessage)
 
 	}
 }
@@ -207,6 +207,16 @@ func HandleGameEditAction(w http.ResponseWriter, r *http.Request, params httprou
 		http.Redirect(w,r, "/game/"+url.QueryEscape(game.GameId), http.StatusFound)
 	}
 }
+func HandleGameClaimAction(w http.ResponseWriter, r *http.Request, params httprouter.Params){
+	if models.SignedIn(w,r){
+		gameid := params.ByName("wild")
+		err := models.Dal.AddUserGame(*models.RequestUser(r), gameid)
+		if err!=nil{
+			panic(err)
+		}
+		http.Redirect(w,r, "/game/"+url.QueryEscape(gameid), http.StatusFound)
+	}
+}
 func HandleReview(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	//reviewid := params.ByName("wild")
 	//rev, err := models.GlobalReviewStore.Find(reviewid)
@@ -229,15 +239,15 @@ func HandleReviewNewAction(w http.ResponseWriter, r *http.Request, params httpro
 		//gameid := params.ByName("wild")
 		//TODO: create the new review page
 		//reviewid
-		reviewid := r.FormValue("reviewID")
+		//reviewid := r.FormValue("reviewID")
 		//userid
-		user := models.RequestUser(r)
+		//user := models.RequestUser(r)
 		//gameid
-		gameid := r.FormValue("gameID")
+		//gameid := r.FormValue("gameID")
 		//review
-		review := r.FormValue("reviewBody")
+		//review := r.FormValue("reviewBody")
 		//rating
-		rating := r.FormValue("reviewRating")
+		//rating := r.FormValue("reviewRating")
 		//models.Dal.CreateReview()
 	}
 }
