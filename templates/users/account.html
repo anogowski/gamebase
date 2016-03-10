@@ -29,23 +29,55 @@
 				<h3>Friend List (click to remove)</h3>
 				<ul class="friendList">
 					{{range .CurrentUser.Friends}}
-						<a href="#" onclick="javascript:removeFriend('accountFriendList', '{{URLQueryEscaper .UserName}}', this);">{{.UserName}}</a>
+						<a href="#" onclick="javascript:removeFriend('accountFriendList', '{{URLQueryEscaper .UserId}}', '{{URLQueryEscaper .UserName}}', this);">{{.UserName}}</a>
 					{{else}}
 						<p>No Friends</p>
 					{{end}}
 				</ul>
-				<input type="hidden" value="{{.CurrentUser.Friends}}" name="accountFriendList" id="accountFriendList"/>
+				<input type="hidden" value="[]" name="accountFriendList" id="accountFriendList"/>
+				<script type="text/javascript">
+				<!--
+				{
+					var friendlist = [];
+					{{range .CurrentUser.Friends}}
+						gamelist.push('{{.UserId}}');
+					{{end}}
+					var val = document.getElementById('accountFriendList');
+					val.value = '[';
+					for(var i=0; i<friendlist.length; ++i){
+						val.value += (i>0? ', "' : '"')+friendlist[i]+'"';
+					}
+					val.value += ']';
+				}
+				-->
+				</script>
 			</div>
 			<div class="formgrp">
 				<h3>Game List (click to remove)</h3>
 				<ul class="gameList">
 					{{range .CurrentUser.Games}}
-						{{RenderTemplateGameLink . "#" "javascript:removeGame('accountGameList', '{{URLQueryEscaper .GameId}}', this);"}}
+						{{RenderTemplateGameLink . "#" "javascript:removeGame('accountGameList', '{{URLQueryEscaper .GameId}}', '{{URLQueryEscaper .Title}}', this);"}}
 					{{else}}
 						<p>No Games</p>
 					{{end}}
 				</ul>
-				<input type="hidden" value="{{.CurrentUser.Games}}" name="accountGameList" id="accountGameList"/>
+				<input type="hidden" value="[]" name="accountGameList" id="accountGameList"/>
+				<script type="text/javascript">
+				<!--
+				{
+					var gamelist = [];
+					{{range .CurrentUser.Games}}
+						gamelist.push('{{.GameId}}');
+					{{end}}
+					var val = document.getElementById('accountGameList');
+					val.value = '[';
+					for(var i=0; i<gamelist.length; ++i){
+						val.value += (i>0? ', "' : '"')+gamelist[i]+'"';
+					}
+					val.value += ']';
+				}
+				-->
+				</script>
 			</div>
 			<div class="formgrp">
 				<label for="accountPassword">Current Password (necessary for all changes)</label>

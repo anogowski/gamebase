@@ -29,9 +29,9 @@ func (this *Review) UpdateReview(body, url string, rating float64) {
 	} else {
 		this.Rating = rating
 	}
-	Dal.UpdateReview(*this)
+	//CALL DAL
 }
 
 func (this *Review) DeleteReview() {
-	Dal.DeleteReview(*this.ReviewId)
+	//CALL DAL
 }

@@ -44,6 +44,11 @@ func HandleAccountPage(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 			panic(err)
 		}
 		user.Games = games
+		friends, err := models.Dal.GetFriendsList(user.UserId)
+		if err!=nil{
+			panic(err)
+		}
+		user.Friends = friends
 		models.RenderTemplate(w, r, "users/account", map[string]interface{}{"CurrentUser":user})
 	}
 }
@@ -55,18 +60,81 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		newPassword := r.FormValue("accountNewPassword")
 		confirmNewPassword := r.FormValue("confirmPassword")
 		oldPassword := r.FormValue("accountPassword")
-
+		friendarrstr := r.FormValue("accountFriendList")
+		gamearrstr := r.FormValue("accountGameList")
 		
-		user, err := models.GlobalUserStore.Authenticate(username, oldPassword)
-		if err != nil {
-			models.RenderTemplate(w, r, "users/account", map[string]interface{}{"Error": err.Error()})
+		user, autherr := models.GlobalUserStore.Authenticate(username, oldPassword)
+		if user==nil{
+			user = models.RequestUser(r)
+		}
+		
+		friends, err := models.Dal.GetFriendsList(user.UserId)
+		if err!=nil{
+			panic(err)
+		}
+		user.Friends = friends
+		var friendarr []string
+		err = json.Unmarshal([]byte(friendarrstr), &friendarr)
+		if err!=nil || friendarr==nil{
+			friendarr = []string{}
+		}
+		newfriendlist := []models.User{}
+		for _,friend := range user.Friends{
+			found := false
+			for _,id := range friendarr{
+				if friend.UserId==id{
+					found = true
+				}
+			}
+			if !found{
+				newfriendlist = append(newfriendlist, friend)
+			} else{
+				err = models.Dal.DeleteUserFriend(user.UserId, friend.UserId)
+				if err!=nil{
+					panic(err)
+				}
+			}
+		}
+		user.Friends = newfriendlist
+		
+		games, err := models.Dal.GetGamesList(user.UserId)
+		if err!=nil{
+			panic(err)
+		}
+		user.Games = games
+		var gamearr []string
+		err = json.Unmarshal([]byte(gamearrstr), &gamearr)
+		if err!=nil || gamearr==nil{
+			gamearr = []string{}
+		}
+		newgamelist := []models.Game{}
+		for _,game := range user.Games{
+			found := false
+			for _,id := range gamearr{
+				if game.GameId==id{
+					found = true
+				}
+			}
+			if found{
+				newgamelist = append(newgamelist, game)
+			} else{
+				err = models.Dal.DeleteUserGame(user.UserId, game.GameId)
+				if err!=nil{
+					panic(err)
+				}
+			}
+		}
+		user.Games = newgamelist
+		
+		if autherr != nil {
+			models.RenderTemplate(w, r, "users/account", map[string]interface{}{"Error": autherr.Error(), "CurrentUser":user})
 			return
 		}
 		
 		user.Email = email
 		if newPassword != ""{
 			if(newPassword != confirmNewPassword){
-				models.RenderTemplate(w, r, "users/account", map[string]interface{}{"Error": "Passwords do not match."})
+				models.RenderTemplate(w, r, "users/account", map[string]interface{}{"Error": "Passwords do not match.", "CurrentUser":user})
 				return
 			}
 			user.SetPassword(newPassword)
@@ -76,19 +144,8 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		if err!=nil{
 			panic(err)
 		}
-		models.RenderTemplate(w, r, "users/account", nil)
-	}
-}
-
-func HandleChat(w http.ResponseWriter, r *http.Request, params httprouter.Params){
-	if models.SignedIn(w,r){
-		user := models.Dal.RequestUser(r);
-		friends := []string{}
-		friends, err = models.Dal.GetFriendsList(user.UserId)
-		if err!=nil{
-			panic(err)
-		}
-		//models.RenderTemplate(w,r, "", map[string]interface{}{"friends":friends})
+		
+		models.RenderTemplate(w, r, "users/account", map[string]interface{}{"CurrentUser":user})
 	}
 }
 

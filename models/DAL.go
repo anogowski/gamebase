@@ -44,7 +44,7 @@ type DAL interface {
 
 	GetUsers() ([]User, error)
 	SendMessage(message Message) error
-	GetGamesList(gameId string) ([]Game, error)
+	GetGamesList(userId string) ([]Game, error)
 	GetFriendsList(userId string) ([]User, error)
 	GetMessages(userId string) ([]Message, error)
 
@@ -195,7 +195,7 @@ func (this *DataAccessLayer) GetUsers() ([]User, error) {
 
 func (this *DataAccessLayer) GetMessages(userId string) ([]Message, error) {
 
-	rows, err := this.db.Query("SELECT * FROM messaging WHERE userid ='" + userId + "'")
+	rows, err := this.db.Query("SELECT * FROM messaging WHERE touserid ='" + userId + "' ORDER BY senttime")
 	if err != nil {
 		return nil, err
 	}
@@ -319,9 +319,8 @@ func (this *DataAccessLayer) SearchGames(search string) ([]Game, error) {
 	}
 	return games, nil
 }
-func (this *DataAccessLayer) GetGamesList(gameId string) ([]Game, error) {
-	rows, err := this.db.Query("SELECT * FROM user_games JOIN games ON user_games.gameid = games.id WHERE gameid ='" + gameId + "'")
-
+func (this *DataAccessLayer) GetGamesList(userId string) ([]Game, error) {
+	rows, err := this.db.Query("SELECT gameid,title,developer,publisher,description,url FROM user_games JOIN games ON user_games.gameid = games.id WHERE userid ='" + userId + "'")
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -344,8 +343,7 @@ func (this *DataAccessLayer) GetGamesList(gameId string) ([]Game, error) {
 }
 
 func (this *DataAccessLayer) GetFriendsList(userId string) ([]User, error) {
-
-	rows, err := this.db.Query("SELECT * FROM friends JOIN users ON friends.friendID = users.id WHERE userid ='" + userId + "'")
+	rows, err := this.db.Query("SELECT friendid,name,password,email FROM friends JOIN users ON friends.friendID = users.id WHERE friends.id ='" + userId + "'")
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}

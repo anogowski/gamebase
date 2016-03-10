@@ -100,13 +100,13 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 	if data==nil{
 		data = map[string]interface{}{}
 	}
-	if _,ok := data["CurrentUser"]; !ok{
+	if _,ok := data["CurrentUser"]; !ok || (data["CurrentUser"].(*User)==nil){
 		data["CurrentUser"] = RequestUser(r)
 	}
 	data["Flash"] = r.URL.Query().Get("flash")
 	data["Taglist"], _ = Dal.GetTags()
-	data["friendsList"] = Dal.GetFriendsList(data["CurrentUser"])
-	//data["ChatMessages"] = MessageStore.GetMessagesTo(data["CurrentUser"])
+	data["friendsList"],_ = Dal.GetFriendsList(data["CurrentUser"].(*User).UserId)
+	data["ChatMessages"],_ = Dal.GetMessages(data["CurrentUser"].(*User).UserId)
 	
 	var templateClone *template.Template
 	
