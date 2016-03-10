@@ -17,6 +17,7 @@
 				{{else}}
 					{{RenderTemplateRating 0}}
 				{{end}}
+
 			</div>
 		</div>
 		<div class="formgrp">
@@ -24,6 +25,7 @@
 			<textarea id="reviewBody" name="reviewBody">
 				{{.Review.Body}}
 			</textarea>
+			<input type="hidden" id="reviewID" name="reviewID" value=""/>
 		</div>
 		<div class="formgrp">
 			<input type="hidden" id="gameID" name="gameID" value="{{.Game.GameId}}"/>
