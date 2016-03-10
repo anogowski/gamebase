@@ -45,11 +45,15 @@ func (this *User) AddFriend(friend User) {
 		panic(err)
 	}
 	Friends = temp
+
 }
 
-func (this *User) AddMessage(message string) {
-	this.Messages = append(this.Messages, message)
-	//Dal.
+func (this *User) GetMessages() {
+	temp, err := Dal.GetMessages(*this.UserId)
+	if err != nil {
+		panic(err)
+	}
+	Messages = temp
 }
 func (this *User) CheckPassword(pass string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(this.Password), []byte(pass)) == nil
@@ -78,6 +82,6 @@ func (this *User) DeleteFriendFromList(friendId string) {
 	Dal.DeleteUserFriend(*this.UserId, friendId)
 }
 
-func (this *User) SendMessage(body, userId string) {
-	//CALL DAL
+func (this *User) SendMessage(message Message) {
+	Dal.SendMessage(*message)
 }

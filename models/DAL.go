@@ -43,7 +43,7 @@ type DAL interface {
 	FindUserByName(name string) (*User, error)
 
 	GetUsers() ([]User, error)
-	SendMessage(from, to, message string) error
+	SendMessage(message Message) error
 	GetGamesList(gameId string) ([]Game, error)
 	GetFriendsList(userId string) ([]User, error)
 	GetMessages(userId string) ([]Message, error)
@@ -162,7 +162,7 @@ func (this *DataAccessLayer) DeleteUserFriend(userId, friendId string) error {
 
 }
 
-func (this *DataAccessLayer) SendMessage(from, to, message string) error {
+func (this *DataAccessLayer) SendMessage(message Message) error {
 	user, err := this.FindUser(to)
 	if err != nil {
 		return err
@@ -170,7 +170,7 @@ func (this *DataAccessLayer) SendMessage(from, to, message string) error {
 	if user != nil {
 		return errors.New("User does not exist")
 	}
-	if _, err = this.db.Exec("INSERT INTO messaging VALUES('" + from + "', '" + to + "', '" + html.EscapeString(message) + "', '" + time.Now().Format("2006-01-02 15:04:05") + "')"); err != nil {
+	if _, err = this.db.Exec("INSERT INTO messaging VALUES('" + message.From + "', '" + message.To + "', '" + html.EscapeString(message.TheMessage) + "', '" + time.Now().Format("2006-01-02 15:04:05") + "')"); err != nil {
 		return err
 	}
 	return nil
