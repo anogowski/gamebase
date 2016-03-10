@@ -74,6 +74,18 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	}
 }
 
+func HandleChat(w http.ResponseWriter, r *http.Request, params httprouter.Params){
+	if models.SignedIn(w,r){
+		user := models.Dal.RequestUser(r);
+		friends := []string{}
+		friends, err = models.Dal.GetFriendsList(user.UserId)
+		if err!=nil{
+			panic(err)
+		}
+		//models.RenderTemplate(w,r, "", map[string]interface{}{"friends":friends})
+	}
+}
+
 func HandleChatAction(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	if models.SignedIn(w,r){
 		//TODO: send the chatNewMsg to chatTo

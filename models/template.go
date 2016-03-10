@@ -103,6 +103,7 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 	data["CurrentUser"] = RequestUser(r)
 	data["Flash"] = r.URL.Query().Get("flash")
 	data["Taglist"], _ = Dal.GetTags()
+	data["friendsList"] = Dal.GetFriendsList(data["CurrentUser"])
 	//data["ChatMessages"] = MessageStore.GetMessagesTo(data["CurrentUser"])
 	
 	var templateClone *template.Template
