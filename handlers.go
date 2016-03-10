@@ -29,9 +29,9 @@ func HandleSearch(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 		res = append(res, tagres...)
 	}
 	if nameinclude!=""{
-		//var namres []models.Game
-		//namres, err = models.Dal.SearchGames(nameinclude)
-		//res = append(res, namres)
+		var namres []models.Game
+		namres, err = models.Dal.SearchGames(nameinclude)
+		res = append(res, namres...)
 	}
 	models.RenderTemplate(w, r, "game/search", map[string]interface{}{"NameIncludes":nameinclude, "Tag":tag, "SearchResults":res, "Error":err})
 }
