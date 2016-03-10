@@ -38,7 +38,13 @@ func HandleSearch(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 
 func HandleAccountPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	if models.SignedIn(w, r){
-		models.RenderTemplate(w, r, "users/account", nil)
+		user := models.RequestUser(r)
+		games, err := models.Dal.GetGamesList(user.UserId)
+		if err!=nil{
+			panic(err)
+		}
+		user.Games = games
+		models.RenderTemplate(w, r, "users/account", map[string]interface{}{"CurrentUser":user})
 	}
 }
 func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
@@ -93,7 +99,11 @@ func HandleChatAction(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 		//toUser := r.FormValue("chatTo")
 		chatID := r.FormValue("chatToID")
 		theMessage := r.FormValue("chatNewMsg")
-		models.Dal.SendMessage(user.UserId, chatID, theMessage)
+		chatto,err := models.Dal.FindUser(chatID)
+		if err!=nil{
+			panic(err)
+		}
+		models.Dal.SendMessage(*models.NewMessage(*user, *chatto, theMessage))
 
 	}
 }
@@ -222,7 +232,7 @@ func HandleGameEditAction(w http.ResponseWriter, r *http.Request, params httprou
 func HandleGameClaimAction(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	if models.SignedIn(w,r){
 		gameid := params.ByName("wild")
-		err := models.Dal.AddUserGame(*models.RequestUser(r), gameid)
+		err := models.Dal.AddUserGame(models.RequestUser(r).UserId, gameid)
 		if err!=nil{
 			panic(err)
 		}

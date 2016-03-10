@@ -8,7 +8,7 @@ type User struct {
 	UserId   string
 	Email    string
 	Games    []Game
-	Messages []string
+	Messages []Message
 	Friends  []User
 }
 
@@ -36,24 +36,24 @@ func (this *User) SetPassword(newPWord string) {
 
 func (this *User) AddGame(game Game) {
 	this.Games = append(this.Games, game)
-	Dal.AddUserGame(*this.UserId, *game)
+	Dal.AddUserGame(this.UserId, game.GameId)
 }
 
 func (this *User) AddFriend(friend User) {
-	temp, err := Dal.GetFriendsList()
+	temp, err := Dal.GetFriendsList(this.UserId)
 	if err != nil {
 		panic(err)
 	}
-	Friends = temp
+	this.Friends = temp
 
 }
 
 func (this *User) GetMessages() {
-	temp, err := Dal.GetMessages(*this.UserId)
+	temp, err := Dal.GetMessages(this.UserId)
 	if err != nil {
 		panic(err)
 	}
-	Messages = temp
+	this.Messages = temp
 }
 func (this *User) CheckPassword(pass string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(this.Password), []byte(pass)) == nil
@@ -67,21 +67,21 @@ func (this *User) UpdateUser(user_name, pass, mail string) {
 }
 
 func (this *User) AddGameToList(gameId string) {
-	Dal.AddUserGame(*this.UserId, gameId)
+	Dal.AddUserGame(this.UserId, gameId)
 }
 
 func (this *User) AddFriendToList(friendId string) {
-	Dal.AddUserFriend(*this.UserId, friendId)
+	Dal.AddUserFriend(this.UserId, friendId)
 }
 
 func (this *User) DeleteGameFromList(gameId string) {
-	Dal.DeleteUserGame(*this.UserId, gameId)
+	Dal.DeleteUserGame(this.UserId, gameId)
 }
 
 func (this *User) DeleteFriendFromList(friendId string) {
-	Dal.DeleteUserFriend(*this.UserId, friendId)
+	Dal.DeleteUserFriend(this.UserId, friendId)
 }
 
 func (this *User) SendMessage(message Message) {
-	Dal.SendMessage(*message)
+	Dal.SendMessage(message)
 }

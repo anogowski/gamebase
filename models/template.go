@@ -100,7 +100,9 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 	if data==nil{
 		data = map[string]interface{}{}
 	}
-	data["CurrentUser"] = RequestUser(r)
+	if _,ok := data["CurrentUser"]; !ok{
+		data["CurrentUser"] = RequestUser(r)
+	}
 	data["Flash"] = r.URL.Query().Get("flash")
 	data["Taglist"], _ = Dal.GetTags()
 	data["friendsList"] = Dal.GetFriendsList(data["CurrentUser"])
