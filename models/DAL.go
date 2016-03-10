@@ -56,6 +56,7 @@ type DAL interface {
 	AddGameTag(gameId, tag string) error
 	DeleteGameTag(gameId, tag string) error
 	GetGames(amnt, skip int) ([]Game, error)
+	SearchGames(search string) ([]Game, error)
 
 	//Review
 
@@ -295,8 +296,32 @@ func (this *DataAccessLayer) GetGames(amnt, skip int) ([]Game, error) {
 	}
 	return games, nil
 }
+
+func (this *DataAccessLayer) SearchGames(search string) ([]Game, error) {
+	rows, err := this.db.Query("SELECT * FROM games WHERE lower(title) LIKE lower('%" + search + "%')")
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
+	}
+	games := []Game{}
+	defer rows.Close()
+	for rows.Next() {
+		var game Game
+		err := rows.Scan(&game.GameId, &game.Title, &game.Developer, &game.Publisher, &game.Description, &game.URL)
+		if err != nil {
+			return games, err
+		}
+		game.Title = html.UnescapeString(game.Title)
+		game.Developer = html.UnescapeString(game.Developer)
+		game.Publisher = html.UnescapeString(game.Publisher)
+		game.Description = html.UnescapeString(game.Description)
+		game.URL = html.UnescapeString(game.URL)
+		games = append(games, game)
+	}
+	return games, nil
+}
 func (this *DataAccessLayer) GetGamesList(gameId string) ([]Game, error) {
 	rows, err := this.db.Query("SELECT * FROM user_games JOIN games ON user_games.gameid = games.id WHERE gameid ='" + gameId + "'")
+
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
