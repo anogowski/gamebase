@@ -36,12 +36,15 @@ func (this *User) SetPassword(newPWord string) {
 
 func (this *User) AddGame(game Game) {
 	this.Games = append(this.Games, game)
-	//Dal.AddUserGame(*this, *game)
+	Dal.AddUserGame(*this.UserId, *game)
 }
 
 func (this *User) AddFriend(friend User) {
-	this.Friends = append(this.Friends, friend)
-	//Dal.AddUserFriend(*this, friend.UserId)
+	temp, err := Dal.GetFriendsList()
+	if err != nil {
+		panic(err)
+	}
+	Friends = temp
 }
 
 func (this *User) AddMessage(message string) {
@@ -56,23 +59,23 @@ func (this *User) UpdateUser(user_name, pass, mail string) {
 	this.UserName = user_name
 	this.Password = pass
 	this.Email = mail
-	//CALL DAL
+	Dal.UpdateUser(*this)
 }
 
 func (this *User) AddGameToList(gameId string) {
-	Dal.AddUserGame(*this, gameId)
+	Dal.AddUserGame(*this.UserId, gameId)
 }
 
 func (this *User) AddFriendToList(friendId string) {
-	Dal.AddUserFriend(*this, friendId)
+	Dal.AddUserFriend(*this.UserId, friendId)
 }
 
 func (this *User) DeleteGameFromList(gameId string) {
-	Dal.DeleteUserGame(*this, gameId)
+	Dal.DeleteUserGame(*this.UserId, gameId)
 }
 
 func (this *User) DeleteFriendFromList(friendId string) {
-	Dal.DeleteUserFriend(*this, friendId)
+	Dal.DeleteUserFriend(*this.UserId, friendId)
 }
 
 func (this *User) SendMessage(body, userId string) {

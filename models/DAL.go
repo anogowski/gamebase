@@ -35,16 +35,16 @@ type DAL interface {
 	//USER
 	CreateUser(name, pass, email string) (*User, error)
 	UpdateUser(user User) error
-	AddUserGame(user User, gameTitle string) error
-	DeleteUserGame(user User, gameTitle string) error
-	AddUserFriend(user User, friendId string) error
-	DeleteUserFriend(user User, friendId string) error
+	AddUserGame(userId, gameTitle string) error
+	DeleteUserGame(userId, gameTitle string) error
+	AddUserFriend(userId, friendId string) error
+	DeleteUserFriend(userId, friendId string) error
 	FindUser(id string) (*User, error)
 	FindUserByName(name string) (*User, error)
 
 	GetUsers() ([]User, error)
 	SendMessage(from, to, message string) error
-	GetGamesList(userId string) ([]Game, error)
+	GetGamesList(gameId string) ([]Game, error)
 	GetFriendsList(userId string) ([]User, error)
 	GetMessages(userId string) ([]Message, error)
 
@@ -129,32 +129,32 @@ func (this *DataAccessLayer) UpdateUser(user User) error {
 	return nil
 }
 
-func (this *DataAccessLayer) AddUserGame(user User, gameId string) error {
-	if _, err := this.db.Exec("INSERT INTO user_games VALUES('" + user.UserId + "', '" + gameId + "')"); err != nil {
+func (this *DataAccessLayer) AddUserGame(userId, gameId string) error {
+	if _, err := this.db.Exec("INSERT INTO user_games VALUES('" + userId + "', '" + gameId + "')"); err != nil {
 		return err
 	}
 	return nil
 
 }
 
-func (this *DataAccessLayer) DeleteUserGame(user User, gameId string) error {
-	if _, err := this.db.Exec("DELETE FROM user_games WHERE (id='" + user.UserId + "' AND gameId='" + gameId + "')"); err != nil {
+func (this *DataAccessLayer) DeleteUserGame(userId, gameId string) error {
+	if _, err := this.db.Exec("DELETE FROM user_games WHERE (id='" + userId + "' AND gameId='" + gameId + "')"); err != nil {
 		return err
 	}
 	return nil
 
 }
 
-func (this *DataAccessLayer) AddUserFriend(user User, friendId string) error {
-	if _, err := this.db.Exec("INSERT INTO friends VALUES('" + user.UserId + "', '" + friendId + "')"); err != nil {
+func (this *DataAccessLayer) AddUserFriend(userId, friendId string) error {
+	if _, err := this.db.Exec("INSERT INTO friends VALUES('" + userId + "', '" + friendId + "')"); err != nil {
 		return err
 	}
 	return nil
 
 }
 
-func (this *DataAccessLayer) DeleteUserFriend(user User, friendId string) error {
-	if _, err := this.db.Exec("DELETE FROM friends WHERE (id='" + user.UserId + "' AND friendId='" + friendId + "')"); err != nil {
+func (this *DataAccessLayer) DeleteUserFriend(userId, friendId string) error {
+	if _, err := this.db.Exec("DELETE FROM friends WHERE (id='" + userId + "' AND friendId='" + friendId + "')"); err != nil {
 		return err
 	}
 	return nil
@@ -274,8 +274,8 @@ func (this *DataAccessLayer) DeleteGameTag(gameId, tag string) error {
 }
 
 func (this *DataAccessLayer) GetGames(amnt, skip int) ([]Game, error) {
-	rows, err := this.db.Query("SELECT * FROM games LIMIT "+strconv.Itoa(amnt)+" OFFSET "+strconv.Itoa(skip))
-	if err != nil && err!=sql.ErrNoRows{
+	rows, err := this.db.Query("SELECT * FROM games LIMIT " + strconv.Itoa(amnt) + " OFFSET " + strconv.Itoa(skip))
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 	games := []Game{}
@@ -283,8 +283,8 @@ func (this *DataAccessLayer) GetGames(amnt, skip int) ([]Game, error) {
 	for rows.Next() {
 		var game Game
 		err := rows.Scan(&game.GameId, &game.Title, &game.Developer, &game.Publisher, &game.Description, &game.URL)
-		if err!=nil{
-			return games,err
+		if err != nil {
+			return games, err
 		}
 		game.Title = html.UnescapeString(game.Title)
 		game.Developer = html.UnescapeString(game.Developer)
@@ -295,8 +295,8 @@ func (this *DataAccessLayer) GetGames(amnt, skip int) ([]Game, error) {
 	}
 	return games, nil
 }
-func (this *DataAccessLayer) GetGamesList(userId string) ([]Game, error) {
-	rows, err := this.db.Query("SELECT * FROM user_games JOIN users ON user_games.userid = users.id WHERE userid ='" + userId + "'")
+func (this *DataAccessLayer) GetGamesList(gameId string) ([]Game, error) {
+	rows, err := this.db.Query("SELECT * FROM user_games JOIN games ON user_games.gameid = games.id WHERE gameid ='" + gameId + "'")
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -305,8 +305,8 @@ func (this *DataAccessLayer) GetGamesList(userId string) ([]Game, error) {
 	for rows.Next() {
 		var game Game
 		err := rows.Scan(&game.GameId, &game.Title, &game.Developer, &game.Publisher, &game.Description, &game.URL)
-		if err!=nil{
-			return games,err
+		if err != nil {
+			return games, err
 		}
 		game.Title = html.UnescapeString(game.Title)
 		game.Developer = html.UnescapeString(game.Developer)
