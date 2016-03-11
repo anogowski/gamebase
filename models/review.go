@@ -13,6 +13,12 @@ type Review struct {
 const REVIEW_MAX_RATING float64 = 5
 const REVIEW_ID_LEN = 20
 
+func NewReview(userId, gameId, body string, rating float64)*Review{
+	rev := &Review{}
+	rev.InitReview(userId, gameId, body, rating)
+	return rev
+}
+
 func (this *Review) InitReview(userId, gameId, body string, rating float64) {
 	this.Body = body
 	this.UserId = userId
