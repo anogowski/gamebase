@@ -59,18 +59,18 @@ type DAL interface {
 	SearchGames(search string) ([]Game, error)
 
 	//Review
-
 	CreateReview(review Review) error
 	UpdateReview(review Review) error
 	DeleteReview(reviewId string) error
 	FindReview(reviewId string) (*Review, error)
 	GetReviewsByGame(gameId string) ([]Review, error)
+	GetReviewsByGameCount(gameId string) (int, error)
 	GetReviewsByUser(userId string) ([]Review, error)
+	GetReviewsByUserCount(userId string) (int, error)
 	FindTopReviewsByGame(gameId string, amnt int) ([]Review, error)
 	FindTopReviewsByUser(userId string, amnt int) ([]Review, error)
 
 	//Tags
-
 	CreateTag(tag string) error
 	UpdateTag(oldTag, newTag string) error
 	DeleteTag(tag string) error
@@ -86,6 +86,8 @@ type DAL interface {
 	FindVideosByGame(gameid string) ([]Video, error)
 	FindTopVideosByUser(userid string, amnt int) ([]Video, error)
 	FindTopVideosByGame(gameid string, amnt int) ([]Video, error)
+	GetGameVideosCount(gameId string) (int, error)
+	GetUserVideosCount(userId string) (int, error)
 }
 
 func (this *DataAccessLayer) CreateUser(name, pass, email string) (*User, error) {
@@ -450,6 +452,37 @@ func (this *DataAccessLayer) GetReviewsByUser(userId string) ([]Review, error) {
 	}
 	return reivews, nil
 }
+
+func (this *DataAccessLayer) GetReviewsByUserCount(userId string) (int, error) {
+	rows, err := this.db.Query("SELECT * COUNT FROM reviews WHERE userid ='" + userId + "'")
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var numReviews int = 0
+		err = rows.Scan(&numReviews)
+		if err != nil {
+			return numReviews, err
+		}
+	}
+	return numReviews, nil
+}
+
+func (this *DataAccessLayer) GetReviewsByGameCount(gameId string) (int, error) {
+	rows, err := this.db.Query("SELECT * COUNT FROM reviews WHERE gameid ='" + gameId + "'")
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var numReviews int = 0
+		err = rows.Scan(&numReviews)
+		if err != nil {
+			return numReviews, err
+		}
+	}
+	return numReviews, nil
+}
+
 func (this *DataAccessLayer) FindTopReviewsByGame(gameId string, amnt int) ([]Review, error) {
 	revs := []Review{}
 	rows, err := this.db.Query("SELECT * FROM reviews WHERE gameid ='" + gameId + "' ORDER BY likes DESC, dislikes ASC LIMIT " + strconv.Itoa(amnt))
@@ -689,4 +722,34 @@ func (this *DataAccessLayer) FindTopVideosByGame(gameid string, amnt int) ([]Vid
 		vids = append(vids, vid)
 	}
 	return vids, nil
+}
+
+func (this *DataAccessLayer) GetGameVideosCount(gameId string) (int, error) {
+	rows, err := this.db.Query("SELECT * COUNT FROM vidoes WHERE gameid ='" + gameId + "'")
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var numVideos int = 0
+		err = rows.Scan(&numVideos)
+		if err != nil {
+			return numVideos, err
+		}
+	}
+	return numVideos, nil
+}
+
+func (this *DataAccessLayer) GetUserVideosCount(userId string) (int, error) {
+	rows, err := this.db.Query("SELECT * COUNT FROM vidoes WHERE userid ='" + userId + "'")
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var numVideos int = 0
+		err = rows.Scan(&numVideos)
+		if err != nil {
+			return numVideos, err
+		}
+	}
+	return numVideos, nil
 }
