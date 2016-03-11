@@ -14,7 +14,7 @@
 	<div class="reviews">
 		{{range .Reviews}}
 			<div class="review shortened">
-				<a href="/game/{{URLQueryEscaper .Review.GameId}}" class="reviewGame">{{FindGameNameByID .Review.GameId}} ({{ReviewGameCount .Review.GameId}} Reviews)</a>
+				<a href="/game/{{URLQueryEscaper .GameId}}" class="reviewGame">{{FindGameNameByID .GameId}} ({{ReviewGameCount .GameId}} Reviews)</a>
 				{{RenderTemplateReview .}}
 			</div>
 		{{else}}

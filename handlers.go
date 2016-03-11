@@ -324,9 +324,7 @@ func HandleReview(w http.ResponseWriter, r *http.Request, params httprouter.Para
 }
 func HandleReviewNew(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	if models.SignedIn(w,r){
-		//gameid := params.ByName("wild")
-		var gam *models.Game
-		var err error
+		gameid := params.ByName("wild")
 		gam, err := models.Dal.FindGame(gameid)
 		if err!=nil{
 			panic(err)
@@ -342,7 +340,8 @@ func HandleReviewNewAction(w http.ResponseWriter, r *http.Request, params httpro
 		//gameid := r.FormValue("gameID")
 		review := r.FormValue("reviewBody")
 		rating,_ := strconv.ParseFloat(r.FormValue("reviewRating"), 64)
-		models.NewReview(user.UserId, gameid, review, rating)
+		rev := models.NewReview(user.UserId, gameid, review, rating)
+		http.Redirect(w,r, "/review/"+rev.ReviewId, http.StatusFound)
 	}
 }
 func HandleVideo(w http.ResponseWriter, r *http.Request, params httprouter.Params){
