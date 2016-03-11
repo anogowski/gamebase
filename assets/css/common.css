@@ -1,41 +1,17 @@
-body { background-color:#222222; color:#aaaaff; }
+body { background-color:#222222; color:#fff; }
 .nav { background-color:#0a0a2a; height:2em; line-height:2em; }
 .sitetitle { font-size:1.5em; float:left; text-decoration:none; vertical-align:middle; color:inherit; }
 .navitem { float:right; text-decoration:none; vertical-align:middle; margin-left:2em; display:inline-block; color:inherit; }
+.nav {padding: 7px}
 .search { background-color:inherit; color:inherit; width:10em; }
 .content { border-style:solid; border-width:1px; border-color:#0a0a2a; position:relative; width:100%; }
-.menu  ul {
-    list-style-type: none;
-	border: 1px solid #333333;
-    margin: 0;
-    padding: 0;
-    width: 200px;
-    background-color: #555555;
-}
-
-.menu  li {
-    display: block;
-	color: #000;
-    padding: 8px 0 8px 16px;
-    text-decoration: none;
-	border-bottom: 1px solid #333333;
-}
-
-.meny li:last-child {
-    border-bottom: none;
-}
-
-.menu li:hover {
-    background-color: #555555;
-}
-
 .menu { position:relative; display:inline-block; vertical-align:top; margin:0px; width:20%; }
 .page { position:relative; display:inline-block; vertical-align:top; margin:0px; width:50%; }
 .chat { position:relative; display:inline-block; vertical-align:top; margin:0px; }
 .description { border-style:solid; border-width:2px; border-color:#0a0a2a; border-radius:0.25em; }
 .copyright { font-size:0.75em; }
 .gold { color:#ffaf00; }
-.white { color:#aaaaff; }
+.white { color:#fff; }
 .average p { display:inline-block; margin-left:4em; }
 .review { border-color:#0a0a2a; border-width:2px; border-style:solid; border-radius:0.25em; margin-top:2em; }
 .upped { margin-left:2em; color:#008800; }
@@ -48,3 +24,48 @@ body { background-color:#222222; color:#aaaaff; }
 .left { float:left; }
 .right { float:right; }
 .mid { align-items: center;}
+
+a {
+     color: #aaf;
+}
+
+a:visted {
+    color: #aaf;
+}
+
+.page a {
+    display: inline-block;
+    padding: 1px 5px;
+}
+
+.menu a{
+    text-decoration: none
+}
+
+.menu  ul {
+    list-style-type: none;
+	border: 1px solid #333;
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    background-color: #555;
+}
+
+.menu  li {
+    display: block;
+	color: #000;
+    padding: 8px 0 8px 16px;
+    text-decoration: none;
+	border-bottom: 1px solid #333;
+}
+
+.meny li:last-child {
+    border-bottom: none;
+}
+
+.menu li:hover {
+    background-color: #444;
+}
+
+
+

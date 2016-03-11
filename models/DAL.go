@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	_ "gamebase/Godeps/_workspace/src/github.com/lib/pq"
+	_ "github.com/anogowski/gamebase/Godeps/_workspace/src/github.com/lib/pq"
 )
 
 var Dal DAL

@@ -3,9 +3,10 @@ package models
 import (
 	"database/sql"
 	"errors"
-	_ "gamebase/Godeps/_workspace/src/github.com/lib/pq"
 	"log"
 	"os"
+
+	_ "github.com/anogowski/gamebase/Godeps/_workspace/src/github.com/lib/pq"
 )
 
 type UserStore interface {
@@ -51,7 +52,7 @@ func (this *PostgresUserStore) CreateUser(name, pass, email string) (*User, erro
 	return user, nil
 }
 func (this *PostgresUserStore) FindUser(id string) (*User, error) {
-	row := this.db.QueryRow("SELECT * FROM users WHERE id='"+id+"'")
+	row := this.db.QueryRow("SELECT * FROM users WHERE id='" + id + "'")
 	user := User{}
 	err := row.Scan(&user.UserId, &user.UserName, &user.Password, &user.Email)
 	switch {
