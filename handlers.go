@@ -79,6 +79,7 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 			friendarr = []string{}
 		}
 		newfriendlist := []models.User{}
+		delfriendlist := []string{}
 		for _,friend := range user.Friends{
 			found := false
 			for _,id := range friendarr{
@@ -86,13 +87,10 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 					found = true
 				}
 			}
-			if !found{
+			if found{
 				newfriendlist = append(newfriendlist, friend)
 			} else{
-				err = models.Dal.DeleteUserFriend(user.UserId, friend.UserId)
-				if err!=nil{
-					panic(err)
-				}
+				delfriendlist = append(delfriendlist, friend.UserId)
 			}
 		}
 		user.Friends = newfriendlist
@@ -108,6 +106,7 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 			gamearr = []string{}
 		}
 		newgamelist := []models.Game{}
+		delgamelist := []string{}
 		for _,game := range user.Games{
 			found := false
 			for _,id := range gamearr{
@@ -118,10 +117,7 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 			if found{
 				newgamelist = append(newgamelist, game)
 			} else{
-				err = models.Dal.DeleteUserGame(user.UserId, game.GameId)
-				if err!=nil{
-					panic(err)
-				}
+				delgamelist = append(delgamelist, game.GameId)
 			}
 		}
 		user.Games = newgamelist
@@ -143,6 +139,18 @@ func HandleAccountAction(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		err = models.Dal.UpdateUser(*user)
 		if err!=nil{
 			panic(err)
+		}
+		for _,remid := range delfriendlist{
+			err = models.Dal.DeleteUserFriend(user.UserId, remid)
+			if err!=nil{
+				panic(err)
+			}
+		}
+		for _,remid := range delgamelist{
+			err = models.Dal.DeleteUserGame(user.UserId, remid)
+			if err!=nil{
+				panic(err)
+			}
 		}
 		
 		models.RenderTemplate(w, r, "users/account", map[string]interface{}{"CurrentUser":user})
@@ -403,7 +411,7 @@ func HandleFriendAdd(w http.ResponseWriter, r *http.Request, params httprouter.P
 			models.RenderTemplate(w,r, "users/friend", nil)
 			return
 		}
-		//err = models.FriendStore.AddFriend(user.UserId, friendid)
+		err = models.Dal.AddUserFriend(user.UserId, friendid)
 		if err!=nil{
 			panic(err)
 		}

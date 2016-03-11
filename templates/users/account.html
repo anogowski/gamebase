@@ -40,7 +40,7 @@
 				{
 					var friendlist = [];
 					{{range .CurrentUser.Friends}}
-						gamelist.push('{{.UserId}}');
+						friendlist.push('{{.UserId}}');
 					{{end}}
 					var val = document.getElementById('accountFriendList');
 					val.value = '[';
