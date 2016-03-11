@@ -1,12 +1,13 @@
 package models
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"html"
 	"html/template"
+	"encoding/json"
 	"net/http"
+	"strconv"
+	"bytes"
+	"html"
+	"fmt"
 )
 
 func StringIndexOf(str string, needle string, start int) int {
@@ -63,36 +64,32 @@ var layoutFuncs = template.FuncMap{
 		return game.Title, nil
 	},
 	"ReviewCount": func(userid string) (string, error) {
-		return "ReviewCount not yet implemented", nil
 		count, err := Dal.GetReviewsUserCount(userid)
 		if err != nil {
 			return "0", err
 		}
-		return string(count), nil
+		return strconv.Itoa(count), nil
 	},
 	"VideoCount": func(userid string) (string, error) {
-		return "VideoCount not yet implemented", nil
 		count, err := Dal.GetUserVideosCount(userid)
 		if err != nil {
 			return "0", err
 		}
-		return string(count), nil
+		return strconv.Itoa(count), nil
 	},
 	"ReviewGameCount": func(gameid string) (string, error) {
-		return "ReviewGameCount not yet implemented", nil
 		count, err := Dal.GetReviewsGameCount(gameid)
 		if err != nil {
 			return "0", err
 		}
-		return string(count), nil
+		return strconv.Itoa(count), nil
 	},
 	"VideoGameCount": func(gameid string) (string, error) {
-		return "VideoGameCount not yet implemented", nil
 		count, err := Dal.GetGameVideosCount(gameid)
 		if err != nil {
 			return "0", err
 		}
-		return string(count), nil
+		return strconv.Itoa(count), nil
 	},
 	"URLQueryEscaper": func(s interface{}) (string, error) {
 		return template.URLQueryEscaper(s), nil
