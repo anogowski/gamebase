@@ -64,9 +64,9 @@ type DAL interface {
 	DeleteReview(reviewId string) error
 	FindReview(reviewId string) (*Review, error)
 	GetReviewsByGame(gameId string) ([]Review, error)
-	GetReviewsByGameCount(gameId string) (int, error)
+	GetReviewsGameCount(gameId string) (int, error)
 	GetReviewsByUser(userId string) ([]Review, error)
-	GetReviewsByUserCount(userId string) (int, error)
+	GetReviewsUserCount(userId string) (int, error)
 	FindTopReviewsByGame(gameId string, amnt int) ([]Review, error)
 	FindTopReviewsByUser(userId string, amnt int) ([]Review, error)
 
@@ -453,7 +453,7 @@ func (this *DataAccessLayer) GetReviewsByUser(userId string) ([]Review, error) {
 	return reivews, nil
 }
 
-func (this *DataAccessLayer) GetReviewsByUserCount(userId string) (int, error) {
+func (this *DataAccessLayer) GetReviewsUserCount(userId string) (int, error) {
 	rows, err := this.db.Query("SELECT * COUNT FROM reviews WHERE userid ='" + userId + "'")
 	if err != nil {
 		return nil, err
@@ -468,7 +468,7 @@ func (this *DataAccessLayer) GetReviewsByUserCount(userId string) (int, error) {
 	return numReviews, nil
 }
 
-func (this *DataAccessLayer) GetReviewsByGameCount(gameId string) (int, error) {
+func (this *DataAccessLayer) GetReviewsGameCount(gameId string) (int, error) {
 	rows, err := this.db.Query("SELECT * COUNT FROM reviews WHERE gameid ='" + gameId + "'")
 	if err != nil {
 		return nil, err
