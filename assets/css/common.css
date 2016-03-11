@@ -1,4 +1,4 @@
-body { background-color:#555555; color:#aaaaff; }
+body { background-color:#222222; color:#aaaaff; }
 .nav { background-color:#0a0a2a; height:2em; line-height:2em; }
 .sitetitle { font-size:1.5em; float:left; text-decoration:none; vertical-align:middle; color:inherit; }
 .navitem { float:right; text-decoration:none; vertical-align:middle; margin-left:2em; display:inline-block; color:inherit; }
@@ -14,13 +14,15 @@ ul {
 
 li a {
     display: block;
+	color: #000;
     padding: 8px 0 8px 16px;
     text-decoration: none;
 }
 
 li a:hover {
-    background-color: #cccccc;
+    background-color: #555555;
 }
+
 .menu { position:relative; display:inline-block; vertical-align:top; margin:0px; width:20%; }
 .page { position:relative; display:inline-block; vertical-align:top; margin:0px; width:50%; }
 .chat { position:relative; display:inline-block; vertical-align:top; margin:0px; }
