@@ -189,6 +189,7 @@ func HandleGamePage(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 	if err!=nil{
 		panic(err)
 	}
+	game.UpdateRating()
 	revs, err := models.Dal.FindTopReviewsByGame(gameid, 5)
 	if err!=nil{
 		panic(err)

@@ -1,16 +1,16 @@
 {{define "review/rating"}}
 	<font class="gold">
-		{{if ge 1.0 .Rating}}&#x2605;{{end}}
-		{{if ge 2.0 .Rating}}&#x2605;{{end}}
-		{{if ge 3.0 .Rating}}&#x2605;{{end}}
-		{{if ge 4.0 .Rating}}&#x2605;{{end}}
-		{{if ge 5.0 .Rating}}&#x2605;{{end}}
+		{{if le 1.0 .Rating}}&#x2605;{{end}}
+		{{if le 2.0 .Rating}}&#x2605;{{end}}
+		{{if le 3.0 .Rating}}&#x2605;{{end}}
+		{{if le 4.0 .Rating}}&#x2605;{{end}}
+		{{if le 5.0 .Rating}}&#x2605;{{end}}
 	</font>
 	<font class="white">
-		{{if lt 1.0 .Rating}}&#x2606;{{end}}
-		{{if lt 2.0 .Rating}}&#x2606;{{end}}
-		{{if lt 3.0 .Rating}}&#x2606;{{end}}
-		{{if lt 4.0 .Rating}}&#x2606;{{end}}
-		{{if lt 5.0 .Rating}}&#x2606;{{end}}
+		{{if gt 1.0 .Rating}}&#x2606;{{end}}
+		{{if gt 2.0 .Rating}}&#x2606;{{end}}
+		{{if gt 3.0 .Rating}}&#x2606;{{end}}
+		{{if gt 4.0 .Rating}}&#x2606;{{end}}
+		{{if gt 5.0 .Rating}}&#x2606;{{end}}
 	</font>
 {{end}}
