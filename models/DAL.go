@@ -454,12 +454,12 @@ func (this *DataAccessLayer) GetReviewsByUser(userId string) ([]Review, error) {
 }
 
 func (this *DataAccessLayer) GetReviewsUserCount(userId string) (int, error) {
-	rows, err := this.db.Query("SELECT * COUNT FROM reviews WHERE userid ='" + userId + "'")
+	rows, err := this.db.Query("SELECT COUNT(userid) FROM reviews WHERE userid ='" + userId + "'")
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
+	numReviews := 0
 	for rows.Next() {
-		var numReviews int = 0
 		err = rows.Scan(&numReviews)
 		if err != nil {
 			return numReviews, err
@@ -469,12 +469,12 @@ func (this *DataAccessLayer) GetReviewsUserCount(userId string) (int, error) {
 }
 
 func (this *DataAccessLayer) GetReviewsGameCount(gameId string) (int, error) {
-	rows, err := this.db.Query("SELECT * COUNT FROM reviews WHERE gameid ='" + gameId + "'")
+	rows, err := this.db.Query("SELECT COUNT(gameid) FROM reviews WHERE gameid ='" + gameId + "'")
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
+	numReviews := 0
 	for rows.Next() {
-		var numReviews int = 0
 		err = rows.Scan(&numReviews)
 		if err != nil {
 			return numReviews, err
@@ -725,12 +725,12 @@ func (this *DataAccessLayer) FindTopVideosByGame(gameid string, amnt int) ([]Vid
 }
 
 func (this *DataAccessLayer) GetGameVideosCount(gameId string) (int, error) {
-	rows, err := this.db.Query("SELECT * COUNT FROM vidoes WHERE gameid ='" + gameId + "'")
+	rows, err := this.db.Query("SELECT COUNT(gameid) FROM videos WHERE gameid ='" + gameId + "'")
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
+	numVideos := 0
 	for rows.Next() {
-		var numVideos int = 0
 		err = rows.Scan(&numVideos)
 		if err != nil {
 			return numVideos, err
@@ -740,12 +740,12 @@ func (this *DataAccessLayer) GetGameVideosCount(gameId string) (int, error) {
 }
 
 func (this *DataAccessLayer) GetUserVideosCount(userId string) (int, error) {
-	rows, err := this.db.Query("SELECT * COUNT FROM vidoes WHERE userid ='" + userId + "'")
+	rows, err := this.db.Query("SELECT COUNT(userid) FROM videos WHERE userid ='" + userId + "'")
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
+	numVideos := 0
 	for rows.Next() {
-		var numVideos int = 0
 		err = rows.Scan(&numVideos)
 		if err != nil {
 			return numVideos, err
