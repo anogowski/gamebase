@@ -49,7 +49,7 @@ func (this *Game) GetReviews() {
 	this.Review = temp
 }
 
-func (this *Game) UpdateRating(rating float64) {
+func (this *Game) UpdateRating() {
 
 	reviews, err := Dal.GetReviewsByGame(this.GameId)
 	if err != nil {
@@ -57,10 +57,15 @@ func (this *Game) UpdateRating(rating float64) {
 	}
 
 	var numReviews int = len(reviews)
-	var sumRating float64 = 0.0
-	for i := 0; i < numReviews; i++ {
-		sumRating += reviews[i].Rating
+	if numReviews > 0 {
+
+		var sumRating float64 = 0.0
+		for i := 0; i < numReviews; i++ {
+			sumRating += reviews[i].Rating
+		}
+		this.Rating = sumRating / float64(numReviews)
+	} else {
+		this.Rating = 0.0
 	}
 
-	this.Rating = sumRating / float64(numReviews)
 }
