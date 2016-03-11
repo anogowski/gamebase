@@ -327,7 +327,7 @@ func HandleReviewNew(w http.ResponseWriter, r *http.Request, params httprouter.P
 		//gameid := params.ByName("wild")
 		var gam *models.Game
 		var err error
-		//gam, err := models.GlobalGameStore.Find(gameid)
+		gam, err := models.Dal.FindGame(gameid)
 		if err!=nil{
 			panic(err)
 		}
