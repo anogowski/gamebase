@@ -313,9 +313,9 @@ func HandleGameClaimAction(w http.ResponseWriter, r *http.Request, params httpro
 	}
 }
 func HandleReview(w http.ResponseWriter, r *http.Request, params httprouter.Params){
-	//reviewid := params.ByName("wild")
-	//rev, err := models.GlobalReviewStore.Find(reviewid)
-	//models.RenderTemplate(w,r, "review/review", map[string]interface{}{"Review":rev})
+	reviewid := params.ByName("wild")
+	rev, err := models.GlobalReviewStore.Find(reviewid)
+	models.RenderTemplate(w,r, "review/review", map[string]interface{}{"Review":rev})
 }
 func HandleReviewNew(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	if models.SignedIn(w,r){
@@ -331,19 +331,14 @@ func HandleReviewNew(w http.ResponseWriter, r *http.Request, params httprouter.P
 }
 func HandleReviewNewAction(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	if models.SignedIn(w,r){
-		//gameid := params.ByName("wild")
-		//TODO: create the new review page
-		//reviewid
-		//reviewid := r.FormValue("reviewID")
-		//userid
-		//user := models.RequestUser(r)
-		//gameid
-		//gameid := r.FormValue("gameID")
-		//review
-		//review := r.FormValue("reviewBody")
-		//rating
-		//rating := r.FormValue("reviewRating")
-		//models.Dal.CreateReview()
+		gameid := params.ByName("wild")
+		reviewid := r.FormValue("reviewID")
+		user := models.RequestUser(r)
+		gameid := r.FormValue("gameID")
+		review := r.FormValue("reviewBody")
+		rating := r.FormValue("reviewRating")
+		//func (this *Review) InitReview(userId, gameId, body string, rating float64)
+		models.InitReview(user, gameId, review, rating)
 	}
 }
 func HandleVideo(w http.ResponseWriter, r *http.Request, params httprouter.Params){
