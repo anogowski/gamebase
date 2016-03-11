@@ -38,7 +38,7 @@ func (this *Game) UpdateGame(title, pub, url string) {
 }
 
 func (this *Game) DeleteGame() {
-	Dal.DeleteGame(*this.GameId)
+	Dal.DeleteGame(this.GameId)
 }
 
 func (this *Game) GetReviews() {
@@ -51,7 +51,7 @@ func (this *Game) GetReviews() {
 
 func (this *Game) UpdateRating(rating float64) {
 
-	reviews, err := Dal.GetReviewsByGame(*this.GameId)
+	reviews, err := Dal.GetReviewsByGame(this.GameId)
 	if err != nil {
 		panic(err)
 	}

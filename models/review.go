@@ -35,5 +35,5 @@ func (this *Review) UpdateReview(body, url string, rating float64) {
 }
 
 func (this *Review) DeleteReview() {
-	Dal.DeleteReview(*this.ReviewId)
+	Dal.DeleteReview(this.ReviewId)
 }
