@@ -13,7 +13,7 @@ body { background-color:#222222; color:#fff; }
 .gold { color:#ffaf00; }
 .white { color:#fff; }
 .average p { display:inline-block; margin-left:4em; }
-.review { border-color:#0a0a2a; border-width:2px; border-style:solid; border-radius:0.25em; margin-top:2em; }
+.review { border-color:#0a0a2a; border-width:2px; border-style:solid; border-radius:0.25em; margin-top:2em;}
 .upped { margin-left:2em; color:#008800; }
 .downed { margin-left:1em; color:#880000; }
 .shortened { max-height:10em; overflow:hidden; }
@@ -24,6 +24,23 @@ body { background-color:#222222; color:#fff; }
 .left { float:left; }
 .right { float:right; }
 .mid { align-items: center;}
+
+.chatsend input{
+    
+}
+
+.chatsend textarea {
+    
+}
+
+.msgAlign{
+    vertical-align: top;
+    text-align: right;    
+}
+
+.msgAlign label {
+    vertical-align: top;
+}
 
 a {
      color: #aaf;
