@@ -2,12 +2,12 @@ package models
 
 import (
 	"database/sql"
-	"strconv"
 	"errors"
-	"time"
 	"html"
 	"log"
 	"os"
+	"strconv"
+	"time"
 
 	_ "gamebase/Godeps/_workspace/src/github.com/lib/pq"
 )
@@ -66,8 +66,8 @@ type DAL interface {
 	FindReview(reviewId string) (*Review, error)
 	GetReviewsByGame(gameId string) ([]Review, error)
 	GetReviewsByUser(userId string) ([]Review, error)
-	FindTopReviewsByGame(gameId string, amnt int)([]Review, error)
-	FindTopReviewsByUser(userId string, amnt int)([]Review, error)
+	FindTopReviewsByGame(gameId string, amnt int) ([]Review, error)
+	FindTopReviewsByUser(userId string, amnt int) ([]Review, error)
 
 	//Tags
 
@@ -78,14 +78,14 @@ type DAL interface {
 	GetTags() ([]string, error)
 	FindGamesByTag(tag string) ([]Game, error)
 	FindTagsByGame(gameid string) ([]string, error)
-	
+
 	//Video
-	CreateVideo(vid Video)error
-	FindVideo(videoid string)(*Video, error)
-	FindVideosByUser(userid string)([]Video, error)
-	FindVideosByGame(gameid string)([]Video, error)
-	FindTopVideosByUser(userid string, amnt int)([]Video, error)
-	FindTopVideosByGame(gameid string, amnt int)([]Video, error)
+	CreateVideo(vid Video) error
+	FindVideo(videoid string) (*Video, error)
+	FindVideosByUser(userid string) ([]Video, error)
+	FindVideosByGame(gameid string) ([]Video, error)
+	FindTopVideosByUser(userid string, amnt int) ([]Video, error)
+	FindTopVideosByGame(gameid string, amnt int) ([]Video, error)
 }
 
 func (this *DataAccessLayer) CreateUser(name, pass, email string) (*User, error) {
@@ -379,7 +379,7 @@ func (this *DataAccessLayer) CreateReview(review Review) error {
 		return errors.New("Review already exists.")
 	}
 	f := strconv.FormatFloat(review.Rating, 'g', 2, 64)
-	if _, err = this.db.Exec("INSERT INTO reviews VALUES('" + review.ReviewId + "', '" + review.UserId + "', '" + review.GameId + "', '" + html.EscapeString(review.Body) + "', '" + f + "', "+strconv.Itoa(review.Likes)+", "+strconv.Itoa(review.Dislikes)+")"); err != nil {
+	if _, err = this.db.Exec("INSERT INTO reviews VALUES('" + review.ReviewId + "', '" + review.UserId + "', '" + review.GameId + "', '" + html.EscapeString(review.Body) + "', '" + f + "', " + strconv.Itoa(review.Likes) + ", " + strconv.Itoa(review.Dislikes) + ")"); err != nil {
 		return err
 	}
 	return nil
@@ -387,7 +387,7 @@ func (this *DataAccessLayer) CreateReview(review Review) error {
 
 func (this *DataAccessLayer) UpdateReview(review Review) error {
 	f := strconv.FormatFloat(review.Rating, 'g', 2, 64)
-	if _, err := this.db.Exec("UPDATE reviews SET body='" + html.EscapeString(review.Body) + "', rating='" + f + "', likes='"+strconv.Itoa(review.Likes)+"', dislikes='"+strconv.Itoa(review.Dislikes)+"' WHERE id='" + review.ReviewId + "'"); err != nil {
+	if _, err := this.db.Exec("UPDATE reviews SET body='" + html.EscapeString(review.Body) + "', rating='" + f + "', likes='" + strconv.Itoa(review.Likes) + "', dislikes='" + strconv.Itoa(review.Dislikes) + "' WHERE id='" + review.ReviewId + "'"); err != nil {
 		return err
 	}
 	return nil
@@ -450,9 +450,9 @@ func (this *DataAccessLayer) GetReviewsByUser(userId string) ([]Review, error) {
 	}
 	return reivews, nil
 }
-func (this *DataAccessLayer) FindTopReviewsByGame(gameId string, amnt int)([]Review, error){
+func (this *DataAccessLayer) FindTopReviewsByGame(gameId string, amnt int) ([]Review, error) {
 	revs := []Review{}
-	rows, err := this.db.Query("SELECT * FROM reviews WHERE gameid ='" + gameId + "' ORDER BY likes DESC, dislikes ASC LIMIT "+strconv.Itoa(amnt))
+	rows, err := this.db.Query("SELECT * FROM reviews WHERE gameid ='" + gameId + "' ORDER BY likes DESC, dislikes ASC LIMIT " + strconv.Itoa(amnt))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return revs, nil
@@ -471,9 +471,9 @@ func (this *DataAccessLayer) FindTopReviewsByGame(gameId string, amnt int)([]Rev
 	}
 	return revs, nil
 }
-func (this *DataAccessLayer) FindTopReviewsByUser(userId string, amnt int)([]Review, error){
+func (this *DataAccessLayer) FindTopReviewsByUser(userId string, amnt int) ([]Review, error) {
 	revs := []Review{}
-	rows, err := this.db.Query("SELECT * FROM reviews WHERE userid ='" + userId + "' ORDER BY likes DESC, dislikes ASC LIMIT "+strconv.Itoa(amnt))
+	rows, err := this.db.Query("SELECT * FROM reviews WHERE userid ='" + userId + "' ORDER BY likes DESC, dislikes ASC LIMIT " + strconv.Itoa(amnt))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return revs, nil
@@ -587,26 +587,26 @@ func (this *DataAccessLayer) FindTagsByGame(gameid string) ([]string, error) {
 	return tags, nil
 }
 
-func (this *DataAccessLayer) CreateVideo(vid Video)error{
-	if _, err := this.db.Exec("INSERT INTO videos VALUES('"+vid.ID+"', '"+vid.UserID+"', '"+vid.GameID+"', '"+html.EscapeString(vid.URL)+"', "+strconv.Itoa(vid.Likes)+", "+strconv.Itoa(vid.Dislikes)+")"); err != nil {
+func (this *DataAccessLayer) CreateVideo(vid Video) error {
+	if _, err := this.db.Exec("INSERT INTO videos VALUES('" + vid.ID + "', '" + vid.UserID + "', '" + vid.GameID + "', '" + html.EscapeString(vid.URL) + "', " + strconv.Itoa(vid.Likes) + ", " + strconv.Itoa(vid.Dislikes) + ")"); err != nil {
 		return err
 	}
 	return nil
 }
-func (this *DataAccessLayer) FindVideo(videoid string)(*Video, error){
-	row := this.db.QueryRow("SELECT * FROM videos WHERE videoid='"+videoid+"'")
+func (this *DataAccessLayer) FindVideo(videoid string) (*Video, error) {
+	row := this.db.QueryRow("SELECT * FROM videos WHERE videoid='" + videoid + "'")
 	vid := Video{}
 	err := row.Scan(&vid.ID, &vid.UserID, &vid.GameID, &vid.URL, &vid.Likes, &vid.Dislikes)
-	if err!=nil{
-		if err==sql.ErrNoRows{
-			return nil,nil
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
 		}
-		return nil,err
+		return nil, err
 	}
 	vid.URL = html.UnescapeString(vid.URL)
-	return &vid,nil
+	return &vid, nil
 }
-func (this *DataAccessLayer) FindVideosByUser(userid string)([]Video, error){
+func (this *DataAccessLayer) FindVideosByUser(userid string) ([]Video, error) {
 	vids := []Video{}
 	rows, err := this.db.Query("SELECT videoid,userid,gameid,url,likes,dislikes FROM videos WHERE userid='" + userid + "'")
 	if err != nil {
@@ -627,7 +627,7 @@ func (this *DataAccessLayer) FindVideosByUser(userid string)([]Video, error){
 	}
 	return vids, nil
 }
-func (this *DataAccessLayer) FindVideosByGame(gameid string)([]Video, error){
+func (this *DataAccessLayer) FindVideosByGame(gameid string) ([]Video, error) {
 	vids := []Video{}
 	rows, err := this.db.Query("SELECT videoid,userid,gameid,url,likes,dislikes FROM videos WHERE gameid='" + gameid + "'")
 	if err != nil {
@@ -648,9 +648,9 @@ func (this *DataAccessLayer) FindVideosByGame(gameid string)([]Video, error){
 	}
 	return vids, nil
 }
-func (this *DataAccessLayer) FindTopVideosByUser(userid string, amnt int)([]Video, error){
+func (this *DataAccessLayer) FindTopVideosByUser(userid string, amnt int) ([]Video, error) {
 	vids := []Video{}
-	rows, err := this.db.Query("SELECT videoid,userid,gameid,url,likes,dislikes FROM videos WHERE userid='" + userid + "' ORDER BY likes DESC, dislikes ASC LIMIT "+strconv.Itoa(amnt))
+	rows, err := this.db.Query("SELECT videoid,userid,gameid,url,likes,dislikes FROM videos WHERE userid='" + userid + "' ORDER BY likes DESC, dislikes ASC LIMIT " + strconv.Itoa(amnt))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return vids, nil
@@ -669,9 +669,9 @@ func (this *DataAccessLayer) FindTopVideosByUser(userid string, amnt int)([]Vide
 	}
 	return vids, nil
 }
-func (this *DataAccessLayer) FindTopVideosByGame(gameid string, amnt int)([]Video, error){
+func (this *DataAccessLayer) FindTopVideosByGame(gameid string, amnt int) ([]Video, error) {
 	vids := []Video{}
-	rows, err := this.db.Query("SELECT videoid,userid,gameid,url,likes,dislikes FROM videos WHERE gameid='" + gameid + "' ORDER BY likes DESC, dislikes ASC LIMIT "+strconv.Itoa(amnt))
+	rows, err := this.db.Query("SELECT videoid,userid,gameid,url,likes,dislikes FROM videos WHERE gameid='" + gameid + "' ORDER BY likes DESC, dislikes ASC LIMIT " + strconv.Itoa(amnt))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return vids, nil

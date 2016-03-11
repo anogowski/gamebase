@@ -55,6 +55,23 @@ func (this *User) GetMessages() {
 	}
 	this.Messages = temp
 }
+
+func (this *User) GetFriends() {
+	temp, err := Dal.GetFriendsList(this.UserId)
+	if err != nil {
+		panic(err)
+	}
+	this.Friends = temp
+}
+
+func (this *User) GetGames() {
+	temp, err := Dal.GetGamesList(this.UserId)
+	if err != nil {
+		panic(err)
+	}
+	this.Games = temp
+}
+
 func (this *User) CheckPassword(pass string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(this.Password), []byte(pass)) == nil
 }

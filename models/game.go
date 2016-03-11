@@ -38,9 +38,29 @@ func (this *Game) UpdateGame(title, pub, url string) {
 }
 
 func (this *Game) DeleteGame() {
+	Dal.DeleteGame(*this.GameId)
+}
 
+func (this *Game) GetReviews() {
+	temp, err := Dal.GetReviewsByGame(this.GameId)
+	if err != nil {
+		panic(err)
+	}
+	this.Review = temp
 }
 
 func (this *Game) UpdateRating(rating float64) {
-	//Get raitings from reviews
+
+	reviews, err := Dal.GetReviewsByGame(*this.GameId)
+	if err != nil {
+		panic(err)
+	}
+
+	var numReviews int = len(reviews)
+	var sumRating float64 = 0.0
+	for i := 0; i < numReviews; i++ {
+		sumRating += reviews[i].Rating
+	}
+
+	this.Rating = sumRating / numReviews
 }
