@@ -62,5 +62,5 @@ func (this *Game) UpdateRating(rating float64) {
 		sumRating += reviews[i].Rating
 	}
 
-	this.Rating = sumRating / numReviews
+	this.Rating = sumRating / float64(numReviews)
 }

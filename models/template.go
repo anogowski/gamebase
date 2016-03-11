@@ -124,9 +124,10 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 	}
 	data["Flash"] = r.URL.Query().Get("flash")
 	data["Taglist"], _ = Dal.GetTags()
-	data["friendsList"],_ = Dal.GetFriendsList(data["CurrentUser"].(*User).UserId)
-	data["ChatMessages"],_ = Dal.GetMessages(data["CurrentUser"].(*User).UserId)
-	
+	if data["CurrentUser"].(*User)!=nil{
+		data["friendsList"],_ = Dal.GetFriendsList(data["CurrentUser"].(*User).UserId)
+		data["ChatMessages"],_ = Dal.GetMessages(data["CurrentUser"].(*User).UserId)
+	}
 	var templateClone *template.Template
 	
 	renderFuncs := template.FuncMap{
