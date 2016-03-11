@@ -8,6 +8,17 @@ import (
 	"fmt"
 )
 
+func StringIndexOf(str string, needle string, start int) int{
+	length := len(needle)
+	max := len(str)-length
+	for at:=start; at<max; at++{
+		if needle==str[at:at+length]{
+			return at
+		}
+	}
+	return -1
+}
+
 var layoutFuncs = template.FuncMap{
 	"yield":func()(string,error){
 		return "",fmt.Errorf("bad yield called")
@@ -90,6 +101,15 @@ var layoutFuncs = template.FuncMap{
 		js,err := json.Marshal(s)
 		return string(js),err
 	},
+	"HTMLnewlines":func(s string)(template.HTML,error){
+		buf := bytes.NewBuffer(nil)
+		lastind := 0
+		for ind:=StringIndexOf(s, "\n", lastind); ind>=0; ind=StringIndexOf(s, "\n", ind+1){
+			fmt.Fprintln(buf, template.HTMLEscapeString(s[lastind:ind])+"<br/>")
+			lastind = ind
+		}
+		return template.HTML(buf.String()),nil
+	},
 }
 var layout = template.Must(template.New("layout.html").Funcs(layoutFuncs).ParseFiles("templates/layout.html"))
 var laytemplates = template.Must(template.New("t").Funcs(layoutFuncs).ParseFiles("templates/chat.html", "templates/menu.html"))
@@ -169,6 +189,7 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 		"VideoCount":layoutFuncs["VideoCount"],
 		"URLQueryEscaper":layoutFuncs["URLQueryEscaper"],
 		"JSONify":layoutFuncs["JSONify"],
+		"HTMLnewlines":layoutFuncs["HTMLnewlines"],
 	}
 	layoutclone, _ := layout.Clone()
 	layoutclone.Funcs(funcs).Funcs(renderFuncs)
