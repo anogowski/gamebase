@@ -1,9 +1,26 @@
-body { background-color:#000000; color:#aaaaff; }
+body { background-color:#555555; color:#aaaaff; }
 .nav { background-color:#0a0a2a; height:2em; line-height:2em; }
 .sitetitle { font-size:1.5em; float:left; text-decoration:none; vertical-align:middle; color:inherit; }
 .navitem { float:right; text-decoration:none; vertical-align:middle; margin-left:2em; display:inline-block; color:inherit; }
 .search { background-color:inherit; color:inherit; width:10em; }
 .content { border-style:solid; border-width:1px; border-color:#0a0a2a; position:relative; width:100%; }
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    background-color: #f1f1f1;
+}
+
+li a {
+    display: block;
+    padding: 8px 0 8px 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #cccccc;
+}
 .menu { position:relative; display:inline-block; vertical-align:top; margin:0px; width:20%; }
 .page { position:relative; display:inline-block; vertical-align:top; margin:0px; width:50%; }
 .chat { position:relative; display:inline-block; vertical-align:top; margin:0px; }
