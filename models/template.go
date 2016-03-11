@@ -55,7 +55,6 @@ var layoutFuncs = template.FuncMap{
 		return user.UserName,nil
 	},
 	"FindGameNameByID":func(gameid string)(string,error){
-		return "FindGameNameByID not yet implemented",nil
 		game, err := Dal.FindGame(gameid)
 		if err!=nil{
 			return "",err

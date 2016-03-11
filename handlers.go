@@ -189,7 +189,15 @@ func HandleGamePage(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 	if err!=nil{
 		panic(err)
 	}
-	models.RenderTemplate(w,r,"game/page", map[string]interface{}{"Game":game})
+	revs, err := models.Dal.FindTopReviewsByGame(gameid, 5)
+	if err!=nil{
+		panic(err)
+	}
+	vids, err := models.Dal.FindTopVideosByGame(gameid, 6)
+	if err!=nil{
+		panic(err)
+	}
+	models.RenderTemplate(w,r,"game/page", map[string]interface{}{"Game":game, "TopReviews":revs, "TopUserVids":vids})
 }
 func HandleGamePageNew(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
 	if models.SignedIn(w,r){
@@ -340,33 +348,45 @@ func HandleReviewNewAction(w http.ResponseWriter, r *http.Request, params httpro
 }
 func HandleVideo(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	videoid := params.ByName("wild")
-	user, err := models.GlobalUserStore.FindUser(videoid)
+	vid, err := models.Dal.FindVideo(videoid)
 	if err!=nil{
 		panic(err)
 	}
-	if user!=nil{
-		var vids []models.Video
-		//vids, err = models.GlobalVideoStore.FindByUser(user.UserId)
-		if err!=nil{
-			panic(err)
-		}
-		models.RenderTemplate(w,r, "videos/alluservideos", map[string]interface{}{"User":user, "AllVideos":vids})
-	} else{
-		var vid *models.Video
-		var err error
-		//vid, err = models.GlobalVideoStore.Find(videoid)
-		if err!=nil{
-			panic(err)
-		}
-		models.RenderTemplate(w,r, "video/uservideo", map[string]interface{}{"Video":vid, "VideoWidth":640, "VideoHeight":480})
-	}
+	models.RenderTemplate(w,r, "video/uservideo", map[string]interface{}{"Video":vid, "VideoWidth":640, "VideoHeight":480})
 }
+func HandleUserVideos(w http.ResponseWriter, r *http.Request, params httprouter.Params){
+	userid := params.ByName("wild")
+	user, err := models.GlobalUserStore.FindUser(userid)
+	if err!=nil{
+		panic(err)
+	}
+	var vids []models.Video
+	vids, err = models.Dal.FindVideosByUser(user.UserId)
+	if err!=nil{
+		panic(err)
+	}
+	models.RenderTemplate(w,r, "videos/alluservideos", map[string]interface{}{"User":user, "AllVideos":vids})
+}
+func HandleGameVideos(w http.ResponseWriter, r *http.Request, params httprouter.Params){
+	gameid := params.ByName("wild")
+	game, err := models.Dal.FindGame(gameid)
+	if err!=nil{
+		panic(err)
+	}
+	var vids []models.Video
+	vids, err = models.Dal.FindVideosByGame(gameid)
+	if err!=nil{
+		panic(err)
+	}
+	models.RenderTemplate(w,r, "videos/allgamevideos", map[string]interface{}{"Game":game, "AllVideos":vids})
+}
+
 func HandleVideoNew(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	if models.SignedIn(w,r){
-		//gameid := params.ByName("wild")
+		gameid := params.ByName("wild")
 		var gam *models.Game
 		var err error
-		//game, err = models.GlobalGameStore.Find(gameid)
+		gam, err = models.Dal.FindGame(gameid)
 		if err!=nil{
 			panic(err)
 		}
@@ -375,9 +395,15 @@ func HandleVideoNew(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 }
 func HandleVideoNewAction(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	if models.SignedIn(w,r){
-		//gameid := params.ByName("wild")
-		//TODO: create the new video page
-		
+		gameid := params.ByName("wild")
+		vidurl := r.FormValue("vidURL")
+		user := models.RequestUser(r)
+		vid := models.NewVideo(user.UserId, gameid, vidurl)
+		err := models.Dal.CreateVideo(*vid)
+		if err!=nil{
+			panic(err)
+		}
+		http.Redirect(w,r, "/videos/"+url.QueryEscape(vid.ID), http.StatusFound)
 	}
 }
 
@@ -389,11 +415,11 @@ func HandleUserPage(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 	}
 	var vids []models.Video
 	var revs []models.Review
-	//vids, err = models.GlobalVideoStore.FindByUser(userid)
+	vids, err = models.Dal.FindTopVideosByUser(userid, 10)
 	if err!=nil{
 		panic(err)
 	}
-	//revs, err = models.GlobalReviewStore.FindByUser(userid)
+	revs, err = models.Dal.FindTopReviewsByUser(userid, 10)
 	if err!=nil{
 		panic(err)
 	}

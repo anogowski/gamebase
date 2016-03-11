@@ -2,12 +2,12 @@ package models
 
 import (
 	"database/sql"
+	"strconv"
 	"errors"
+	"time"
 	"html"
 	"log"
 	"os"
-	"strconv"
-	"time"
 
 	_ "gamebase/Godeps/_workspace/src/github.com/lib/pq"
 )
@@ -66,6 +66,8 @@ type DAL interface {
 	FindReview(reviewId string) (*Review, error)
 	GetReviewsByGame(gameId string) ([]Review, error)
 	GetReviewsByUser(userId string) ([]Review, error)
+	FindTopReviewsByGame(gameId string, amnt int)([]Review, error)
+	FindTopReviewsByUser(userId string, amnt int)([]Review, error)
 
 	//Tags
 
@@ -76,6 +78,14 @@ type DAL interface {
 	GetTags() ([]string, error)
 	FindGamesByTag(tag string) ([]Game, error)
 	FindTagsByGame(gameid string) ([]string, error)
+	
+	//Video
+	CreateVideo(vid Video)error
+	FindVideo(videoid string)(*Video, error)
+	FindVideosByUser(userid string)([]Video, error)
+	FindVideosByGame(gameid string)([]Video, error)
+	FindTopVideosByUser(userid string, amnt int)([]Video, error)
+	FindTopVideosByGame(gameid string, amnt int)([]Video, error)
 }
 
 func (this *DataAccessLayer) CreateUser(name, pass, email string) (*User, error) {
@@ -369,7 +379,7 @@ func (this *DataAccessLayer) CreateReview(review Review) error {
 		return errors.New("Review already exists.")
 	}
 	f := strconv.FormatFloat(review.Rating, 'g', 2, 64)
-	if _, err = this.db.Exec("INSERT INTO reviews VALUES('" + review.ReviewId + "', '" + review.UserId + "', '" + review.GameId + "', '" + html.EscapeString(review.Body) + "', '" + f + "')"); err != nil {
+	if _, err = this.db.Exec("INSERT INTO reviews VALUES('" + review.ReviewId + "', '" + review.UserId + "', '" + review.GameId + "', '" + html.EscapeString(review.Body) + "', '" + f + "', "+strconv.Itoa(review.Likes)+", "+strconv.Itoa(review.Dislikes)+")"); err != nil {
 		return err
 	}
 	return nil
@@ -377,7 +387,7 @@ func (this *DataAccessLayer) CreateReview(review Review) error {
 
 func (this *DataAccessLayer) UpdateReview(review Review) error {
 	f := strconv.FormatFloat(review.Rating, 'g', 2, 64)
-	if _, err := this.db.Exec("UPDATE reviews SET body='" + html.EscapeString(review.Body) + "', rating='" + f + "' WHERE id='" + review.ReviewId + "'"); err != nil {
+	if _, err := this.db.Exec("UPDATE reviews SET body='" + html.EscapeString(review.Body) + "', rating='" + f + "', likes='"+strconv.Itoa(review.Likes)+"', dislikes='"+strconv.Itoa(review.Dislikes)+"' WHERE id='" + review.ReviewId + "'"); err != nil {
 		return err
 	}
 	return nil
@@ -392,9 +402,9 @@ func (this *DataAccessLayer) DeleteReview(reviewId string) error {
 }
 
 func (this *DataAccessLayer) FindReview(reviewId string) (*Review, error) {
-	row := this.db.QueryRow("SELECT id FROM reviews WHERE reviewId='" + reviewId + "'")
+	row := this.db.QueryRow("SELECT * FROM reviews WHERE reviewId='" + reviewId + "'")
 	review := Review{}
-	err := row.Scan(&review.ReviewId, &review.UserId, &review.GameId, &review.Body, &review.Rating)
+	err := row.Scan(&review.ReviewId, &review.UserId, &review.GameId, &review.Body, &review.Rating, &review.Likes, &review.Dislikes)
 	switch {
 	case err == sql.ErrNoRows:
 		return nil, nil
@@ -413,10 +423,11 @@ func (this *DataAccessLayer) GetReviewsByGame(gameId string) ([]Review, error) {
 	reivews := []Review{}
 	for rows.Next() {
 		var review Review
-		err = rows.Scan(&review.ReviewId, &review.UserId, &review.GameId, &review.Body, &review.Rating)
+		err = rows.Scan(&review.ReviewId, &review.UserId, &review.GameId, &review.Body, &review.Rating, &review.Likes, &review.Dislikes)
 		if err != nil {
 			return reivews, err
 		}
+		review.Body = html.UnescapeString(review.Body)
 		reivews = append(reivews, review)
 	}
 	return reivews, nil
@@ -430,13 +441,56 @@ func (this *DataAccessLayer) GetReviewsByUser(userId string) ([]Review, error) {
 	reivews := []Review{}
 	for rows.Next() {
 		var review Review
-		err = rows.Scan(&review.ReviewId, &review.UserId, &review.GameId, &review.Body, &review.Rating)
+		err = rows.Scan(&review.ReviewId, &review.UserId, &review.GameId, &review.Body, &review.Rating, &review.Likes, &review.Dislikes)
 		if err != nil {
 			return reivews, err
 		}
+		review.Body = html.UnescapeString(review.Body)
 		reivews = append(reivews, review)
 	}
 	return reivews, nil
+}
+func (this *DataAccessLayer) FindTopReviewsByGame(gameId string, amnt int)([]Review, error){
+	revs := []Review{}
+	rows, err := this.db.Query("SELECT * FROM reviews WHERE gameid ='" + gameId + "' ORDER BY likes DESC, dislikes ASC LIMIT "+strconv.Itoa(amnt))
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return revs, nil
+		}
+		return revs, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var review Review
+		err = rows.Scan(&review.ReviewId, &review.UserId, &review.GameId, &review.Body, &review.Rating, &review.Likes, &review.Dislikes)
+		if err != nil {
+			return revs, err
+		}
+		review.Body = html.UnescapeString(review.Body)
+		revs = append(revs, review)
+	}
+	return revs, nil
+}
+func (this *DataAccessLayer) FindTopReviewsByUser(userId string, amnt int)([]Review, error){
+	revs := []Review{}
+	rows, err := this.db.Query("SELECT * FROM reviews WHERE userid ='" + userId + "' ORDER BY likes DESC, dislikes ASC LIMIT "+strconv.Itoa(amnt))
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return revs, nil
+		}
+		return revs, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var review Review
+		err = rows.Scan(&review.ReviewId, &review.UserId, &review.GameId, &review.Body, &review.Rating, &review.Likes, &review.Dislikes)
+		if err != nil {
+			return revs, err
+		}
+		review.Body = html.UnescapeString(review.Body)
+		revs = append(revs, review)
+	}
+	return revs, nil
 }
 
 func (this *DataAccessLayer) CreateTag(tag string) error {
@@ -531,4 +585,108 @@ func (this *DataAccessLayer) FindTagsByGame(gameid string) ([]string, error) {
 		tags = append(tags, html.UnescapeString(tag))
 	}
 	return tags, nil
+}
+
+func (this *DataAccessLayer) CreateVideo(vid Video)error{
+	if _, err := this.db.Exec("INSERT INTO videos VALUES('"+vid.ID+"', '"+vid.UserID+"', '"+vid.GameID+"', '"+html.EscapeString(vid.URL)+"', "+strconv.Itoa(vid.Likes)+", "+strconv.Itoa(vid.Dislikes)+")"); err != nil {
+		return err
+	}
+	return nil
+}
+func (this *DataAccessLayer) FindVideo(videoid string)(*Video, error){
+	row := this.db.QueryRow("SELECT * FROM videos WHERE videoid='"+videoid+"'")
+	vid := Video{}
+	err := row.Scan(&vid.ID, &vid.UserID, &vid.GameID, &vid.URL, &vid.Likes, &vid.Dislikes)
+	if err!=nil{
+		if err==sql.ErrNoRows{
+			return nil,nil
+		}
+		return nil,err
+	}
+	vid.URL = html.UnescapeString(vid.URL)
+	return &vid,nil
+}
+func (this *DataAccessLayer) FindVideosByUser(userid string)([]Video, error){
+	vids := []Video{}
+	rows, err := this.db.Query("SELECT videoid,userid,gameid,url,likes,dislikes FROM videos WHERE userid='" + userid + "'")
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return vids, nil
+		}
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		vid := Video{}
+		err := rows.Scan(&vid.ID, &vid.UserID, &vid.GameID, &vid.URL, &vid.Likes, &vid.Dislikes)
+		if err != nil {
+			return vids, err
+		}
+		vid.URL = html.UnescapeString(vid.URL)
+		vids = append(vids, vid)
+	}
+	return vids, nil
+}
+func (this *DataAccessLayer) FindVideosByGame(gameid string)([]Video, error){
+	vids := []Video{}
+	rows, err := this.db.Query("SELECT videoid,userid,gameid,url,likes,dislikes FROM videos WHERE gameid='" + gameid + "'")
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return vids, nil
+		}
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		vid := Video{}
+		err := rows.Scan(&vid.ID, &vid.UserID, &vid.GameID, &vid.URL, &vid.Likes, &vid.Dislikes)
+		if err != nil {
+			return vids, err
+		}
+		vid.URL = html.UnescapeString(vid.URL)
+		vids = append(vids, vid)
+	}
+	return vids, nil
+}
+func (this *DataAccessLayer) FindTopVideosByUser(userid string, amnt int)([]Video, error){
+	vids := []Video{}
+	rows, err := this.db.Query("SELECT videoid,userid,gameid,url,likes,dislikes FROM videos WHERE userid='" + userid + "' ORDER BY likes DESC, dislikes ASC LIMIT "+strconv.Itoa(amnt))
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return vids, nil
+		}
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		vid := Video{}
+		err := rows.Scan(&vid.ID, &vid.UserID, &vid.GameID, &vid.URL, &vid.Likes, &vid.Dislikes)
+		if err != nil {
+			return vids, err
+		}
+		vid.URL = html.UnescapeString(vid.URL)
+		vids = append(vids, vid)
+	}
+	return vids, nil
+}
+func (this *DataAccessLayer) FindTopVideosByGame(gameid string, amnt int)([]Video, error){
+	vids := []Video{}
+	rows, err := this.db.Query("SELECT videoid,userid,gameid,url,likes,dislikes FROM videos WHERE gameid='" + gameid + "' ORDER BY likes DESC, dislikes ASC LIMIT "+strconv.Itoa(amnt))
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return vids, nil
+		}
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		vid := Video{}
+		err := rows.Scan(&vid.ID, &vid.UserID, &vid.GameID, &vid.URL, &vid.Likes, &vid.Dislikes)
+		if err != nil {
+			return vids, err
+		}
+		vid.URL = html.UnescapeString(vid.URL)
+		vids = append(vids, vid)
+	}
+	return vids, nil
 }

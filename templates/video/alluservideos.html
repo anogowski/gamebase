@@ -1,8 +1,8 @@
-{{define "users/allvideos"}}
+{{define "videos/alluservideos"}}
 	<div class="poster">{{.User.UserName}}</div>
 	<div class="videos">
 	{{range .AllVideos}}
-		{{RenderTemplateVideo . 320 240}}
+		{{RenderTemplateGameVideo . 320 240}}
 	{{else}}
 		<p>
 			No Videos Yet.

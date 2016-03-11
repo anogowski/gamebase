@@ -6,6 +6,8 @@ type Review struct {
 	GameId   string
 	Body     string
 	Rating   float64
+	Likes    int
+	Dislikes int
 }
 
 const REVIEW_MAX_RATING float64 = 5

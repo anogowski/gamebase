@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"github.com/anogowski/gamebase/Godeps/_workspace/src/github.com/julienschmidt/httprouter"
 	"github.com/anogowski/gamebase/models"
-	"log"
 	"net/http"
+	"log"
+	"fmt"
 	"os"
 )
 
@@ -28,6 +28,7 @@ func main() {
 	router.Handle("GET", "/game/:wild/edit", HandleGameEditPage)
 	router.Handle("POST", "/game/:wild/edit", HandleGameEditAction)
 	router.Handle("GET", "/game/:wild/claim", HandleGameClaimAction)
+	router.Handle("GET", "/game/:wild/videos", HandleGameVideos)
 	router.Handle("GET", "/review/:wild/new", HandleReviewNew)
 	router.Handle("POST", "/review/:wild/new", HandleReviewNewAction)
 	router.Handle("GET", "/review/:wild", HandleReview)
@@ -42,6 +43,7 @@ func main() {
 	router.Handle("POST", "/account", HandleAccountAction)
 	router.Handle("POST", "/chat", HandleChatAction)
 	router.Handle("GET", "/users/:wild", HandleUserPage)
+	router.Handle("GET", "/users/:wild/videos", HandleUserVideos)
 	router.Handle("GET", "/friend/:wild", HandleFriendAdd)
 	router.ServeFiles("/assets/*filepath", http.Dir("assets/"))
 

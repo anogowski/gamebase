@@ -1,7 +1,7 @@
 {{define "video/gamevideo"}}
 	<div class="gamevid">
 		{{if .Video}}
-			<div class="videogamename">{{FindGameNameByID .Video.GameID}} ({{VideoGameCount .Video.GameID}} Videos)</div>
+			<div class="videogamename"><a href="/game/{{.Video.GameID}}">{{FindGameNameByID .Video.GameID}}</a> ({{VideoGameCount .Video.GameID}} Videos)</div>
 			<font class="upped">{{.Video.Likes}}&#x1F44D;</font>
 			<font class="downed">{{.Video.Dislikes}}&#x1F44E;</font>
 			{{RenderTemplateVideo .Video.URL .VideoWidth .VideoHeight}}

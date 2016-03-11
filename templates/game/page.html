@@ -20,28 +20,28 @@
 		{{RenderTemplateRating .Game.Rating}}
 		<p>Out of {{.ReviewCount}} Reviews</p>
 	</div>
-	<h2>Top Reviews <a class="small" href="/review/{{URLQueryEscaper .Game.GameId}}">See All</a></h2>
+	<h2>Top Reviews <a class="small" href="/review/{{.Game.GameId}}">See All</a></h2>
 	<div class="reviews">
 		{{if .CurrentUser}}
-			<a href="/review/{{URLQueryEscaper .Game.GameId}}/new">Post your own review.</a>
+			<a href="/review/{{.Game.GameId}}/new">Post your own review.</a>
 		{{else}}
-			<p><a href="/review/{{URLQueryEscaper .Game.GameId}}/new">Login/Sign-up</a> to post your own review.</p>
+			<p><a href="/review/{{.Game.GameId}}/new">Login/Sign-up</a> to post your own review.</p>
 		{{end}}
 		{{range .TopReviews}}
 			<div class="review shortened">
-				<a href="/users/{{URLQueryEscaper .Review.UserId}}" class="reviewer">{{FindUserNameByID .Review.UserId}} ({{ReviewCount .Review.UserId}} Reviews)</a>
+				<a href="/users/{{.Review.UserId}}" class="reviewer">{{FindUserNameByID .Review.UserId}} ({{ReviewCount .Review.UserId}} Reviews)</a>
 				{{RenderTemplateReview .}}
 			</div>
 		{{else}}
 			<p>No Reviews Yet</p>
 		{{end}}
 	</div>
-	<h2>Top User Videos <a class="small" href="/videos/{{URLQueryEscaper .Game.GameId}}">See All</a></h2>
+	<h2>Top User Videos <a class="small" href="/game/{{.Game.GameId}}/videos">See All</a></h2>
 	<div class="uservids">
 		{{if .CurrentUser}}
-			<a href="/videos/{{URLQueryEscaper .Game.GameId}}/new">Post your own video</a>
+			<a href="/videos/{{.Game.GameId}}/new">Post your own video</a>
 		{{else}}
-			<p><a href="/videos/{{URLQueryEscaper .Game.GameId}}/new">Login/Sign-up</a> to post your own video.</p>
+			<p><a href="/videos/{{.Game.GameId}}/new">Login/Sign-up</a> to post your own video.</p>
 		{{end}}
 		{{range .TopUserVids}}
 			{{RenderTemplateUserVideo . 320 240}}

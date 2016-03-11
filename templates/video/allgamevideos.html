@@ -1,0 +1,12 @@
+{{define "videos/allgamevideos"}}
+	<div>{{.Game.Title}}</div>
+	<div class="videos">
+	{{range .AllVideos}}
+		{{RenderTemplateUserVideo . 320 240}}
+	{{else}}
+		<p>
+			No Videos Yet.
+		</p>
+	{{end}}
+	</div>
+{{end}}
