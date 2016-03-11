@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 func HandleIndex(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
@@ -315,7 +316,10 @@ func HandleGameClaimAction(w http.ResponseWriter, r *http.Request, params httpro
 }
 func HandleReview(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	reviewid := params.ByName("wild")
-	rev, err := models.GlobalReviewStore.Find(reviewid)
+	rev, err := models.Dal.FindReview(reviewid)
+	if err!=nil{
+		panic(err)
+	}
 	models.RenderTemplate(w,r, "review/review", map[string]interface{}{"Review":rev})
 }
 func HandleReviewNew(w http.ResponseWriter, r *http.Request, params httprouter.Params){
@@ -333,13 +337,12 @@ func HandleReviewNew(w http.ResponseWriter, r *http.Request, params httprouter.P
 func HandleReviewNewAction(w http.ResponseWriter, r *http.Request, params httprouter.Params){
 	if models.SignedIn(w,r){
 		gameid := params.ByName("wild")
-		reviewid := r.FormValue("reviewID")
+		//reviewid := r.FormValue("reviewID")
 		user := models.RequestUser(r)
-		gameid := r.FormValue("gameID")
+		//gameid := r.FormValue("gameID")
 		review := r.FormValue("reviewBody")
-		rating := r.FormValue("reviewRating")
-		//func (this *Review) InitReview(userId, gameId, body string, rating float64)
-		models.InitReview(user, gameId, review, rating)
+		rating,_ := strconv.ParseFloat(r.FormValue("reviewRating"), 64)
+		models.NewReview(user.UserId, gameid, review, rating)
 	}
 }
 func HandleVideo(w http.ResponseWriter, r *http.Request, params httprouter.Params){
