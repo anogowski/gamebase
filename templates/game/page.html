@@ -29,7 +29,7 @@
 		{{end}}
 		{{range .TopReviews}}
 			<div class="review shortened">
-				<a href="/users/{{.Review.UserId}}" class="reviewer">{{FindUserNameByID .Review.UserId}} ({{ReviewCount .Review.UserId}} Reviews)</a>
+				<a href="/users/{{.UserId}}" class="reviewer">{{FindUserNameByID .UserId}} ({{ReviewCount .UserId}} Reviews)</a>
 				{{RenderTemplateReview .}}
 			</div>
 		{{else}}
