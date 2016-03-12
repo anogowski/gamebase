@@ -340,7 +340,7 @@ func HandleReviewNewAction(w http.ResponseWriter, r *http.Request, params httpro
 		user := models.RequestUser(r)
 		//gameid := r.FormValue("gameID")
 		review := r.FormValue("reviewBody")
-		rating, _ := strconv.ParseFloat(r.FormValue("reviewRating"), 64)
+		rating, _ := strconv.ParseFloat(r.FormValue("reviewRate"), 64)
 		rev := models.NewReview(user.UserId, gameid, review, rating)
 		http.Redirect(w, r, "/review/"+rev.ReviewId, http.StatusFound)
 	}

@@ -1,9 +1,10 @@
 {{define "review/new"}}
 	{{if .Game}}
 	<form action="/review/{{URLQueryEscaper .Game.GameId}}/new" method="post">
+		<script type="text/javascript" src="/assets/js/review.js"></script>
 		<div class="formgrp">
 			<label for="gameTitle">Review for</label>
-			<input type="text" value="{{URLQueryEscaper .Game.Title}}" id="gameTitle" name="gameTitle" disabled="disabled" />
+			<input type="text" value="{{.Game.Title}}" id="gameTitle" name="gameTitle" disabled="disabled" />
 		</div>
 		<!--
 		<div class="formgrp">
@@ -13,21 +14,18 @@
 		-->
 		<div class="formgrp">
 			<label for="reviewRating">Rating</label>
-			<div id="reviewRating" name="reviewRating">
-				{{if .Rating}}
-					{{RenderTemplateRating .Review.Rating}}
-				{{else}}
-					{{RenderTemplateRating 0}}
-				{{end}}
-
-			</div>
+			<div id="reviewRating" name="reviewRating"></div>
+			<input type="hidden" id="reviewRate" name="reviewRate" value="{{if .Review.Rating}}{{.Review.Rating}}{{else}}0{{end}}"/>
+			<script type="text/javascript">
+			<!--
+			drawReviewStars(document.getElementById('reviewRating'), document.getElementById('reviewRate'), {{.Review.Rating}});
+			-->
+			</script>
 		</div>
 		<div class="formgrp">
 			<label for="reviewBody">Review</label>
-			<textarea id="reviewBody" name="reviewBody" col=5 row=5>
-				{{.Review.Body}}
-			</textarea>
-			<input type="hidden" id="reviewID" name="reviewID" value=""/>
+			<textarea id="reviewBody" name="reviewBody">{{.Review.Body}}</textarea>
+			<input type="hidden" id="reviewID" name="reviewID" value="{{.Review.ReviewId}}"/>
 		</div>
 		<div class="formgrp">
 			<input type="hidden" id="gameID" name="gameID" value="{{.Game.GameId}}"/>

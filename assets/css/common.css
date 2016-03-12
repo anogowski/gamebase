@@ -8,6 +8,7 @@ body { background-color:#222222; color:#fff; }
 .menu { position:relative; display:inline-block; vertical-align:top; margin:0px; width:20%; }
 .page { position:relative; display:inline-block; vertical-align:top; margin:0px; width:50%; }
 .chat { position:relative; display:inline-block; vertical-align:top; margin:0px; }
+.page textarea { width:90%; height:20em; }
 .description { border-style:solid; border-width:2px; border-color:#0a0a2a; border-radius:0.25em; }
 .copyright { font-size:0.75em; }
 .gold { color:#ffaf00; }
