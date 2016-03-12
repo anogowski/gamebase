@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	_ "github.com/anogowski/gamebase/Godeps/_workspace/src/github.com/lib/pq"
+	_ "gamebase/Godeps/_workspace/src/github.com/lib/pq"
 )
 
 type UserStore interface {
@@ -22,6 +22,10 @@ var GlobalUserStore UserStore
 type PostgresUserStore struct {
 	db *sql.DB
 }
+
+var (
+	ErrUserNameUnavailable = errors.New("Username not available")
+)
 
 func NewPostgresUserStore() *PostgresUserStore {
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
@@ -43,7 +47,7 @@ func (this *PostgresUserStore) CreateUser(name, pass, email string) (*User, erro
 		return nil, err
 	}
 	if user != nil {
-		return nil, errors.New("Username already taken.")
+		return nil, ErrUserNameUnavailable
 	}
 	user = NewUser(name, pass, email)
 	if _, err = this.db.Exec("INSERT INTO users VALUES('" + user.UserId + "', '" + user.UserName + "', '" + user.Password + "', '" + user.Email + "')"); err != nil {

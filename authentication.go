@@ -26,19 +26,15 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 			return
 		}
 		var err error
-		user, err = models.GlobalUserStore.FindUserByName(uname)
-		if err != nil {
-			panic(err)
-		}
-		if user != nil {
-			models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": "Username not available.", "UName": uname, "Email": email, "Next": next})
-			return
-		}
 		user, err = models.GlobalUserStore.CreateUser(uname, pword, email)
 		if err != nil {
+			if err==models.ErrUserNameUnavailable{
+				models.RenderTemplate(w, r, "users/login", map[string]interface{}{"Error": err.Error(), "UName": uname, "Email": email, "Next": next})
+				return
+			}
 			panic(err)
 		}
-		if user != nil {
+		if user == nil {
 			log.Fatal("Failed to create user.")
 		}
 		flash = "?flash=Signup+Success"
