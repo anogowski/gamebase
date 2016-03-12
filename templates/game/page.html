@@ -18,7 +18,7 @@
 	<div class="average">
 		<h2>Average</h2>
 		{{RenderTemplateRating .Game.Rating}}
-		<p>Out of {{.ReviewCount}} Reviews</p>
+		<p>Out of {{ReviewGameCount .Game.GameId}} Reviews</p>
 	</div>
 	<h2>Top Reviews <a class="small" href="/review/{{.Game.GameId}}">See All</a></h2>
 	<div class="reviews">

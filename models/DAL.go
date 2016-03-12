@@ -389,14 +389,14 @@ func (this *DataAccessLayer) CreateReview(review Review) error {
 
 func (this *DataAccessLayer) UpdateReview(review Review) error {
 	f := strconv.FormatFloat(review.Rating, 'g', 2, 64)
-	if _, err := this.db.Exec("UPDATE reviews SET body='" + html.EscapeString(review.Body) + "', rating='" + f + "', likes='" + strconv.Itoa(review.Likes) + "', dislikes='" + strconv.Itoa(review.Dislikes) + "' WHERE id='" + review.ReviewId + "'"); err != nil {
+	if _, err := this.db.Exec("UPDATE reviews SET review='" + html.EscapeString(review.Body) + "', rating='" + f + "', likes='" + strconv.Itoa(review.Likes) + "', dislikes='" + strconv.Itoa(review.Dislikes) + "' WHERE reviewid='" + review.ReviewId + "'"); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (this *DataAccessLayer) DeleteReview(reviewId string) error {
-	if _, err := this.db.Exec("DELETE FROM reviews WHERE (' reviewId=" + reviewId + "')"); err != nil {
+	if _, err := this.db.Exec("DELETE FROM reviews WHERE reviewId='" + reviewId + "'"); err != nil {
 		return err
 	}
 	return nil

@@ -144,7 +144,7 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, page string, data ma
 		},
 		"RenderTemplateReview": func(rev Review) (template.HTML, error) {
 			buf := bytes.NewBuffer(nil)
-			err := templateClone.ExecuteTemplate(buf, "review/review", map[string]interface{}{"Review": rev})
+			err := templateClone.ExecuteTemplate(buf, "review/review", map[string]interface{}{"Review": rev, "CurrentUser":data["CurrentUser"]})
 			return template.HTML(buf.String()), err
 		},
 		"RenderTemplateVideo": func(url, width, height interface{}) (template.HTML, error) {

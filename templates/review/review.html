@@ -2,6 +2,9 @@
 	{{RenderTemplateRating .Review.Rating}}
 	<font class="upped">{{.Review.Likes}}&#x1F44D;</font>
 	<font class="downed">{{.Review.Dislikes}}&#x1F44E;</font>
+	{{if .CurrentUser}}{{if eq .Review.UserId .CurrentUser.UserId}}
+		<a href="/review/{{.Review.ReviewId}}/edit">Edit this review</a>
+	{{end}}{{end}}
 	<p>
 		{{.Review.Body}}
 	</p>

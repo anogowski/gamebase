@@ -345,6 +345,41 @@ func HandleReviewNewAction(w http.ResponseWriter, r *http.Request, params httpro
 		http.Redirect(w, r, "/review/"+rev.ReviewId, http.StatusFound)
 	}
 }
+func HandleReviewEdit(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	if models.SignedIn(w, r) {
+		revid := params.ByName("wild")
+		rev, err := models.Dal.FindReview(revid)
+		if err != nil {
+			panic(err)
+		}
+		models.RenderTemplate(w, r, "review/edit", map[string]interface{}{"Review": rev})
+	}
+}
+func HandleReviewEditAction(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	if models.SignedIn(w, r) {
+		reviewid := params.ByName("wild")
+		//reviewid := r.FormValue("reviewID")
+		user := models.RequestUser(r)
+		//gameid := r.FormValue("gameID")
+		review := r.FormValue("reviewBody")
+		rating, _ := strconv.ParseFloat(r.FormValue("reviewRate"), 64)
+		rev,err := models.Dal.FindReview(reviewid)
+		if err!=nil{
+			panic(err)
+		}
+		rev.Body = review
+		rev.Rating = rating
+		if rev.UserId!=user.UserId{
+			models.RenderTemplate(w, r, "review/edit", map[string]interface{}{"Review": rev})
+			return
+		}
+		err = models.Dal.UpdateReview(*rev)
+		if err!=nil{
+			panic(err)
+		}
+		http.Redirect(w, r, "/review/"+rev.ReviewId, http.StatusFound)
+	}
+}
 func HandleVideo(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	videoid := params.ByName("wild")
 	vid, err := models.Dal.FindVideo(videoid)

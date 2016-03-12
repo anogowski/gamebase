@@ -1,10 +1,10 @@
-{{define "review/new"}}
-	{{if .Game}}
-	<form action="/review/{{URLQueryEscaper .Game.GameId}}/new" method="post">
+{{define "review/edit"}}
+	{{if eq .Review.UserId .CurrentUser.UserId}}
+	<form action="/review/{{.Review.ReviewId}}/edit" method="post">
 		<script type="text/javascript" src="/assets/js/review.js"></script>
 		<div class="formgrp">
 			<label for="gameTitle">Review for</label>
-			<input type="text" value="{{.Game.Title}}" id="gameTitle" name="gameTitle" disabled="disabled" />
+			<input type="text" value="{{FindGameNameByID .Review.GameId}}" id="gameTitle" name="gameTitle" disabled="disabled" />
 		</div>
 		<!--
 		<div class="formgrp">
@@ -28,11 +28,11 @@
 			<input type="hidden" id="reviewID" name="reviewID" value="{{.Review.ReviewId}}"/>
 		</div>
 		<div class="formgrp">
-			<input type="hidden" id="gameID" name="gameID" value="{{.Game.GameId}}"/>
+			<input type="hidden" id="gameID" name="gameID" value="{{.Review.GameId}}"/>
 			<input type="submit"/>
 		</div>
 	</form>
 	{{else}}
-		<p>Failed to Find Game to Review</p>
+		<p>Only the user who posted a review may edit it.</p>
 	{{end}}
 {{end}}
