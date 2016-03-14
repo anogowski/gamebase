@@ -26,12 +26,8 @@ body { background-color:#222222; color:#fff; }
 .right { float:right; }
 .mid { align-items: center;}
 
-.chatsend input{
-    
-}
-
-.chatsend textarea {
-    
+.page {
+    font-size:125%;
 }
 
 .msgAlign{
@@ -56,6 +52,8 @@ a:visted {
     padding: 1px 5px;
 }
 
+
+
 .menu a{
     text-decoration: none
 }
@@ -71,7 +69,7 @@ a:visted {
 
 .menu  li {
     display: block;
-	color: #000;
+	color: #fff;
     padding: 8px 0 8px 16px;
     text-decoration: none;
 	border-bottom: 1px solid #333;
@@ -85,5 +83,10 @@ a:visted {
     background-color: #444;
 }
 
-
-
+iframe{
+    display: block;
+    float right
+}
+h1{
+    display: block;
+}

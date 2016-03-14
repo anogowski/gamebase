@@ -1,8 +1,8 @@
 {{define "game/page"}}
 	{{if .Game}}
-	<h1 class="left">{{.Game.Title}}</h1>
-	<h1 class="mid">{{.Game.Developer}}</h1>
-	<h1 class="right">{{.Game.Publisher}}</h1>
+	<h1>{{.Game.Title}}</h1>
+	<h1>{{.Game.Developer}}</h1>
+	<h1>{{.Game.Publisher}}</h1>
 	<a href="/game/{{URLQueryEscaper .Game.GameId}}/edit">Edit</a>
 	<a href="/game/{{URLQueryEscaper .Game.GameId}}/claim">Claim</a>
 	{{if .Game.URL}}
